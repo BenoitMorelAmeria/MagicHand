@@ -1,0 +1,57 @@
+{
+  "name": "com.acer.spatial-labs-sdk",
+  "displayName": "Acer SpatialLabs SDK",
+  "version": "1.1.3",
+  "description": "Support Acer SpatialLabs Pro Devices",
+  "keywords": [
+    "acer",
+    "spatiallabs",
+    "stereoscopic",
+    "stereo",
+    "3d",
+    "mr",
+    "vr",
+    "xr"
+  ],
+  "homepage": "https://www.acer.com",
+  "documentationUrl": "https://spatiallabs.acer.com/developer",
+  "changelogUrl": "https://spatiallabs.acer.com/developer",
+  "licensesUrl": "https://spatiallabs.acer.com/developer/docs/3e97ce90-22b4-11ed-91b8-067bb43818a8/c2b1e1dc-806b-4361-b903-8697f0ea8686",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/3d-group/unity-package-template.git"
+  },
+  "samples": [
+    {
+      "displayName": "2D GUI Setup Sample (High Definition Render Pipeline)",
+      "description": "Shows how to implement 2D GUI setup in High Definition Render Pipeline.",
+      "path": "Samples~/HDRPGUISample"
+    },
+    {
+      "displayName": "2D GUI Setup Sample (Universal Render Pipeline)",
+      "description": "Shows how to implement 2D GUI setup in Universal Render Pipeline.",
+      "path": "Samples~/URPGUISample"
+    },
+    {
+      "displayName": "3D Setup Sample (High Definition Render Pipeline)",
+      "description": "Shows how to setup XR Rig for Acer Spatial Labs Devices",
+      "path": "Samples~/HDRP3DSample"
+    },
+    {
+      "displayName": "3D Setup Sample (Universal Render Pipeline)",
+      "description": "Shows how to setup XR Rig for Acer Spatial Labs Devices",
+      "path": "Samples~/URP3DSample"
+    },
+	{
+      "displayName": "3D Setup Sample (Built-In Render Pipeline)",
+      "description": "Shows how to setup XR Rig for Acer Spatial Labs Devices",
+      "path": "Samples~/BRP3DSample"
+    }
+  ],
+  "license": "NONE",
+  "author": "Acer",
+  "hideInEditor": false,
+  "dependencies": {
+    "com.unity.xr.openxr": "1.4.2"
+  }
+}
