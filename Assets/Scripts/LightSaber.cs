@@ -6,6 +6,8 @@ public class LightSaber : MonoBehaviour
 {
     [SerializeField] Transform lightScaleTransform;
     [SerializeField] float openDuration = 0.1f; // Duration of the opening animation
+    [SerializeField] float maxLength = 10.0f; // Maximum length of the saber
+    [SerializeField] LayerMask handLayer; // Layer for hand detection
     enum State
     {
         Opened,
@@ -38,13 +40,24 @@ public class LightSaber : MonoBehaviour
         }
     }
 
+    void OnTriggerEnter(Collider other)
+    {
+        if (state == State.Closed)
+        {
+            if ((other.gameObject.layer & handLayer) != 0) // Check if the collider is on the hand layer
+            {
+                StartCoroutine(OpenSaber());
+            }
+        }
+    }
+
 
     private IEnumerator OpenSaber()
     {
         float duration = openDuration; // Duration of the animation
         float elapsedTime = 0f;
         float initialLength = lightScaleTransform.localScale.y;
-        float targetLength = 1.0f; // Target length of the saber
+        float targetLength = maxLength; // Target length of the saber
         state = State.Opening;
         while (elapsedTime < duration)
         {
