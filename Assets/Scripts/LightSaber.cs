@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class LightSaber : MonoBehaviour
@@ -40,12 +39,15 @@ public class LightSaber : MonoBehaviour
         }
     }
 
+
     void OnTriggerEnter(Collider other)
     {
+        Debug.Log("Collide");
         if (state == State.Closed)
         {
-            if ((other.gameObject.layer & handLayer) != 0) // Check if the collider is on the hand layer
+            if (((1 << other.gameObject.layer) & handLayer.value) != 0)
             {
+
                 StartCoroutine(OpenSaber());
             }
         }

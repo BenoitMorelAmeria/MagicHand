@@ -33,7 +33,7 @@ public class Vector3Converter : JsonConverter<Vector3>
         // Expecting [x,y,z]
         var arr = serializer.Deserialize<List<float>>(reader);
         if (arr != null && arr.Count == 3)
-            return new Vector3(arr[0], arr[1], arr[2]);
+            return new Vector3(arr[0], arr[1], -arr[2]);
         return Vector3.zero;
     }
 
@@ -73,7 +73,6 @@ public class MqttHandPose : MonoBehaviour
     {
         if (m.GetTopic() == "Ina/HandPoseDetected")
         {
-            Debug.Log("Hand Pose Detected: " + m.GetString());
         }
         else if (m.GetTopic() == "Ina/HandPoseKeyPoints")
         {

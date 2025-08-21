@@ -150,7 +150,6 @@ namespace Rocworks.Mqtt
 
         private Task OnMessageReceivedCB(MqttApplicationMessageReceivedEventArgs args)
         {
-            if (Config.DebugMessages) Debug.Log("OnMessageReceived: " + args.ApplicationMessage.ConvertPayloadToString());
             void execute()
             {
                 var bytes = args.ApplicationMessage.PayloadSegment.Count>0 ? args.ApplicationMessage.PayloadSegment.ToArray() : new byte[0];

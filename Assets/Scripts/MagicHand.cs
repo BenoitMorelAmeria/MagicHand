@@ -14,10 +14,14 @@ public class MagicHand : MonoBehaviour
 
     [Header("Hand definition")]
     [SerializeField] private List<Vector2Int> jointPairs = new List<Vector2Int>();
+
+    [SerializeField] LayerMask handLayer;
+
     // Define pairs in the inspector, e.g. (0,1), (1,2), (2,3), ...
 
     private List<Rigidbody> keypointBodies = new List<Rigidbody>();
     private List<Rigidbody> jointBodies = new List<Rigidbody>();
+    private List<Collider> keypointTriggers = new List<Collider>();
 
     // Hardcoded 21 keypoints
     private List<Vector3> initialKeypoints = new List<Vector3>
@@ -59,11 +63,11 @@ public class MagicHand : MonoBehaviour
         ClearSpheres();
         ClearCylinders();
     }
-
     private void InitSpheres(List<Vector3> positions)
     {
         foreach (var pos in positions)
         {
+            // --- Physics Sphere ---
             GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             sphere.transform.SetParent(transform, false);
             sphere.transform.localScale = Vector3.one * sphereSize;
@@ -71,18 +75,34 @@ public class MagicHand : MonoBehaviour
             if (sphereMaterial != null)
                 sphere.GetComponent<Renderer>().material = sphereMaterial;
 
+            sphere.layer = Mathf.RoundToInt(Mathf.Log(handLayer.value, 2));
             Rigidbody rb = sphere.AddComponent<Rigidbody>();
             rb.isKinematic = true;
             rb.interpolation = RigidbodyInterpolation.Interpolate;
-
             rb.MovePosition(transform.TransformPoint(pos));
             keypointBodies.Add(rb);
 
             if (!showDebugSpheres)
                 sphere.GetComponent<Renderer>().enabled = false;
+
+            // --- Trigger Sphere ---
+            GameObject triggerSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            triggerSphere.transform.SetParent(transform, false);
+            triggerSphere.transform.localScale = Vector3.one * sphereSize * 0.9f; // slightly smaller
+            triggerSphere.transform.position = transform.TransformPoint(pos);
+
+            Collider triggerCol = triggerSphere.GetComponent<Collider>();
+            triggerCol.isTrigger = true;
+            triggerCol.gameObject.layer = sphere.layer; // same layer as hand
+            keypointTriggers.Add(triggerCol);
+
+            // Hide renderer
+            triggerSphere.GetComponent<Renderer>().enabled = false;
+
+            // Optionally add a script/component to handle OnTriggerEnter/Stay/Exit
+            // triggerSphere.AddComponent<KeypointTriggerHandler>();
         }
     }
-
     private void InitCylinders(List<Vector3> positions)
     {
         foreach (var pair in jointPairs)
@@ -98,6 +118,9 @@ public class MagicHand : MonoBehaviour
 
             GameObject cyl = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             cyl.transform.SetParent(transform, false);
+            cyl.layer = Mathf.RoundToInt(Mathf.Log(handLayer.value, 2));
+            Collider col = cyl.GetComponent<Collider>();
+            col.isTrigger = true;
 
             // Cylinder in Unity points up the Y axis
             cyl.transform.position = mid;
@@ -145,6 +168,10 @@ public class MagicHand : MonoBehaviour
             Rigidbody rb = keypointBodies[i];
             Vector3 targetPos = transform.TransformPoint(keypoints[i]);
             rb.MovePosition(targetPos);
+
+            // Move the trigger sphere
+            Collider trigger = keypointTriggers[i];
+            trigger.transform.position = targetPos;
         }
 
         // --- Update cylinders using the SAME keypoints ---
@@ -168,5 +195,6 @@ public class MagicHand : MonoBehaviour
             rb.transform.localScale = new Vector3(cylinderRadius, length / 2f, cylinderRadius);
         }
     }
+
 
 }
