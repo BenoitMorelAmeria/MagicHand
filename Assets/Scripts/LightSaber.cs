@@ -7,6 +7,7 @@ public class LightSaber : MonoBehaviour
     [SerializeField] float openDuration = 0.1f; // Duration of the opening animation
     [SerializeField] float maxLength = 10.0f; // Maximum length of the saber
     [SerializeField] LayerMask handLayer; // Layer for hand detection
+    [SerializeField] AudioSource openSound; // Sound to play when opening the saber
     enum State
     {
         Opened,
@@ -42,7 +43,6 @@ public class LightSaber : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Collide");
         if (state == State.Closed)
         {
             if (((1 << other.gameObject.layer) & handLayer.value) != 0)
@@ -56,6 +56,10 @@ public class LightSaber : MonoBehaviour
 
     private IEnumerator OpenSaber()
     {
+        if (openSound != null)
+        {
+            openSound.Play(); // Play the opening sound
+        }
         float duration = openDuration; // Duration of the animation
         float elapsedTime = 0f;
         float initialLength = lightScaleTransform.localScale.y;
@@ -75,6 +79,10 @@ public class LightSaber : MonoBehaviour
 
     private IEnumerator CloseSaber()
     {
+        if (openSound != null)
+        {
+            openSound.Play(); // Play the closing sound
+        }
         float duration = openDuration; // Duration of the animation
         float elapsedTime = 0f;
         float initialLength = lightScaleTransform.localScale.y;
