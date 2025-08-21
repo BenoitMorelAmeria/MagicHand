@@ -139,12 +139,12 @@ MonoBehaviour:
   priority: 0
   required: 0
   FieldOfViewAxis: 0
-  FieldOfView: 15
+  FieldOfView: 25
   UseDynamicFov: 1
   WorldScaleFactor: 1
   _IPD: 0.063
   StereoSeparation: 1
-  UseFixedHeadPos: 0
+  UseFixedHeadPos: 1
   FixedHeadPos: {x: 0, y: 0, z: -0.6}
   ScalingMode: 0
   ScreenSize: {x: 0.344, y: 0.193}
