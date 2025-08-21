@@ -1777,9 +1777,19 @@ PrefabInstance:
       objectReference: {fileID: 1595265256}
     - target: {fileID: 4494788986145180828, guid: 3ab988c9bf4ee5941902840f30d1749c,
         type: 3}
+      propertyPath: laserMeshRenderer
+      value: 
+      objectReference: {fileID: 8230563696312302474}
+    - target: {fileID: 4494788986145180828, guid: 3ab988c9bf4ee5941902840f30d1749c,
+        type: 3}
       propertyPath: timeBeforeClosing
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 4494788986145180828, guid: 3ab988c9bf4ee5941902840f30d1749c,
+        type: 3}
+      propertyPath: laserMaterialReference
+      value: 
+      objectReference: {fileID: 2100000, guid: 61fda7d81438f094a85ccd56b545f603, type: 2}
     - target: {fileID: 4671052005961311597, guid: 3ab988c9bf4ee5941902840f30d1749c,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1840,6 +1850,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ab988c9bf4ee5941902840f30d1749c, type: 3}
+--- !u!23 &8230563696312302474 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8839139201872712336, guid: 3ab988c9bf4ee5941902840f30d1749c,
+    type: 3}
+  m_PrefabInstance: {fileID: 8230563696312302473}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -9,6 +9,18 @@ public class LightSaber : MonoBehaviour
     [SerializeField] LayerMask handLayer; // Layer for hand detection
     [SerializeField] AudioSource openSound; // Sound to play when opening the saber
     [SerializeField] float timeBeforeClosing = 2.0f;
+
+
+    [SerializeField] Material laserMaterialReference;
+    [SerializeField] MeshRenderer laserMeshRenderer;
+    [SerializeField] Color baseColor = Color.red;
+    [SerializeField] float minEmission = 1.0f;
+    [SerializeField] float maxEmission = 10.0f;
+    [SerializeField] float flickerSpeed = 0.1f;
+    private float targetEmission = 1.0f;
+    private float currentEmission = 1.0f;
+    
+    
     enum State
     {
         Opened,
@@ -23,7 +35,10 @@ public class LightSaber : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Material copy = Instantiate(laserMaterialReference);
+        laserMeshRenderer.material = copy;
+        copy.color = baseColor;
+        SetEmission(5.0f);
     }
 
     public void Update()
@@ -43,6 +58,17 @@ public class LightSaber : MonoBehaviour
         {
             StartCoroutine(CloseSaber());
         }
+        UpdateEmission();
+    }
+
+    private void UpdateEmission()
+    {
+        if (Random.value < flickerSpeed)
+        {
+            targetEmission = Random.Range(minEmission, maxEmission);
+        }
+        currentEmission = Mathf.Lerp(currentEmission, targetEmission, Time.deltaTime * 10.0f);
+        SetEmission(currentEmission);
     }
 
 
@@ -62,6 +88,7 @@ public class LightSaber : MonoBehaviour
 
     private IEnumerator OpenSaber()
     {
+        timeSinceLastTrigger = Time.time;
         if (openSound != null)
         {
             openSound.Play(); // Play the opening sound
@@ -111,7 +138,11 @@ public class LightSaber : MonoBehaviour
         lightScaleTransform.localScale = new Vector3(1.0f, length, 1.0f);
     }
 
-
+    private void SetEmission(float emission)
+    {
+        Material mat = laserMeshRenderer.material;
+        mat.SetColor("_EmissionColor", mat.color * emission);
+    }
 
 
 }
