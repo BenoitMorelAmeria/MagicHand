@@ -37,8 +37,7 @@ public class LightSaber : MonoBehaviour
     {
         Material copy = Instantiate(laserMaterialReference);
         laserMeshRenderer.material = copy;
-        copy.color = baseColor;
-        SetEmission(5.0f);
+        //copy.color = baseColor;
     }
 
     public void Update()
@@ -141,7 +140,7 @@ public class LightSaber : MonoBehaviour
     private void SetEmission(float emission)
     {
         Material mat = laserMeshRenderer.material;
-        mat.SetColor("_EmissionColor", mat.color * emission);
+        mat.SetColor("_EmissionColor", baseColor * emission);
     }
 
 

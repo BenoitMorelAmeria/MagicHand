@@ -49,6 +49,11 @@ public class MagicHand : MonoBehaviour
         new Vector3( 0.099914f,  0.075193f, 0.114938f)
     };
 
+    public Vector3 GetKeyPoint(int index)
+    {
+        return keypointBodies[index].gameObject.transform.position;
+    }
+
     private void OnEnable()
     {
         InitSpheres(initialKeypoints);
