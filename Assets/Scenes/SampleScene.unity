@@ -137,7 +137,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &154384112
 Transform:
   m_ObjectHideFlags: 0
@@ -507,8 +507,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sphereSize: 0.02
+  cylinderRadius: 0.02
   sphereMaterial: {fileID: 2100000, guid: c25dec9ad56af374988c253d962955c4, type: 2}
+  cylinderMaterial: {fileID: 2100000, guid: b8b6c60d628c7cd41843da5cdb431bca, type: 2}
   showDebugSpheres: 1
+  showDebugCylinders: 1
+  jointPairs:
+  - {x: 5, y: 6}
+  - {x: 6, y: 7}
+  - {x: 7, y: 8}
+  - {x: 9, y: 10}
+  - {x: 10, y: 11}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
 --- !u!1 &754154758
 GameObject:
   m_ObjectHideFlags: 0
@@ -1411,7 +1435,6 @@ MonoBehaviour:
   levels:
   - {fileID: 1982122640}
   - {fileID: 1657183802}
-  - {fileID: 154384111}
 --- !u!1 &1657183802
 GameObject:
   m_ObjectHideFlags: 0
