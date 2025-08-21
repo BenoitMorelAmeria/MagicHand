@@ -100,7 +100,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -118,12 +118,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cc3ee59b62254049b718480629af8bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseRiseSpeed: 0.15
+  baseRiseSpeed: 0.1
   baseWobbleAmplitude: 0.05
   baseWobbleFrequency: 1.5
   maxHeight: 0.2
-  riseSpeedVariation: 0.03
-  wobbleAmplitudeVariation: 0.05
+  riseSpeedVariation: 0.02
+  wobbleAmplitudeVariation: 0.02
   wobbleFrequencyVariation: 0.5
-  driftStrength: 0.02
+  driftStrength: 0.002
   dissolveDuration: 2
+  handLayer:
+    serializedVersion: 2
+    m_Bits: 64
