@@ -92,7 +92,6 @@ public class MagicHand : MonoBehaviour
             triggerSphere.transform.position = transform.TransformPoint(pos);
 
             Collider triggerCol = triggerSphere.GetComponent<Collider>();
-            triggerCol.isTrigger = true;
             triggerCol.gameObject.layer = sphere.layer; // same layer as hand
             keypointTriggers.Add(triggerCol);
 
@@ -120,7 +119,6 @@ public class MagicHand : MonoBehaviour
             cyl.transform.SetParent(transform, false);
             cyl.layer = Mathf.RoundToInt(Mathf.Log(handLayer.value, 2));
             Collider col = cyl.GetComponent<Collider>();
-            col.isTrigger = true;
 
             // Cylinder in Unity points up the Y axis
             cyl.transform.position = mid;
