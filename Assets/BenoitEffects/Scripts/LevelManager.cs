@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class LevelManager : MonoBehaviour
@@ -7,11 +8,20 @@ public class LevelManager : MonoBehaviour
     
     [SerializeField] List<GameObject> levels = new List<GameObject>();
 
+    GameObject currentLevel;
+
     int levelIndex = 0;
 
     // Start is called before the first frame update
     void Start()
     {
+        foreach (GameObject go in levels)
+        {
+            if (go.activeSelf)
+            {
+                go.SetActive(false);
+            }
+        }
         LoadLevel(0);    
     }
 
@@ -31,18 +41,18 @@ public class LevelManager : MonoBehaviour
 
     public void LoadLevel(int level)
     {
-        foreach (GameObject go in levels)
+        if (currentLevel != null)
         {
-            if (go.activeSelf)
-            {
-                go.SetActive(false);
-            }
+            Destroy(currentLevel);
         }
-        if (level >= 0 && level < levels.Count)
+        if (level < 0 && level >= levels.Count)
         {
-            levels[level].SetActive(true);
+            return;
         }
+        GameObject toClone = levels[level];
+        currentLevel = Instantiate(toClone, toClone.transform.parent);
         levelIndex = level;
+        currentLevel.SetActive(true);
     }
 
 

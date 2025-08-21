@@ -10,6 +10,9 @@ public class MqttManager : MonoBehaviour
 {
     public static MqttManager Instance { get; private set; }
 
+
+    
+    
     public void Awake()
     {
         Debug.Log("MqttManager.Awake called");
@@ -29,13 +32,13 @@ public class MqttManager : MonoBehaviour
     public void OnConnect()
     {
         Debug.Log("MqttManager.OnConnect called");
-        INAClientMqtt.InitializeINAParameters();
+        //INAClientMqtt.InitializeINAParameters();
     }
 
     public void OnDisconnect()
     {
         Debug.Log("MqttManager.OnDisconnect called");
-        INAClientMqtt.ResetINAParameters();
+        //INAClientMqtt.ResetINAParameters();
     }
 
 
