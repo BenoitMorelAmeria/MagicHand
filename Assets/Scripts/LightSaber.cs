@@ -8,6 +8,7 @@ public class LightSaber : MonoBehaviour
     [SerializeField] float maxLength = 10.0f; // Maximum length of the saber
     [SerializeField] LayerMask handLayer; // Layer for hand detection
     [SerializeField] AudioSource openSound; // Sound to play when opening the saber
+    [SerializeField] float timeBeforeClosing = 2.0f;
     enum State
     {
         Opened,
@@ -17,7 +18,7 @@ public class LightSaber : MonoBehaviour
     }
 
     State state = State.Closed;
-
+    float timeSinceLastTrigger = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -38,11 +39,16 @@ public class LightSaber : MonoBehaviour
                 StartCoroutine(CloseSaber());
             }
         }
+        if (state == State.Opened && Time.time -  timeSinceLastTrigger > timeBeforeClosing)
+        {
+            StartCoroutine(CloseSaber());
+        }
     }
 
 
     void OnTriggerEnter(Collider other)
     {
+        timeSinceLastTrigger = Time.time;
         if (state == State.Closed)
         {
             if (((1 << other.gameObject.layer) & handLayer.value) != 0)
