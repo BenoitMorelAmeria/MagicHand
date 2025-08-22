@@ -474,7 +474,7 @@ PrefabInstance:
     - target: {fileID: 4671052005961311597, guid: baf3dda7b9a1b2b4590972e7b727f74f,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 4671052005961311597, guid: baf3dda7b9a1b2b4590972e7b727f74f,
         type: 3}
@@ -585,6 +585,7 @@ MonoBehaviour:
   cylinderRadius: 0.015
   sphereMaterial: {fileID: 2100000, guid: c25dec9ad56af374988c253d962955c4, type: 2}
   cylinderMaterial: {fileID: 2100000, guid: b8b6c60d628c7cd41843da5cdb431bca, type: 2}
+  physicMaterial: {fileID: 13400000, guid: 4088577d034f445409c924e57a518e92, type: 2}
   showDebugSpheres: 1
   showDebugCylinders: 1
   jointPairs:
@@ -623,7 +624,7 @@ PrefabInstance:
     - target: {fileID: 4671052005961311597, guid: baf3dda7b9a1b2b4590972e7b727f74f,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1
+      value: -0.1
       objectReference: {fileID: 0}
     - target: {fileID: 4671052005961311597, guid: baf3dda7b9a1b2b4590972e7b727f74f,
         type: 3}
