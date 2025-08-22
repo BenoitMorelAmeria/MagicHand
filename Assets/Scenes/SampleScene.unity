@@ -988,7 +988,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 662d7af8c88ec1a47b91ad90658275c3, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -1601,7 +1601,7 @@ MonoBehaviour:
   ProjectilePrefab: {fileID: 4418417278731887432, guid: 287111ca277fd5944ab4665ec5ecbe49,
     type: 3}
   shootTimeInterval: 1
-  projVelocity: 0.5
+  projVelocity: 1
 --- !u!1 &1962165742
 GameObject:
   m_ObjectHideFlags: 0
