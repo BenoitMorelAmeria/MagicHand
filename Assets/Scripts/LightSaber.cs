@@ -77,6 +77,10 @@ public class LightSaber : MonoBehaviour
 
     public void UpdateAttraction()
     {
+        if (!magicHand.IsAvailable())
+        {
+            return;
+        }
         Rigidbody rb = GetComponent<Rigidbody>();
         Vector3 attractionPos = (magicHand.GetKeyPoint(2) + magicHand.GetKeyPoint(5)) * 0.5f; // Average position of index and middle finger
         float distance = Vector3.Distance(rb.position, attractionPos);

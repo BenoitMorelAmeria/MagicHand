@@ -57,6 +57,11 @@ public class MagicHand : MonoBehaviour
         return keypointBodies[index].gameObject.transform.position;
     }
 
+    public bool IsAvailable()
+    {
+        return gameObject.activeInHierarchy && keypointBodies.Count == 21;
+    }
+
     public void Update()
     {
         if (Input.GetKeyDown(KeyCode.T))
@@ -80,12 +85,10 @@ public class MagicHand : MonoBehaviour
         InitSpheres(initialKeypoints);
         InitCylinders(initialKeypoints);
 
-        MqttHandPose.OnKeypointsReceived += UpdateHand;
     }
 
     private void OnDisable()
     {
-        MqttHandPose.OnKeypointsReceived -= UpdateHand;
         ClearSpheres();
         ClearCylinders();
     }
@@ -184,7 +187,7 @@ public class MagicHand : MonoBehaviour
             if (rb != null) Destroy(rb.gameObject);
         jointBodies.Clear();
     }
-    private void UpdateHand(List<Vector3> keypoints)
+    public void UpdateHand(List<Vector3> keypoints)
     {
         if (keypoints.Count != keypointBodies.Count)
         {

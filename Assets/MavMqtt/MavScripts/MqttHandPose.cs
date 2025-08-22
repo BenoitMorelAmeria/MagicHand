@@ -51,7 +51,9 @@ public class Vector3Converter : JsonConverter<Vector3>
 public class MqttHandPose : MonoBehaviour
 {
     // Event that others can subscribe to
-    public static event Action<List<Vector3>> OnKeypointsReceived;
+   // public static event Action<List<Vector3>> OnKeypointsReceived;
+    public static event Action<List<HandKeypoints>> OnKeypointsReceived;
+    public static event Action<bool> OnHandPoseDetected;
 
     private JsonSerializerSettings jsonSettings;
 
@@ -73,6 +75,7 @@ public class MqttHandPose : MonoBehaviour
     {
         if (m.GetTopic() == "Ina/HandPoseDetected")
         {
+            OnHandPoseDetected?.Invoke(m.GetString() == "1");
         }
         else if (m.GetTopic() == "Ina/HandPoseKeyPoints")
         {
@@ -82,24 +85,18 @@ public class MqttHandPose : MonoBehaviour
 
     public void ProcessKeyPoints(string json)
     {
-        try
+        
         {
+            Debug.Log("process json " + json);
             Root data = JsonConvert.DeserializeObject<Root>(json, jsonSettings);
 
             if (data?.Keypoints == null || data.Keypoints.Count == 0)
                 return;
 
-            List<Vector3> points = data.Keypoints[0].Keypoints;
-
-            if (points == null || points.Count == 0)
-                return;
-
             // Broadcast the keypoints to all listeners
-            OnKeypointsReceived?.Invoke(points);
+            OnKeypointsReceived?.Invoke(data.Keypoints);
         }
-        catch (Exception ex)
-        {
-            Debug.LogError("Failed to parse keypoints JSON: " + ex.Message);
-        }
+            //Debug.LogError("Failed to parse keypoints JSON: " + ex.Message);
+             
     }
 }

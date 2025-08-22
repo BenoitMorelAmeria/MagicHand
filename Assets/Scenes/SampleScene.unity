@@ -122,6 +122,53 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &49395557
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 49395558}
+  - component: {fileID: 49395559}
+  m_Layer: 0
+  m_Name: MagicHands
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &49395558
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 49395557}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 640960581}
+  - {fileID: 1216763500}
+  m_Father: {fileID: 365506005}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &49395559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 49395557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae848a605732ee543a8896f2fcd552fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hands: []
 --- !u!1 &154384111
 GameObject:
   m_ObjectHideFlags: 0
@@ -339,7 +386,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 640960581}
+  - {fileID: 49395558}
   - {fileID: 1962165743}
   - {fileID: 1637025339}
   - {fileID: 1609270592}
@@ -558,7 +605,7 @@ GameObject:
   - component: {fileID: 640960581}
   - component: {fileID: 640960582}
   m_Layer: 0
-  m_Name: MagicHand
+  m_Name: MagicHand1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -572,12 +619,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 640960580}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 365506005}
+  m_Father: {fileID: 49395558}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &640960582
 MonoBehaviour:
@@ -1103,6 +1150,82 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: baf3dda7b9a1b2b4590972e7b727f74f, type: 3}
+--- !u!1 &1216763499
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1216763500}
+  - component: {fileID: 1216763501}
+  m_Layer: 0
+  m_Name: MagicHand2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1216763500
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1216763499}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 49395558}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1216763501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1216763499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a8af304bee73da4593de1c63c2dc285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sphereSize: 0.02
+  cylinderRadius: 0.015
+  sphereMaterial: {fileID: 2100000, guid: c25dec9ad56af374988c253d962955c4, type: 2}
+  cylinderMaterial: {fileID: 2100000, guid: b8b6c60d628c7cd41843da5cdb431bca, type: 2}
+  physicMaterial: {fileID: 13400000, guid: 4088577d034f445409c924e57a518e92, type: 2}
+  showDebugSpheres: 1
+  showDebugCylinders: 1
+  jointPairs:
+  - {x: 0, y: 1}
+  - {x: 1, y: 2}
+  - {x: 2, y: 3}
+  - {x: 3, y: 4}
+  - {x: 5, y: 6}
+  - {x: 6, y: 7}
+  - {x: 7, y: 8}
+  - {x: 9, y: 10}
+  - {x: 10, y: 11}
+  - {x: 11, y: 12}
+  - {x: 13, y: 14}
+  - {x: 14, y: 15}
+  - {x: 15, y: 16}
+  - {x: 17, y: 18}
+  - {x: 18, y: 19}
+  - {x: 19, y: 20}
+  - {x: 1, y: 5}
+  - {x: 5, y: 9}
+  - {x: 9, y: 13}
+  - {x: 13, y: 17}
+  - {x: 17, y: 0}
+  handLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &1537454931
 GameObject:
   m_ObjectHideFlags: 0
