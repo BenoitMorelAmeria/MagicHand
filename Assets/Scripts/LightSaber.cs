@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class LightSaber : MonoBehaviour
@@ -10,6 +11,8 @@ public class LightSaber : MonoBehaviour
         Opening,
         Closing
     }
+
+    [SerializeField] MagicHand magicHand; // Reference to the MagicHand script to get hand position
 
     [SerializeField] Transform lightScaleTransform;
     [SerializeField] float openDuration = 0.1f; // Duration of the opening animation
@@ -25,6 +28,10 @@ public class LightSaber : MonoBehaviour
     [SerializeField] float minEmission = 1.0f;
     [SerializeField] float maxEmission = 10.0f;
     [SerializeField] float flickerSpeed = 0.1f;
+
+    [SerializeField] float attractionMaxRadius = 0.2f;
+    [SerializeField] float attractionMinRadius = 0.05f;
+    [SerializeField] float attractionForce = 5.0f;
 
     private float targetEmission = 1.0f;
     private float currentEmission = 1.0f;
@@ -62,6 +69,24 @@ public class LightSaber : MonoBehaviour
             StartCoroutine(CloseSaber());
         }
         UpdateEmission();
+        if (state == State.Closed)
+        {
+            UpdateAttraction();
+        }
+    }
+
+    public void UpdateAttraction()
+    {
+        Rigidbody rb = GetComponent<Rigidbody>();
+        Vector3 attractionPos = (magicHand.GetKeyPoint(2) + magicHand.GetKeyPoint(5)) * 0.5f; // Average position of index and middle finger
+        float distance = Vector3.Distance(rb.position, attractionPos);
+
+        if (distance < attractionMaxRadius && distance > attractionMinRadius)
+        {
+            Vector3 direction = (attractionPos - rb.position).normalized;
+            // apply force toward hand
+            rb.AddForce(direction * attractionForce * Time.fixedDeltaTime, ForceMode.VelocityChange);
+        }
     }
 
     private void UpdateEmission()

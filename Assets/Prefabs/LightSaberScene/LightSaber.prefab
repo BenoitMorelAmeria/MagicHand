@@ -889,6 +889,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37f20042261f78e4194758fa7da1653a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  magicHand: {fileID: 0}
   lightScaleTransform: {fileID: 7956862790979731974}
   openDuration: 0.1
   maxLength: 7
@@ -901,9 +902,12 @@ MonoBehaviour:
     type: 2}
   laserMeshRenderer: {fileID: 8839139201872712336}
   baseColor: {r: 0, g: 0.052989006, b: 0.75, a: 1}
-  minEmission: 4
-  maxEmission: 8
+  minEmission: 2
+  maxEmission: 6
   flickerSpeed: 0.05
+  attractionMaxRadius: 0.05
+  attractionMinRadius: 0.01
+  attractionForce: 0.05
 --- !u!54 &7838656305066629337
 Rigidbody:
   m_ObjectHideFlags: 0
