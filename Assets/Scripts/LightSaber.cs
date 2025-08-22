@@ -3,11 +3,19 @@ using UnityEngine;
 
 public class LightSaber : MonoBehaviour
 {
+    enum State
+    {
+        Opened,
+        Closed,
+        Opening,
+        Closing
+    }
+
     [SerializeField] Transform lightScaleTransform;
     [SerializeField] float openDuration = 0.1f; // Duration of the opening animation
     [SerializeField] float maxLength = 10.0f; // Maximum length of the saber
     [SerializeField] LayerMask handLayer; // Layer for hand detection
-    [SerializeField] AudioSource openSound; // Sound to play when opening the saber
+    [SerializeField] AudioClip openSoundClip; // Sound to play when opening the saber
     [SerializeField] float timeBeforeClosing = 2.0f;
 
 
@@ -17,27 +25,23 @@ public class LightSaber : MonoBehaviour
     [SerializeField] float minEmission = 1.0f;
     [SerializeField] float maxEmission = 10.0f;
     [SerializeField] float flickerSpeed = 0.1f;
+
     private float targetEmission = 1.0f;
     private float currentEmission = 1.0f;
-    
-    
-    enum State
-    {
-        Opened,
-        Closed,
-        Opening,
-        Closing
-    }
-
     State state = State.Closed;
     float timeSinceLastTrigger = 0;
+    private AudioSource openSoundSource; // Sound to play when opening the saber
 
     // Start is called before the first frame update
     void Start()
     {
         Material copy = Instantiate(laserMaterialReference);
         laserMeshRenderer.material = copy;
-        //copy.color = baseColor;
+        openSoundSource = gameObject.AddComponent<AudioSource>();
+        openSoundSource.clip = openSoundClip;
+        openSoundSource.playOnAwake = false;
+        openSoundSource.loop = false;
+
     }
 
     public void Update()
@@ -88,9 +92,9 @@ public class LightSaber : MonoBehaviour
     private IEnumerator OpenSaber()
     {
         timeSinceLastTrigger = Time.time;
-        if (openSound != null)
+        if (openSoundSource != null)
         {
-            openSound.Play(); // Play the opening sound
+            openSoundSource.Play(); // Play the opening sound
         }
         float duration = openDuration; // Duration of the animation
         float elapsedTime = 0f;
@@ -111,9 +115,9 @@ public class LightSaber : MonoBehaviour
 
     private IEnumerator CloseSaber()
     {
-        if (openSound != null)
+        if (openSoundSource != null)
         {
-            openSound.Play(); // Play the closing sound
+            openSoundSource.Play(); // Play the closing sound
         }
         float duration = openDuration; // Duration of the animation
         float elapsedTime = 0f;

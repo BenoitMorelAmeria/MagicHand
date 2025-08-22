@@ -9,6 +9,7 @@ public class MagicHand : MonoBehaviour
     public float cylinderRadius = 0.01f;
     public Material sphereMaterial;
     public Material cylinderMaterial;
+    public PhysicMaterial physicMaterial;
     public bool showDebugSpheres = true;
     public bool showDebugCylinders = true;
 
@@ -99,6 +100,9 @@ public class MagicHand : MonoBehaviour
         Rigidbody rb = go.AddComponent<Rigidbody>();
         rb.isKinematic = true;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
+        // set physics material
+        Collider col = go.GetComponent<Collider>();
+        col.material = physicMaterial;
     }
 
     private void SetTriggers(GameObject go, PrimitiveType primitiveType)

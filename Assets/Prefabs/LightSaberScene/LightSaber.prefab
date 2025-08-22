@@ -167,7 +167,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 803e88dfda8917c45a2e3684b99a8aff, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -196,7 +196,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4025069177569394540}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: e205def35a6018f4582236fb97fb89ba, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -589,7 +589,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 803e88dfda8917c45a2e3684b99a8aff, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -618,7 +618,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7099343405034465226}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: e205def35a6018f4582236fb97fb89ba, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -694,7 +694,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 803e88dfda8917c45a2e3684b99a8aff, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -723,7 +723,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7713694743340413877}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: e205def35a6018f4582236fb97fb89ba, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -895,7 +895,7 @@ MonoBehaviour:
   handLayer:
     serializedVersion: 2
     m_Bits: 64
-  openSound: {fileID: 0}
+  openSoundClip: {fileID: 8300000, guid: 662d7af8c88ec1a47b91ad90658275c3, type: 3}
   timeBeforeClosing: 5
   laserMaterialReference: {fileID: 2100000, guid: 61fda7d81438f094a85ccd56b545f603,
     type: 2}
@@ -913,8 +913,8 @@ Rigidbody:
   m_GameObject: {fileID: 8632246075583771085}
   serializedVersion: 4
   m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
+  m_Drag: 0.8
+  m_AngularDrag: 0.2
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
