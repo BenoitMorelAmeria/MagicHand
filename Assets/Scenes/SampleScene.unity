@@ -601,7 +601,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &877022474
 Transform:
   m_ObjectHideFlags: 0
@@ -611,7 +611,7 @@ Transform:
   m_GameObject: {fileID: 877022473}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1293,7 +1293,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levels:
-  - {fileID: 2017667087}
   - {fileID: 877022473}
 --- !u!1 &1657183802
 GameObject:
@@ -1680,7 +1679,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2017667088
 Transform:
   m_ObjectHideFlags: 0
@@ -1843,6 +1842,36 @@ PrefabInstance:
       propertyPath: openSound
       value: 
       objectReference: {fileID: 1595265256}
+    - target: {fileID: 4494788986145180828, guid: baf3dda7b9a1b2b4590972e7b727f74f,
+        type: 3}
+      propertyPath: maxEmission
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4494788986145180828, guid: baf3dda7b9a1b2b4590972e7b727f74f,
+        type: 3}
+      propertyPath: minEmission
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4494788986145180828, guid: baf3dda7b9a1b2b4590972e7b727f74f,
+        type: 3}
+      propertyPath: flickerSpeed
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4671052005961311597, guid: baf3dda7b9a1b2b4590972e7b727f74f,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 4671052005961311597, guid: baf3dda7b9a1b2b4590972e7b727f74f,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 4671052005961311597, guid: baf3dda7b9a1b2b4590972e7b727f74f,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.05
+      objectReference: {fileID: 0}
     - target: {fileID: 4671052005961311597, guid: baf3dda7b9a1b2b4590972e7b727f74f,
         type: 3}
       propertyPath: m_LocalPosition.x

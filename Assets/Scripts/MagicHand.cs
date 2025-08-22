@@ -72,41 +72,47 @@ public class MagicHand : MonoBehaviour
     {
         foreach (var pos in positions)
         {
+            
             // --- Physics Sphere ---
             GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             sphere.transform.SetParent(transform, false);
             sphere.transform.localScale = Vector3.one * sphereSize;
-
             if (sphereMaterial != null)
                 sphere.GetComponent<Renderer>().material = sphereMaterial;
 
-            sphere.layer = Mathf.RoundToInt(Mathf.Log(handLayer.value, 2));
-            Rigidbody rb = sphere.AddComponent<Rigidbody>();
-            rb.isKinematic = true;
-            rb.interpolation = RigidbodyInterpolation.Interpolate;
-            rb.MovePosition(transform.TransformPoint(pos));
+            SetPhysics(sphere);
+            SetTriggers(sphere, PrimitiveType.Sphere);
+            Rigidbody rb = sphere.GetComponent<Rigidbody>();
             keypointBodies.Add(rb);
 
             if (!showDebugSpheres)
                 sphere.GetComponent<Renderer>().enabled = false;
+            rb.MovePosition(transform.TransformPoint(pos));
 
-            // --- Trigger Sphere ---
-            GameObject triggerSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            triggerSphere.transform.SetParent(transform, false);
-            triggerSphere.transform.localScale = Vector3.one * sphereSize * 0.9f; // slightly smaller
-            triggerSphere.transform.position = transform.TransformPoint(pos);
-
-            Collider triggerCol = triggerSphere.GetComponent<Collider>();
-            triggerCol.gameObject.layer = sphere.layer; // same layer as hand
-            keypointTriggers.Add(triggerCol);
-
-            // Hide renderer
-            triggerSphere.GetComponent<Renderer>().enabled = false;
-
-            // Optionally add a script/component to handle OnTriggerEnter/Stay/Exit
-            // triggerSphere.AddComponent<KeypointTriggerHandler>();
+            
         }
     }
+
+    private void SetPhysics(GameObject go)
+    {
+        go.layer = Mathf.RoundToInt(Mathf.Log(handLayer.value, 2));
+        Rigidbody rb = go.AddComponent<Rigidbody>();
+        rb.isKinematic = true;
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
+    }
+
+    private void SetTriggers(GameObject go, PrimitiveType primitiveType)
+    {
+        GameObject trigger = GameObject.CreatePrimitive(primitiveType);
+        trigger.transform.SetParent(transform, false);
+        trigger.transform.localScale = go.transform.localScale * 0.99f; // slightly smaller
+        trigger.GetComponent<Renderer>().enabled = false;
+
+        Collider triggerCol = trigger.GetComponent<Collider>();
+        triggerCol.gameObject.layer = go.layer; // same layer as hand
+        keypointTriggers.Add(triggerCol);
+    }
+
     private void InitCylinders(List<Vector3> positions)
     {
         foreach (var pair in jointPairs)
@@ -122,7 +128,6 @@ public class MagicHand : MonoBehaviour
 
             GameObject cyl = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             cyl.transform.SetParent(transform, false);
-            cyl.layer = Mathf.RoundToInt(Mathf.Log(handLayer.value, 2));
             Collider col = cyl.GetComponent<Collider>();
 
             // Cylinder in Unity points up the Y axis
@@ -133,11 +138,9 @@ public class MagicHand : MonoBehaviour
             if (cylinderMaterial != null)
                 cyl.GetComponent<Renderer>().material = cylinderMaterial;
 
-            Rigidbody rb = cyl.AddComponent<Rigidbody>();
-            rb.isKinematic = true;
-            rb.interpolation = RigidbodyInterpolation.Interpolate;
+            SetPhysics(cyl);
 
-            jointBodies.Add(rb);
+            jointBodies.Add(cyl.GetComponent<Rigidbody>());
 
             if (!showDebugCylinders)
                 cyl.GetComponent<Renderer>().enabled = false;
@@ -195,7 +198,7 @@ public class MagicHand : MonoBehaviour
             if (dir != Vector3.zero)
                 rb.MoveRotation(Quaternion.FromToRotation(Vector3.up, dir));
 
-            rb.transform.localScale = new Vector3(cylinderRadius, length / 2f, cylinderRadius);
+            rb.transform.localScale = new Vector3(cylinderRadius, length, cylinderRadius);
         }
     }
 
