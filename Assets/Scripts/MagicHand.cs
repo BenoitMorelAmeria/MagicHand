@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
 public class MagicHand : MonoBehaviour
@@ -23,6 +24,7 @@ public class MagicHand : MonoBehaviour
     private List<Rigidbody> keypointBodies = new List<Rigidbody>();
     private List<Rigidbody> jointBodies = new List<Rigidbody>();
     private List<Collider> keypointTriggers = new List<Collider>();
+    private bool transparent = true;
 
     // Hardcoded 21 keypoints
     private List<Vector3> initialKeypoints = new List<Vector3>
@@ -53,6 +55,24 @@ public class MagicHand : MonoBehaviour
     public Vector3 GetKeyPoint(int index)
     {
         return keypointBodies[index].gameObject.transform.position;
+    }
+
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            if (transparent)
+            {
+                SetOpaque(sphereMaterial);
+                SetOpaque(cylinderMaterial);
+            }
+            else
+            {
+                SetTransparent(sphereMaterial);
+                SetTransparent(cylinderMaterial);
+            }
+            transparent = !transparent;
+        }
     }
 
     private void OnEnable()
@@ -204,6 +224,28 @@ public class MagicHand : MonoBehaviour
 
             rb.transform.localScale = new Vector3(cylinderRadius, length, cylinderRadius);
         }
+    }
+
+    public void SetOpaque(Material mat)
+    {
+        mat.SetFloat("_Surface", 0); // 0 = Opaque, 1 = Transparent
+        mat.renderQueue = (int)RenderQueue.Geometry;
+        mat.SetInt("_SrcBlend", (int)BlendMode.One);
+        mat.SetInt("_DstBlend", (int)BlendMode.Zero);
+        mat.SetInt("_ZWrite", 1);
+        mat.DisableKeyword("_SURFACE_TYPE_TRANSPARENT");
+        mat.EnableKeyword("_SURFACE_TYPE_OPAQUE");
+    }
+
+    public void SetTransparent(Material mat)
+    {
+        mat.SetFloat("_Surface", 1); // Transparent
+        mat.renderQueue = (int)RenderQueue.Transparent;
+        mat.SetInt("_SrcBlend", (int)BlendMode.SrcAlpha);
+        mat.SetInt("_DstBlend", (int)BlendMode.OneMinusSrcAlpha);
+        mat.SetInt("_ZWrite", 0);
+        mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+        mat.DisableKeyword("_SURFACE_TYPE_OPAQUE");
     }
 
 
