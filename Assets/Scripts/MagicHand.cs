@@ -105,7 +105,7 @@ public class MagicHand : MonoBehaviour
     {
         GameObject trigger = GameObject.CreatePrimitive(primitiveType);
         trigger.transform.SetParent(transform, false);
-        trigger.transform.localScale = go.transform.localScale * 0.99f; // slightly smaller
+        trigger.transform.localScale = go.transform.localScale * 0.9f; // slightly smaller
         trigger.GetComponent<Renderer>().enabled = false;
 
         Collider triggerCol = trigger.GetComponent<Collider>();
