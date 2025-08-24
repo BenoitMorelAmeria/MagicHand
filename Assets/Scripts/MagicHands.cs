@@ -10,6 +10,7 @@ public class MagicHands : MonoBehaviour
 
     Dictionary<int, int> labelToHandIndex = new Dictionary<int, int>();
     HashSet<int> assignedHandIndices = new HashSet<int>();
+    [SerializeField] bool debugMouse = false;
 
     // Start is called before the first frame update
     void Start()
@@ -26,7 +27,10 @@ public class MagicHands : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (debugMouse)
+        {
+            hands[0].gameObject.SetActive(true);
+        }
     }
 
     public void UpdateHandPoseDetected(bool detected)

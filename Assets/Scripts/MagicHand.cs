@@ -29,32 +29,45 @@ public class MagicHand : MonoBehaviour
     // Hardcoded 21 keypoints
     private List<Vector3> initialKeypoints = new List<Vector3>
     {
-        new Vector3( 0.050387f,  0.003815f, 0.219794f),
-        new Vector3( 0.016194f,  0.013025f, 0.201708f),
-        new Vector3(-0.008271f,  0.028810f, 0.181446f),
-        new Vector3(-0.025817f,  0.047654f, 0.165032f),
-        new Vector3(-0.044655f,  0.064870f, 0.157437f),
-        new Vector3( 0.024341f,  0.067810f, 0.155142f),
-        new Vector3( 0.019073f,  0.086579f, 0.128462f),
-        new Vector3( 0.016844f,  0.096253f, 0.110984f),
-        new Vector3( 0.014550f,  0.105442f, 0.095362f),
-        new Vector3( 0.046899f,  0.066796f, 0.152860f),
-        new Vector3( 0.048075f,  0.084298f, 0.123741f),
-        new Vector3( 0.047478f,  0.092350f, 0.104096f),
-        new Vector3( 0.047232f,  0.101823f, 0.087587f),
-        new Vector3( 0.066940f,  0.058970f, 0.155252f),
-        new Vector3( 0.071292f,  0.075266f, 0.127693f),
-        new Vector3( 0.072811f,  0.085965f, 0.109357f),
-        new Vector3( 0.073190f,  0.096290f, 0.093030f),
-        new Vector3( 0.083589f,  0.043744f, 0.160998f),
-        new Vector3( 0.092157f,  0.057866f, 0.141037f),
-        new Vector3( 0.096973f,  0.065895f, 0.127748f),
-        new Vector3( 0.099914f,  0.075193f, 0.114938f)
+        new Vector3( 0.050387f,  0.003815f, -0.219794f),
+        new Vector3( 0.016194f,  0.013025f, -0.201708f),
+        new Vector3(-0.008271f,  0.028810f, -0.181446f),
+        new Vector3(-0.025817f,  0.047654f, -0.165032f),
+        new Vector3(-0.044655f,  0.064870f, -0.157437f),
+        new Vector3( 0.024341f,  0.067810f, -0.155142f),
+        new Vector3( 0.019073f,  0.086579f, -0.128462f),
+        new Vector3( 0.016844f,  0.096253f, -0.110984f),
+        new Vector3( 0.014550f,  0.105442f, -0.095362f),
+        new Vector3( 0.046899f,  0.066796f, -0.152860f),
+        new Vector3( 0.048075f,  0.084298f, -0.123741f),
+        new Vector3( 0.047478f,  0.092350f, -0.104096f),
+        new Vector3( 0.047232f,  0.101823f, -0.087587f),
+        new Vector3( 0.066940f,  0.058970f, -0.155252f),
+        new Vector3( 0.071292f,  0.075266f, -0.127693f),
+        new Vector3( 0.072811f,  0.085965f, -0.109357f),
+        new Vector3( 0.073190f,  0.096290f, -0.093030f),
+        new Vector3( 0.083589f,  0.043744f, -0.160998f),
+        new Vector3( 0.092157f,  0.057866f, -0.141037f),
+        new Vector3( 0.096973f,  0.065895f, -0.127748f),
+        new Vector3( 0.099914f,  0.075193f, -0.114938f)
     };
 
     public Vector3 GetKeyPoint(int index)
     {
         return keypointBodies[index].gameObject.transform.position;
+    }
+
+    public Vector3 GetCenter()
+    {
+        Vector3 center = Vector3.zero;
+        foreach (var rb in keypointBodies)
+        {
+            if (rb != null)
+            {
+                center += rb.transform.position;
+            }
+        }
+        return center / keypointBodies.Count;
     }
 
     public bool IsAvailable()

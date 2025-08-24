@@ -29,6 +29,10 @@ public class ShootingFinger : MonoBehaviour
 
     private void shoot()
     {
+        if (!magicHand.IsAvailable())
+        {
+            return;
+        }
         Vector3 p1 = magicHand.GetKeyPoint(8);
         Vector3 p2 = magicHand.GetKeyPoint(7);
         Vector3 direction = (p1 - p2).normalized;
