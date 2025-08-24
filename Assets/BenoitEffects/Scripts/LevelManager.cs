@@ -32,6 +32,11 @@ public class LevelManager : MonoBehaviour
         {
             LoadNextLevel();
         }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Debug.Log("restart");
+            LoadLevel(levelIndex);
+        }
     }
 
     public void LoadNextLevel()
