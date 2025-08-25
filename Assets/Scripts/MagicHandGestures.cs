@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MagicHandGestures : MonoBehaviour
@@ -196,12 +197,13 @@ public class MagicHandGestures : MonoBehaviour
             if (fingerColinearities[i] > indexFingerColinearityThreshold)
                 return false;
         }
+        bool oneOtherFingerClosed = false;
         for (int i = 3; i < 5; ++i)
         {
             if (fingerColinearities[i] < otherFingersNonColinearityThreshold)
-                return false;
+                oneOtherFingerClosed = true;
         }
-        return true;
+        return oneOtherFingerClosed;
     }
 
     public List<Vector3> GetFingerPoints(int fingerIndex)
