@@ -729,7 +729,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scale: {x: 1, y: 1, z: 1}
-  position: {x: 0, y: -0.05, z: 0.1}
+  position: {x: 0, y: 0, z: 0.3}
 --- !u!1 &627389604
 GameObject:
   m_ObjectHideFlags: 0
@@ -820,8 +820,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a8af304bee73da4593de1c63c2dc285, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sphereSize: 0.02
-  cylinderRadius: 0.015
+  sphereSize: 0.01
+  cylinderRadius: 0.0075
   sphereMaterial: {fileID: 2100000, guid: c25dec9ad56af374988c253d962955c4, type: 2}
   cylinderMaterial: {fileID: 2100000, guid: b8b6c60d628c7cd41843da5cdb431bca, type: 2}
   physicMaterial: {fileID: 13400000, guid: 4088577d034f445409c924e57a518e92, type: 2}
@@ -2509,7 +2509,7 @@ MonoBehaviour:
   magicHand: {fileID: 640960582}
   spawnInterval: 5
   spawnAreaSize: {x: 0.2, y: 0.2, z: 0.01}
-  spawnAreaCenter: {x: 0, y: 0, z: 1}
+  spawnAreaCenter: {x: 0, y: 0, z: 0.5}
 --- !u!1 &1962165742
 GameObject:
   m_ObjectHideFlags: 0
@@ -2619,8 +2619,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8340df51fef25f14aa16de28dd427856, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scale: {x: 0.5, y: 0.5, z: 0.5}
-  position: {x: 0, y: -0.05, z: 0.1}
+  scale: {x: 0.7, y: 0.7, z: 0.7}
+  position: {x: 0, y: 0, z: 0.15}
 --- !u!1 &2024359202
 GameObject:
   m_ObjectHideFlags: 0
