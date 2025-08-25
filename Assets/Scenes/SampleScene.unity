@@ -690,6 +690,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 607913962}
+  - component: {fileID: 607913963}
   m_Layer: 0
   m_Name: MagicInkScene
   m_TagString: Untagged
@@ -715,6 +716,20 @@ Transform:
   - {fileID: 1049945688}
   m_Father: {fileID: 1637025339}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &607913963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 607913961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8340df51fef25f14aa16de28dd427856, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scale: {x: 1, y: 1, z: 1}
+  position: {x: 0, y: -0.05, z: 0.1}
 --- !u!1 &627389604
 GameObject:
   m_ObjectHideFlags: 0
@@ -930,6 +945,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 806689682}
+  - component: {fileID: 806689683}
   m_Layer: 0
   m_Name: StarWarsSceneDouble
   m_TagString: Untagged
@@ -954,6 +970,20 @@ Transform:
   - {fileID: 757388484}
   m_Father: {fileID: 1637025339}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &806689683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 806689681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8340df51fef25f14aa16de28dd427856, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scale: {x: 0.5, y: 0.5, z: 0.5}
+  position: {x: 0, y: -0.05, z: 0.1}
 --- !u!1 &859897207
 GameObject:
   m_ObjectHideFlags: 0
@@ -1012,6 +1042,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 877022474}
+  - component: {fileID: 877022475}
   m_Layer: 0
   m_Name: StarWarsScene
   m_TagString: Untagged
@@ -1035,6 +1066,20 @@ Transform:
   - {fileID: 2138388336}
   m_Father: {fileID: 1637025339}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &877022475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 877022473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8340df51fef25f14aa16de28dd427856, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scale: {x: 0.5, y: 0.5, z: 0.5}
+  position: {x: 0, y: -0.05, z: 0.1}
 --- !u!1 &882239948
 GameObject:
   m_ObjectHideFlags: 0
@@ -2113,6 +2158,7 @@ MonoBehaviour:
   - {fileID: 877022473}
   - {fileID: 607913961}
   - {fileID: 2017667087}
+  sceneTransform: {fileID: 365506005}
 --- !u!1 &1657183802
 GameObject:
   m_ObjectHideFlags: 0
@@ -2536,6 +2582,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2017667088}
+  - component: {fileID: 2017667089}
   m_Layer: 0
   m_Name: ShootingFingerScene
   m_TagString: Untagged
@@ -2560,6 +2607,20 @@ Transform:
   - {fileID: 1892380879}
   m_Father: {fileID: 1637025339}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2017667089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2017667087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8340df51fef25f14aa16de28dd427856, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scale: {x: 0.5, y: 0.5, z: 0.5}
+  position: {x: 0, y: -0.05, z: 0.1}
 --- !u!1 &2024359202
 GameObject:
   m_ObjectHideFlags: 0

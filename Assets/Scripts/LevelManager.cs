@@ -7,6 +7,7 @@ public class LevelManager : MonoBehaviour
 {
     
     [SerializeField] List<GameObject> levels = new List<GameObject>();
+    [SerializeField] Transform sceneTransform;
 
     GameObject currentLevel;
 
@@ -15,11 +16,11 @@ public class LevelManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        foreach (GameObject go in levels)
+        foreach (GameObject level in levels)
         {
-            if (go.activeSelf)
+            if (level.activeSelf)
             {
-                go.SetActive(false);
+                level.SetActive(false);
             }
         }
         LoadLevel(0);    
@@ -57,8 +58,7 @@ public class LevelManager : MonoBehaviour
         GameObject toClone = levels[level];
         currentLevel = Instantiate(toClone, toClone.transform.parent);
         levelIndex = level;
-        currentLevel.SetActive(true);
+        currentLevel.gameObject.SetActive(true);
+        currentLevel.GetComponent<Level>().OnLoadLevel(sceneTransform);
     }
-
-
 }

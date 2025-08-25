@@ -37,7 +37,6 @@ public class DrawManager: MonoBehaviour
         {
             _pinchStateJustChanged = false;
         }
-        Debug.Log("Pinch state: " + pinchState);
 
         GetPointer3D().transform.localScale = Vector3.one * brushSize;
 

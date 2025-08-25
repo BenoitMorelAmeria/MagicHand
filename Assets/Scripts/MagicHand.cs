@@ -118,7 +118,8 @@ public class MagicHand : MonoBehaviour
             // --- Physics Sphere ---
             GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             sphere.transform.SetParent(transform, false);
-            sphere.transform.localScale = Vector3.one * sphereSize;
+            Vector3 globalScale = Vector3.one * sphereSize;
+            SetGlobalScale(sphere.transform, globalScale);
             if (sphereMaterial != null)
                 sphere.GetComponent<Renderer>().material = sphereMaterial;
 
@@ -150,7 +151,8 @@ public class MagicHand : MonoBehaviour
     {
         GameObject trigger = GameObject.CreatePrimitive(primitiveType);
         trigger.transform.SetParent(transform, false);
-        trigger.transform.localScale = go.transform.localScale * 0.9f; // slightly smaller
+        Vector3 globalScale = Vector3.one * sphereSize * 0.9f; // slightly smaller
+        SetGlobalScale(trigger.transform, globalScale);
         trigger.GetComponent<Renderer>().enabled = false;
 
         Collider triggerCol = trigger.GetComponent<Collider>();
@@ -178,7 +180,8 @@ public class MagicHand : MonoBehaviour
             // Cylinder in Unity points up the Y axis
             cyl.transform.position = mid;
             cyl.transform.rotation = Quaternion.FromToRotation(Vector3.up, dir);
-            cyl.transform.localScale = new Vector3(cylinderRadius, length, cylinderRadius);
+            Vector3 globalScale = new Vector3(cylinderRadius, length / 2.0f, cylinderRadius);
+            SetGlobalScale(cyl.transform, globalScale);
 
             if (cylinderMaterial != null)
                 cyl.GetComponent<Renderer>().material = cylinderMaterial;
@@ -244,7 +247,8 @@ public class MagicHand : MonoBehaviour
             if (dir != Vector3.zero)
                 rb.MoveRotation(Quaternion.FromToRotation(Vector3.up, dir));
 
-            rb.transform.localScale = new Vector3(cylinderRadius, length, cylinderRadius);
+            Vector3 globalScale = new Vector3(cylinderRadius, length / 2.0f, cylinderRadius);
+            SetGlobalScale(rb.transform, globalScale);
         }
     }
 
@@ -279,6 +283,23 @@ public class MagicHand : MonoBehaviour
     public bool GetPinchState()
     {
         return _pinchState;
+    }
+
+    public static void SetGlobalScale(Transform transform, Vector3 globalScale)
+    {
+        if (transform.parent == null)
+        {
+            transform.localScale = globalScale;
+        }
+        else
+        {
+            var parentScale = transform.parent.lossyScale;
+            transform.localScale = new Vector3(
+                globalScale.x / parentScale.x,
+                globalScale.y / parentScale.y,
+                globalScale.z / parentScale.z
+            );
+        }
     }
 
 }
