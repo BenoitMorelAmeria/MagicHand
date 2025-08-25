@@ -20,6 +20,7 @@ public class MagicHandGestures : MonoBehaviour
     public List<float> fingerColinearities = new List<float>() { 0f, 0f, 0f, 0f, 0f };
 
     public bool IndexPointing = false;
+    public bool IsVictory = false;
 
     // Start is called before the first frame update
     void Start()
@@ -43,6 +44,7 @@ public class MagicHandGestures : MonoBehaviour
         palmNormal = GetPalmNormal(keypoints, HandednessDetected);
         UpdateFingersColinearity();
         IndexPointing = ComputeIsIndexFingerPointing();
+        IsVictory = ComputeIsVictory();
     }
 
     public static float ComputeFlatness(List<Vector3> points)
@@ -185,6 +187,21 @@ public class MagicHandGestures : MonoBehaviour
                 pointing = false;
         }
         return pointing;
+    }
+
+    private bool ComputeIsVictory()
+    {
+        for (int i = 1; i < 3; ++i)
+        {
+            if (fingerColinearities[i] > indexFingerColinearityThreshold)
+                return false;
+        }
+        for (int i = 3; i < 5; ++i)
+        {
+            if (fingerColinearities[i] < otherFingersNonColinearityThreshold)
+                return false;
+        }
+        return true;
     }
 
     public List<Vector3> GetFingerPoints(int fingerIndex)
