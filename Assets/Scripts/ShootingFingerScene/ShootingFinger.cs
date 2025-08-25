@@ -5,6 +5,7 @@ using UnityEngine;
 public class ShootingFinger : MonoBehaviour
 {
     [SerializeField] MagicHand magicHand;
+    [SerializeField] MagicHandGestures magicHandGestures;
     [SerializeField] GameObject ProjectilePrefab;
     [SerializeField] float shootTimeInterval = 1.0f;
     [SerializeField] float projVelocity = 0.5f;
@@ -38,7 +39,7 @@ public class ShootingFinger : MonoBehaviour
 
     private void shoot()
     {
-        if (!magicHand.IsAvailable())
+        if (!magicHand.IsAvailable() || !magicHandGestures.IndexPointing)
         {
             return;
         }

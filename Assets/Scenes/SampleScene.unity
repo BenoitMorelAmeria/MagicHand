@@ -547,7 +547,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   magicHand: {fileID: 640960582}
   flatnessThreshold: 0.003
-  indexFingerColinearityThreshold: 0.004
+  indexFingerColinearityThreshold: 0.003
   otherFingersNonColinearityThreshold: 0.0075
   handSignednessDebug: Unknown
   IsHandFlat: 0
@@ -2603,9 +2603,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   magicHand: {fileID: 640960582}
+  magicHandGestures: {fileID: 311480421}
   ProjectilePrefab: {fileID: 4418417278731887432, guid: 287111ca277fd5944ab4665ec5ecbe49,
     type: 3}
-  shootTimeInterval: 1
+  shootTimeInterval: 0.1
   projVelocity: 1
   shootClip: {fileID: 8300000, guid: aa6a97c7b2eca8a4594854cf9ba6d675, type: 3}
 --- !u!1 &1892380878
