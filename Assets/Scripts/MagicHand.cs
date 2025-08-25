@@ -202,6 +202,7 @@ public class MagicHand : MonoBehaviour
             if (rb != null) Destroy(rb.gameObject);
         jointBodies.Clear();
     }
+
     public void UpdateHand(List<Vector3> keypoints)
     {
         if (keypoints.Count != keypointBodies.Count)

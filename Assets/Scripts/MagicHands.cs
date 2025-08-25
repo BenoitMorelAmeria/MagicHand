@@ -125,6 +125,7 @@ public class MagicHands : MonoBehaviour
                 }
                 labelToHandIndex[label] = freeIndex;
                 assignedHandIndices.Add(freeIndex);
+                Debug.Log("set active");
                 hands[freeIndex].gameObject.SetActive(true); // activate the hand
             }
         }

@@ -170,8 +170,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hands:
   - {fileID: 640960582}
-  - {fileID: 1216763501}
-  debugMouse: 1
+  debugMouse: 0
 --- !u!114 &80451837 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4216428591347033708, guid: 2adcbdf8659ca3c4d8d5c3c8da2d7bbb,
@@ -1293,7 +1292,7 @@ MonoBehaviour:
   pointerMouse: {fileID: 1455187428}
   pointerMagicHand: {fileID: 627389604}
   magicHand: {fileID: 640960582}
-  UseMagicHand: 0
+  UseMagicHand: 1
   drawers:
   - {fileID: 1445235410}
   brushSize: 0.1
