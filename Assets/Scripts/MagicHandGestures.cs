@@ -6,6 +6,9 @@ public class MagicHandGestures : MonoBehaviour
 {
     [SerializeField] public MagicHand magicHand;
     [SerializeField] private float flatnessThreshold = 0.001f;
+    [SerializeField] private float indexFingerColinearityThreshold = 0.001f;
+    [SerializeField] private float otherFingersNonColinearityThreshold = 0.002f;
+
     public string handSignednessDebug = "Unknown";
 
     public bool IsHandFlat = false;
@@ -13,6 +16,10 @@ public class MagicHandGestures : MonoBehaviour
 
     public enum Handedness { Left, Right }
     Handedness HandednessDetected = Handedness.Right;
+
+    public List<float> fingerColinearities = new List<float>() { 0f, 0f, 0f, 0f, 0f };
+
+    public bool IndexPointing = false;
 
     // Start is called before the first frame update
     void Start()
@@ -34,19 +41,9 @@ public class MagicHandGestures : MonoBehaviour
         HandednessDetected = DetectHandedness(keypoints);
         handSignednessDebug = HandednessDetected.ToString();
         palmNormal = GetPalmNormal(keypoints, HandednessDetected);
+        UpdateFingersColinearity();
+        IndexPointing = ComputeIsIndexFingerPointing();
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static float ComputeFlatness(List<Vector3> points)
     {
@@ -143,5 +140,61 @@ public class MagicHandGestures : MonoBehaviour
             normal = -normal;
 
         return normal;
+    }
+
+    public float ComputeColinearity(List<Vector3> vector3s)
+    {
+        if (vector3s == null || vector3s.Count < 2)
+            return 0f;
+        Vector3 first = vector3s[0];
+        Vector3 last = vector3s[vector3s.Count - 1];
+        Vector3 lineDir = (last - first).normalized;
+        float totalDistance = 0f;
+        for (int i = 1; i < vector3s.Count - 1; i++)
+        {
+            Vector3 point = vector3s[i];
+            Vector3 toPoint = point - first;
+            float projectionLength = Vector3.Dot(toPoint, lineDir);
+            Vector3 projection = first + projectionLength * lineDir;
+            float distance = Vector3.Distance(point, projection);
+            totalDistance += distance;
+        }
+        return totalDistance / (vector3s.Count - 2);
+    }
+
+    private void UpdateFingersColinearity()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            List<Vector3> fingerPoints = GetFingerPoints(i);
+            float colinearity = ComputeColinearity(fingerPoints);
+            fingerColinearities[i] = colinearity;
+        }
+    }
+
+    private bool ComputeIsIndexFingerPointing()
+    {
+        if (!magicHand.IsAvailable())
+            return false;
+        bool pointing = true;
+        if (fingerColinearities[1] > indexFingerColinearityThreshold)
+            pointing = false;
+        for (int i = 2; i < 5; i++)
+        {
+            if (fingerColinearities[i] < otherFingersNonColinearityThreshold)
+                pointing = false;
+        }
+        return pointing;
+    }
+
+    public List<Vector3> GetFingerPoints(int fingerIndex)
+    {
+        if (fingerIndex < 0 || fingerIndex > 4)
+            return null;
+        List<Vector3> keypoints = magicHand.GetCurrentKeyPoints();
+        if (keypoints == null || keypoints.Count < 21)
+            return null;
+        int startIdx = 1 + fingerIndex * 4;
+        return keypoints.GetRange(startIdx, 4);
     }
 }
