@@ -214,16 +214,15 @@ public class MagicHandGestures : MonoBehaviour
 
         for (int i = 1; i < 3; ++i)
         {
-            if (fingerColinearities[i] > indexFingerColinearityThreshold)
+            if (fingerFrontness[i] < 0.0f)
                 return false;
         }
-        bool oneOtherFingerClosed = false;
         for (int i = 3; i < 5; ++i)
         {
-            if (fingerColinearities[i] > otherFingersNonColinearityThreshold)
-                oneOtherFingerClosed = true;
+            if (fingerFrontness[i] > 0.0f)
+                return false;
         }
-        return oneOtherFingerClosed;
+        return true;
     }
 
     public List<Vector3> GetFingerPoints(int fingerIndex)
