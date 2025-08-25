@@ -290,6 +290,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba6fb1fb2c5023c43a28c233a99a124a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &139587531
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 139587532}
+  - component: {fileID: 139587533}
+  m_Layer: 0
+  m_Name: VictorySpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &139587532
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 139587531}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 720346407}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &139587533
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 139587531}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ddc6dfd75946e249bd43b3880beedaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &154384111
 GameObject:
   m_ObjectHideFlags: 0
@@ -558,7 +602,15 @@ MonoBehaviour:
   - 0
   - 0
   - 0
+  fingerFrontness:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
   IndexPointing: 0
+  IsVictory: 0
+  IsSpiderMan: 0
 --- !u!1 &323234508
 GameObject:
   m_ObjectHideFlags: 0
@@ -1049,7 +1101,8 @@ Transform:
   m_Children:
   - {fileID: 809225588}
   - {fileID: 2141030097}
-  - {fileID: 2086409554}
+  - {fileID: 139587532}
+  - {fileID: 2001871036}
   m_Father: {fileID: 1637025339}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &720346408
@@ -2726,6 +2779,56 @@ Transform:
   - {fileID: 1710080446}
   m_Father: {fileID: 1609270592}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2001871035
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2001871036}
+  - component: {fileID: 2001871037}
+  m_Layer: 0
+  m_Name: SpiderManSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2001871036
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2001871035}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 720346407}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2001871037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2001871035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 575e85f7c4b260c41897e622b7b2c6c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  magicHandGestures: {fileID: 311480421}
+  webPrefab: {fileID: 5413869566287035875, guid: 7cb33f98d522c354f9549771668d8e86,
+    type: 3}
+  shootCooldown: 0.05
+  impulseForce: 5
+  webLifeTime: 5
 --- !u!1 &2017667087
 GameObject:
   m_ObjectHideFlags: 0
@@ -2954,7 +3057,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 2086409554}
   m_Father: {fileID: 720346407}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2141030098
@@ -2978,7 +3082,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 720346407}
+    m_TransformParent: {fileID: 2141030097}
     m_Modifications:
     - target: {fileID: 2406753386331657539, guid: 20284e3a7fbfb0f4991db6a774345be9,
         type: 3}
@@ -3008,17 +3112,17 @@ PrefabInstance:
     - target: {fileID: 5508663796213826702, guid: 20284e3a7fbfb0f4991db6a774345be9,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5508663796213826702, guid: 20284e3a7fbfb0f4991db6a774345be9,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5508663796213826702, guid: 20284e3a7fbfb0f4991db6a774345be9,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5508663796213826702, guid: 20284e3a7fbfb0f4991db6a774345be9,
         type: 3}

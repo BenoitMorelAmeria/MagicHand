@@ -212,7 +212,7 @@ public class MagicHandGestures : MonoBehaviour
             return false;
         if (fingerFrontness[2] > 0.0f)
             return false;
-        if (fingerFrontness[3] < 0.0f)
+        if (fingerFrontness[3] > 0.0f)
             return false;
         if (fingerFrontness[4] < 0.0f)
             return false;
