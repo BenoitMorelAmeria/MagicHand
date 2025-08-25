@@ -697,7 +697,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &607913962
 Transform:
   m_ObjectHideFlags: 0
@@ -1641,7 +1641,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f6a9cca4a150cb4386b6a6fcac22f86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DrawSpaceInterval: 0.001
+  DrawSpaceInterval: 0.003
   ObjectToAddPrefab: {fileID: 2324892745981259212, guid: 4e009f3138f38db4681f5e62cc51f699,
     type: 3}
 --- !u!1 &1455187428 stripped
@@ -2027,9 +2027,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levels:
+  - {fileID: 2017667087}
   - {fileID: 877022473}
   - {fileID: 607913961}
-  - {fileID: 2017667087}
   sceneTransform: {fileID: 365506005}
 --- !u!1 &1657183802
 GameObject:
@@ -2382,11 +2382,11 @@ MonoBehaviour:
   magicHand: {fileID: 640960582}
   spawnInterval: 3
   spawnAreaSize: {x: 0.2, y: 0.2, z: 0.01}
-  spawnAreaCenter: {x: 0, y: 0, z: 0.5}
+  spawnAreaCenter: {x: 0, y: 0, z: 0.35}
   initialForceMin: 0.1
   initialForceMax: 0.2
   initialTorqueMin: 0.001
-  initialTorqueMax: 0.002
+  initialTorqueMax: 0.001
 --- !u!1 &1962165742
 GameObject:
   m_ObjectHideFlags: 0
@@ -2466,7 +2466,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2017667088
 Transform:
   m_ObjectHideFlags: 0
