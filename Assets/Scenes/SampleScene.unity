@@ -1053,8 +1053,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8340df51fef25f14aa16de28dd427856, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scale: {x: 1, y: 1, z: 1}
-  position: {x: 0, y: -0.05, z: 0.1}
+  scale: {x: 0.6, y: 0.6, z: 0.6}
+  position: {x: 0, y: 0, z: 0}
 --- !u!1001 &757388483
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1235,7 +1235,7 @@ MonoBehaviour:
   spawnObjectPrefab: {fileID: 3918662265179776212, guid: 12b8a25fb20b2de4eb55e895bcec301d,
     type: 3}
   flatnessTimeBeforeSpawn: 0.5
-  spawnHeightOffset: 0.2
+  spawnHeightOffset: 0.1
   spawnCooldown: 3
   verticalityThreshold: 0.95
   magicSound: {fileID: 8300000, guid: 5dfcbff3898ee4645a296d009f72cd38, type: 3}

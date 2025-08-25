@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class FlatHandSpawner : MonoBehaviour
@@ -63,6 +64,7 @@ public class FlatHandSpawner : MonoBehaviour
             audioSource.PlayOneShot(magicSound);
         }
         Vector3 spawnPosition = magicHandGestures.magicHand.GetCenter() + magicHandGestures.palmNormal * spawnHeightOffset;
-        Instantiate(spawnObjectPrefab, spawnPosition, Quaternion.identity);
+        GameObject go = Instantiate(spawnObjectPrefab, transform);
+        go.transform.position = spawnPosition;
     }
 }

@@ -29,6 +29,9 @@ public class MagicHand : MonoBehaviour
     private bool _pinchState = false;
     private List<Vector3> currentKeyPoints;
 
+    private GameObject palmObject;
+    private MeshFilter palmMeshFilter;
+
     // Hardcoded 21 keypoints
     private List<Vector3> initialKeypoints = new List<Vector3>
     {
@@ -297,6 +300,52 @@ public class MagicHand : MonoBehaviour
                 globalScale.z / parentScale.z
             );
         }
+    }
+
+
+    private Mesh BuildPalmMesh(List<Vector3> keypoints)
+    {
+        // 6 palm points
+        int[] palmIndices = { 0, 1, 5, 9, 13, 17 };
+        Vector3[] verts = new Vector3[palmIndices.Length];
+        for (int i = 0; i < palmIndices.Length; i++)
+            verts[i] = keypoints[palmIndices[i]];
+
+        // Palm normal
+        Vector3 v1 = verts[2] - verts[0]; // wrist->index
+        Vector3 v2 = verts[5] - verts[0]; // wrist->pinky
+        Vector3 normal = Vector3.Cross(v1, v2).normalized;
+
+        // Simple fan triangulation (since palm is convex)
+        List<int> triangles = new List<int>();
+        for (int i = 1; i < verts.Length - 1; i++)
+        {
+            triangles.Add(0);
+            triangles.Add(i);
+            triangles.Add(i + 1);
+        }
+
+        Mesh mesh = new Mesh();
+        mesh.SetVertices(verts);
+        mesh.SetTriangles(triangles, 0);
+        mesh.RecalculateNormals();
+        return mesh;
+    }
+
+    private void InitPalm(List<Vector3> keypoints)
+    {
+        palmObject = new GameObject("PalmMesh");
+        palmObject.transform.SetParent(transform, false);
+        palmObject.AddComponent<MeshRenderer>().material = sphereMaterial; // reuse material
+        palmMeshFilter = palmObject.AddComponent<MeshFilter>();
+
+        palmMeshFilter.mesh = BuildPalmMesh(keypoints);
+    }
+
+    public void UpdatePalm(List<Vector3> keypoints)
+    {
+        if (palmMeshFilter != null)
+            palmMeshFilter.mesh = BuildPalmMesh(keypoints);
     }
 
 }
