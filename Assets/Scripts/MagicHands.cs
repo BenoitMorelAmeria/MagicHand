@@ -21,6 +21,7 @@ public class MagicHands : MonoBehaviour
         }
         MqttHandPose.OnKeypointsReceived += UpdateHand;
         MqttHandPose.OnHandPoseDetected += UpdateHandPoseDetected;
+        MqttHandPose.OnPinchStateReceived += UpdatePinchState;
     }
 
 
@@ -50,11 +51,24 @@ public class MagicHands : MonoBehaviour
     private void OnEnable()
     {
         MqttHandPose.OnKeypointsReceived += UpdateHand;
+        MqttHandPose.OnHandPoseDetected += UpdateHandPoseDetected;
+        MqttHandPose.OnPinchStateReceived += UpdatePinchState;
     }
     private void OnDisable()
     {
         MqttHandPose.OnKeypointsReceived -= UpdateHand;
+        MqttHandPose.OnHandPoseDetected -= UpdateHandPoseDetected;
+        MqttHandPose.OnPinchStateReceived -= UpdatePinchState;
     }
+
+    public void UpdatePinchState(bool pinchState)
+    {
+        foreach (MagicHand hand in hands)
+        {
+            hand.UpdatePinchState(pinchState);
+        }
+    }
+
 
     public void UpdateHand(List<HandKeypoints> inputHands)
     {
@@ -120,7 +134,7 @@ public class MagicHands : MonoBehaviour
         foreach (HandKeypoints inputHand in inputHands)
         {
             int label = inputHand.Label;
-            Debug.Log("Label: " + label + ", Index: " + labelToHandIndex[label]);
+            //Debug.Log("Label: " + label + ", Index: " + labelToHandIndex[label]);
            
             MagicHand magicHand = hands[labelToHandIndex[label]];
             List<Vector3> keyPoints = inputHand.Keypoints;

@@ -54,6 +54,7 @@ public class MqttHandPose : MonoBehaviour
    // public static event Action<List<Vector3>> OnKeypointsReceived;
     public static event Action<List<HandKeypoints>> OnKeypointsReceived;
     public static event Action<bool> OnHandPoseDetected;
+    public static event Action<bool> OnPinchStateReceived;
 
     private JsonSerializerSettings jsonSettings;
 
@@ -67,6 +68,8 @@ public class MqttHandPose : MonoBehaviour
         MqttClient mqttClient = MqttClient.Instance;
         mqttClient.SubscribeTopics.Add("Ina/HandPoseDetected");
         mqttClient.SubscribeTopics.Add("Ina/HandPoseKeyPoints");
+        mqttClient.SubscribeTopics.Add("Ina/PinchMovement");
+        mqttClient.SubscribeTopics.Add("Ina/PinchState");
 
         mqttClient.OnMessageArrived.AddListener(OnMessageArrived);
     }
@@ -80,6 +83,14 @@ public class MqttHandPose : MonoBehaviour
         else if (m.GetTopic() == "Ina/HandPoseKeyPoints")
         {
             ProcessKeyPoints(m.GetString());
+        } else if (m.GetTopic() == "Ina/PinchMovement")
+        {
+            // not used yet
+        }
+        else if (m.GetTopic() == "Ina/PinchState")
+        {
+            Debug.Log("Pinch state " + m.GetString());
+            OnPinchStateReceived?.Invoke(m.GetString() == "1");
         }
     }
 
@@ -87,7 +98,7 @@ public class MqttHandPose : MonoBehaviour
     {
         
         {
-            Debug.Log("process json " + json);
+            //Debug.Log("process json " + json);
             Root data = JsonConvert.DeserializeObject<Root>(json, jsonSettings);
 
             if (data?.Keypoints == null || data.Keypoints.Count == 0)

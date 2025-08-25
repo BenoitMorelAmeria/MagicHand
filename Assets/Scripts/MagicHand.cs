@@ -26,6 +26,8 @@ public class MagicHand : MonoBehaviour
     private List<Collider> keypointTriggers = new List<Collider>();
     private bool transparent = true;
 
+    private bool _pinchState = false;
+
     // Hardcoded 21 keypoints
     private List<Vector3> initialKeypoints = new List<Vector3>
     {
@@ -173,7 +175,7 @@ public class MagicHand : MonoBehaviour
             // Cylinder in Unity points up the Y axis
             cyl.transform.position = mid;
             cyl.transform.rotation = Quaternion.FromToRotation(Vector3.up, dir);
-            cyl.transform.localScale = new Vector3(cylinderRadius, length / 2f, cylinderRadius);
+            cyl.transform.localScale = new Vector3(cylinderRadius, length, cylinderRadius);
 
             if (cylinderMaterial != null)
                 cyl.GetComponent<Renderer>().material = cylinderMaterial;
@@ -242,6 +244,12 @@ public class MagicHand : MonoBehaviour
         }
     }
 
+    public void UpdatePinchState(bool pinchState)
+    {
+        Debug.Log("Magic hand update pich state to " + pinchState);
+        _pinchState = pinchState;
+    }
+
     public void SetOpaque(Material mat)
     {
         mat.SetFloat("_Surface", 0); // 0 = Opaque, 1 = Transparent
@@ -264,5 +272,9 @@ public class MagicHand : MonoBehaviour
         mat.DisableKeyword("_SURFACE_TYPE_OPAQUE");
     }
 
+    public bool GetPinchState()
+    {
+        return _pinchState;
+    }
 
 }

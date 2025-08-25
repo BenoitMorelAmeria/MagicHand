@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pointer3D : MonoBehaviour
+public class Pointer3DMouse : MonoBehaviour
 {
     [SerializeField] private CameraManager cameraManager;
 

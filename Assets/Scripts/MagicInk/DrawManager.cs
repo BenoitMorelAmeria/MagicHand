@@ -6,25 +6,48 @@ using UnityEngine.InputSystem;
 
 public class DrawManager: MonoBehaviour
 {
+    [SerializeField] GameObject pointerMouse;
+    [SerializeField] GameObject pointerMagicHand;
+    [SerializeField] MagicHand magicHand; 
+    [SerializeField] bool UseMagicHand = true;
+
     [SerializeField] List<InkDrawerBase> drawers = new List<InkDrawerBase>();
-    [SerializeField] Transform pointer;
     [SerializeField] float brushSize = 0.1f;
     [SerializeField] Color brushColor = Color.blue;
     [SerializeField] float hueStep = 0.1f;
 
     int _currentDrawerIndex = 0;
 
+    private bool _pinchStateJustChanged = false;
+    private bool _currentPinchState = false;
+
     public void Update()
     {
-        pointer.localScale = Vector3.one * brushSize;
 
-        if (Input.GetMouseButtonDown(0))
+        pointerMagicHand.SetActive(UseMagicHand);
+        pointerMouse.SetActive(!UseMagicHand);
+
+        bool pinchState = magicHand.IsAvailable() && magicHand.GetPinchState();
+        if (pinchState != _currentPinchState)
+        {
+            _pinchStateJustChanged = true;
+            _currentPinchState = pinchState;
+        }
+        else
+        {
+            _pinchStateJustChanged = false;
+        }
+        Debug.Log("Pinch state: " + pinchState);
+
+        GetPointer3D().transform.localScale = Vector3.one * brushSize;
+
+        if (WasJustClicked())
         {
             drawers[_currentDrawerIndex].StartNewCurve();
         }
-        if (Input.GetMouseButton(0))
+        if (IsClickPressed())
         {
-            drawers[_currentDrawerIndex].NextPoint(pointer.position, brushColor, brushSize);
+            drawers[_currentDrawerIndex].NextPoint(GetPointer3D().transform.position, brushColor, brushSize);
         }
         if (Input.GetKeyDown(KeyCode.P))
         {
@@ -48,7 +71,39 @@ public class DrawManager: MonoBehaviour
         }
     }
 
+    private GameObject GetPointer3D()
+    {
+        if (UseMagicHand)
+        {
+            return pointerMagicHand;
+        }
+        else
+        {
+            return pointerMouse;
+        }
+    }
 
+    private bool WasJustClicked()
+    {
+        if (UseMagicHand)
+        {
+            return _pinchStateJustChanged && _currentPinchState;
+        } else
+        {
+            return Input.GetMouseButtonDown(0);
+        }
+    }
 
+    private bool IsClickPressed()
+    {
+        if (UseMagicHand)
+        {
+            return _currentPinchState;
+        }
+        else
+        {
+            return Input.GetMouseButton(0);
+        }
 
+    }
 }
