@@ -23,6 +23,7 @@ public class MagicHandGestures : MonoBehaviour
 
     public bool IndexPointing = false;
     public bool IsVictory = false;
+    public bool IsSpiderMan = false;
 
     // Start is called before the first frame update
     void Start()
@@ -48,6 +49,7 @@ public class MagicHandGestures : MonoBehaviour
         UpdateFingersFrontness();
         IndexPointing = ComputeIsIndexFingerPointing();
         IsVictory = ComputeIsVictory();
+        IsSpiderMan = ComputeIsSpiderMan();
     }
 
     public static float ComputeFlatness(List<Vector3> points)
@@ -200,6 +202,21 @@ public class MagicHandGestures : MonoBehaviour
                 pointing = false;
         }
         return pointing;
+    }
+
+    private bool ComputeIsSpiderMan()
+    {
+        if (!magicHand.IsAvailable())
+            return false;
+        if (fingerFrontness[1] < 0.0f)
+            return false;
+        if (fingerFrontness[2] > 0.0f)
+            return false;
+        if (fingerFrontness[3] < 0.0f)
+            return false;
+        if (fingerFrontness[4] < 0.0f)
+            return false;
+        return true;
     }
 
     private float ComputeFingerFrontness(int fingerIndex)
