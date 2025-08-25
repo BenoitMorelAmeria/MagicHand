@@ -19,6 +19,7 @@ public class MagicHandGestures : MonoBehaviour
     Handedness HandednessDetected = Handedness.Right;
 
     public List<float> fingerColinearities = new List<float>() { 0f, 0f, 0f, 0f, 0f };
+    public List<float> fingerFrontness = new List<float>() { 0f, 0f, 0f, 0f, 0f };
 
     public bool IndexPointing = false;
     public bool IsVictory = false;
@@ -44,6 +45,7 @@ public class MagicHandGestures : MonoBehaviour
         handSignednessDebug = HandednessDetected.ToString();
         palmNormal = GetPalmNormal(keypoints, HandednessDetected);
         UpdateFingersColinearity();
+        UpdateFingersFrontness();
         IndexPointing = ComputeIsIndexFingerPointing();
         IsVictory = ComputeIsVictory();
     }
@@ -175,6 +177,16 @@ public class MagicHandGestures : MonoBehaviour
         }
     }
 
+    private void UpdateFingersFrontness()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            float frontness = ComputeFingerFrontness(i);
+            fingerFrontness[i] = frontness;
+        }
+    }
+
+
     private bool ComputeIsIndexFingerPointing()
     {
         if (!magicHand.IsAvailable())
@@ -190,8 +202,16 @@ public class MagicHandGestures : MonoBehaviour
         return pointing;
     }
 
-    private bool ComputeIsVictory()
+    private float ComputeFingerFrontness(int fingerIndex)
     {
+        Vector3 baseOrientation = magicHand.GetKeyPoint(0) - magicHand.GetKeyPoint(1 + fingerIndex * 4);
+        Vector3 fingerOrientation = magicHand.GetKeyPoint(2 + fingerIndex * 4) - magicHand.GetKeyPoint(4 + fingerIndex * 4);
+        return Vector3.Dot(baseOrientation.normalized, fingerOrientation.normalized);
+    }
+
+    private bool ComputeIsVictory()
+    { 
+
         for (int i = 1; i < 3; ++i)
         {
             if (fingerColinearities[i] > indexFingerColinearityThreshold)
