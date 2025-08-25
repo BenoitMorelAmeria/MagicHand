@@ -4,10 +4,18 @@ using UnityEngine;
 
 public class Asteroid : MonoBehaviour
 {
+    [SerializeField] private AudioClip explosionSound;
+    private AudioSource explosionSource; 
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        explosionSource = gameObject.AddComponent<AudioSource>();
+        explosionSource.clip = explosionSound;
+        explosionSource.playOnAwake = false;
+        explosionSource.loop = false;
+        explosionSource.volume = 0.8f;
+
     }
 
     // Update is called once per frame
@@ -52,6 +60,7 @@ public class Asteroid : MonoBehaviour
 
     private IEnumerator DissolveRoutine()
     {
+        explosionSource.Play();
         //bool dropped = false;
         SetDissolveAmount(0.2f);
         while (GetDissolveAmount() < 1.0f)
