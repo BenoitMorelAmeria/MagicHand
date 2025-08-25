@@ -35,7 +35,8 @@ public class AsteroidsSpawner : MonoBehaviour
             Random.Range(-spawnAreaSize.y / 2, spawnAreaSize.y / 2),
             Random.Range(-spawnAreaSize.z / 2, spawnAreaSize.z / 2)
         );
-        GameObject asteroid = Instantiate(asteroidPrefab, spawnPosition, Quaternion.identity);
+        GameObject asteroid = Instantiate(asteroidPrefab, gameObject.transform);
+        asteroid.transform.position = spawnPosition;
         Rigidbody rb = asteroid.GetComponent<Rigidbody>();
         Vector3 direction = (magicHand.GetCenter() - spawnPosition).normalized;
         if (rb != null)
