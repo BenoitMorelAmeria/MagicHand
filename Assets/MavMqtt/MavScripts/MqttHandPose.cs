@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
+using UnityEditor.PackageManager;
 
 // ====== Data Models ======
 [Serializable]
@@ -24,6 +25,28 @@ public class HandKeypoints
     [JsonProperty("Label")]
     public int Label { get; set; }
 }
+
+
+[Serializable]
+public class InaPointerInfo
+{
+    public long time = 0;
+    public int id = 0; 
+    public float x = 0;
+    public float y = 0;
+    public float z = 0;
+    public float distToScreen = 0.0f;
+    public int command = 0;
+    public float angleX = 0;
+    public float angleZ = 0;
+}
+
+[Serializable]
+public class InaPointerInfoWrapper
+{
+    public List<InaPointerInfo> PointerInfoArray;
+}
+
 
 // ====== Custom Converter for Vector3 ======
 public class Vector3Converter : JsonConverter<Vector3>
@@ -55,6 +78,7 @@ public class MqttHandPose : MonoBehaviour
     public static event Action<List<HandKeypoints>> OnKeypointsReceived;
     public static event Action<bool> OnHandPoseDetected;
     public static event Action<bool> OnPinchStateReceived;
+    public static event Action<InaPointerInfo> OnInaPointerInfoReceived;
 
     private JsonSerializerSettings jsonSettings;
 
@@ -70,6 +94,8 @@ public class MqttHandPose : MonoBehaviour
         mqttClient.SubscribeTopics.Add("Ina/HandPoseKeyPoints");
         mqttClient.SubscribeTopics.Add("Ina/PinchMovement");
         mqttClient.SubscribeTopics.Add("Ina/PinchState");
+        mqttClient.SubscribeTopics.Add("Ina/PointerInfo");
+        mqttClient.SubscribeTopics.Add("Ina/MultiPointerInfo");
 
         mqttClient.OnMessageArrived.AddListener(OnMessageArrived);
     }
@@ -91,6 +117,17 @@ public class MqttHandPose : MonoBehaviour
         {
             Debug.Log("Pinch state " + m.GetString());
             OnPinchStateReceived?.Invoke(m.GetString() == "1");
+        }
+
+        else if (m.GetTopic() == "Ina/PointerInfo")
+        {
+            InaPointerInfo parsedData = JsonConvert.DeserializeObject<InaPointerInfo>(m.GetString());
+        }
+        else if (m.GetTopic() == "Ina/MultiPointerInfo")
+        {
+            InaPointerInfoWrapper parsedData = JsonConvert.DeserializeObject<InaPointerInfoWrapper>(m.GetString());
+            Debug.LogError("not implemented");
+
         }
     }
 

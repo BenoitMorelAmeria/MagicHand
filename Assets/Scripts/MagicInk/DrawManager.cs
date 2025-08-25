@@ -6,10 +6,18 @@ using UnityEngine.InputSystem;
 
 public class DrawManager: MonoBehaviour
 {
+    public enum PointerMode
+    {
+        Mouse,
+        MagicHand,
+        INA
+    }
+
     [SerializeField] GameObject pointerMouse;
     [SerializeField] GameObject pointerMagicHand;
+    [SerializeField] GameObject pointerINA;
     [SerializeField] MagicHand magicHand; 
-    [SerializeField] bool UseMagicHand = true;
+    [SerializeField] PointerMode pointerMode = PointerMode.MagicHand;
 
     [SerializeField] List<InkDrawerBase> drawers = new List<InkDrawerBase>();
     [SerializeField] float brushSize = 0.1f;
@@ -24,8 +32,9 @@ public class DrawManager: MonoBehaviour
     public void Update()
     {
 
-        pointerMagicHand.SetActive(UseMagicHand);
-        pointerMouse.SetActive(!UseMagicHand);
+        pointerMagicHand.SetActive(pointerMode == PointerMode.MagicHand);
+        pointerMouse.SetActive(pointerMode == PointerMode.Mouse);
+        pointerINA.SetActive(pointerMode == PointerMode.INA);
 
         bool pinchState = magicHand.IsAvailable() && magicHand.GetPinchState();
         if (pinchState != _currentPinchState)
@@ -72,19 +81,23 @@ public class DrawManager: MonoBehaviour
 
     private GameObject GetPointer3D()
     {
-        if (UseMagicHand)
+        if (pointerMode == PointerMode.Mouse)
+        {
+            return pointerMouse;
+        }
+        else if (pointerMode == PointerMode.MagicHand)
         {
             return pointerMagicHand;
         }
         else
         {
-            return pointerMouse;
+            return pointerINA;
         }
     }
 
     private bool WasJustClicked()
     {
-        if (UseMagicHand)
+        if (pointerMode != PointerMode.Mouse)
         {
             return _pinchStateJustChanged && _currentPinchState;
         } else
@@ -95,7 +108,7 @@ public class DrawManager: MonoBehaviour
 
     private bool IsClickPressed()
     {
-        if (UseMagicHand)
+        if (pointerMode != PointerMode.Mouse)
         {
             return _currentPinchState;
         }

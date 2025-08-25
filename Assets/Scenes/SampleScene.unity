@@ -334,6 +334,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ddc6dfd75946e249bd43b3880beedaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  magicHandGestures: {fileID: 311480421}
+  cooldown: 5
+  victorySound: {fileID: 8300000, guid: fcf54bd2892298f4cb93ce74fafd3d1a, type: 3}
 --- !u!1 &154384111
 GameObject:
   m_ObjectHideFlags: 0
@@ -1663,7 +1666,7 @@ MonoBehaviour:
   pointerMouse: {fileID: 1455187428}
   pointerMagicHand: {fileID: 627389604}
   magicHand: {fileID: 640960582}
-  UseMagicHand: 1
+  UseMagicHand: 0
   drawers:
   - {fileID: 1445235410}
   brushSize: 0.3
@@ -2354,8 +2357,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levels:
-  - {fileID: 720346406}
   - {fileID: 877022473}
+  - {fileID: 720346406}
   - {fileID: 607913961}
   - {fileID: 2017667087}
   sceneTransform: {fileID: 365506005}
