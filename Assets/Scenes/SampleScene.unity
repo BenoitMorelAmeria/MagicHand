@@ -2826,9 +2826,10 @@ MonoBehaviour:
   magicHandGestures: {fileID: 311480421}
   webPrefab: {fileID: 5413869566287035875, guid: 7cb33f98d522c354f9549771668d8e86,
     type: 3}
-  shootCooldown: 0.05
-  impulseForce: 5
+  shootCooldown: 0.02
+  impulseForce: 10
   webLifeTime: 5
+  spawnOffset: 0.05
 --- !u!1 &2017667087
 GameObject:
   m_ObjectHideFlags: 0

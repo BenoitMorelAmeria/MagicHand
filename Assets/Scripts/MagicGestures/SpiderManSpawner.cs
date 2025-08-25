@@ -9,6 +9,7 @@ public class SpiderManSpawner : MonoBehaviour
     [SerializeField] private float shootCooldown = 0.05f;
     [SerializeField] private float impulseForce = 5f;
     [SerializeField] private float webLifeTime = 5f;
+    [SerializeField] private float spawnOffset = 0.002f;
 
     float lastShootTime = -Mathf.Infinity;
 
@@ -34,12 +35,14 @@ public class SpiderManSpawner : MonoBehaviour
     void Shoot()
     {
         Vector3 pos = magicHandGestures.magicHand.GetKeyPoint(8);
-        Vector3 direction = magicHandGestures.magicHand.GetKeyPoint(8) - magicHandGestures.magicHand.GetKeyPoint(6);
+        Vector3 direction = (magicHandGestures.magicHand.GetKeyPoint(8) - magicHandGestures.magicHand.GetKeyPoint(6)).normalized;
         GameObject web = Instantiate(webPrefab, transform);
-        web.transform.position = pos + direction * 0.01f;
+        web.transform.position = pos + direction.normalized * spawnOffset;
         web.transform.rotation = Quaternion.LookRotation(direction);
         Rigidbody rb = web.GetComponent<Rigidbody>();
-        rb.AddForce(direction.normalized * impulseForce, ForceMode.Impulse);
+        rb.velocity = direction * impulseForce;   // starts moving immediately this frame
+
+       // rb.AddForce(direction.normalized * impulseForce, ForceMode.Impulse);
         Destroy(rb.gameObject, webLifeTime);
     }
 
