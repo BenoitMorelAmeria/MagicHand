@@ -9,6 +9,10 @@ public class AsteroidsSpawner : MonoBehaviour
     [SerializeField] private float spawnInterval = 2.0f;
     [SerializeField] private Vector3 spawnAreaSize = new Vector3(0.1f, 0.1f, 0.1f);
     [SerializeField] private Vector3 spawnAreaCenter = Vector3.zero;
+    [SerializeField] private float initialForceMin = 0.1f;
+    [SerializeField] private float initialForceMax = 0.2f;
+    [SerializeField] private float initialTorqueMin = 0.001f;
+    [SerializeField] private float initialTorqueMax = 0.003f;
 
     float _lastSpawnTime;
 
@@ -41,8 +45,8 @@ public class AsteroidsSpawner : MonoBehaviour
         Vector3 direction = (magicHand.GetCenter() - spawnPosition).normalized;
         if (rb != null)
         {
-            rb.AddForce(direction * Random.Range(0.1f, 0.2f), ForceMode.Impulse);
-            rb.AddTorque(Random.insideUnitSphere * Random.Range(0.005f, 0.01f), ForceMode.Impulse);
+            rb.AddForce(direction * Random.Range(initialForceMin, initialForceMax), ForceMode.Impulse);
+            rb.AddTorque(Random.insideUnitSphere * Random.Range(initialTorqueMin, initialTorqueMax), ForceMode.Impulse);
         }
     }
 
