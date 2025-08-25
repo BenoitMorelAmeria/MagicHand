@@ -200,7 +200,7 @@ public class MagicHandGestures : MonoBehaviour
         bool oneOtherFingerClosed = false;
         for (int i = 3; i < 5; ++i)
         {
-            if (fingerColinearities[i] < otherFingersNonColinearityThreshold)
+            if (fingerColinearities[i] > otherFingersNonColinearityThreshold)
                 oneOtherFingerClosed = true;
         }
         return oneOtherFingerClosed;
