@@ -27,6 +27,7 @@ public class MagicHand : MonoBehaviour
     private bool transparent = true;
 
     private bool _pinchState = false;
+    private List<Vector3> currentKeyPoints;
 
     // Hardcoded 21 keypoints
     private List<Vector3> initialKeypoints = new List<Vector3>
@@ -82,6 +83,7 @@ public class MagicHand : MonoBehaviour
 
         InitSpheres(initialKeypoints);
         InitCylinders(initialKeypoints);
+        currentKeyPoints = new List<Vector3>(new Vector3[keypointBodies.Count]);
     }
 
     public void Update()
@@ -100,7 +102,16 @@ public class MagicHand : MonoBehaviour
             }
             transparent = !transparent;
         }
+        for (int i = 0; i < currentKeyPoints.Count; i++)
+        {
+            currentKeyPoints[i] = GetKeyPoint(i);
+        }
     }
+
+    public List<Vector3> GetCurrentKeyPoints()
+    {
+        return currentKeyPoints;
+    }   
 
     private void OnEnable()
     {
@@ -193,20 +204,6 @@ public class MagicHand : MonoBehaviour
             if (!showDebugCylinders)
                 cyl.GetComponent<Renderer>().enabled = false;
         }
-    }
-
-    private void ClearSpheres()
-    {
-        foreach (var rb in keypointBodies)
-            if (rb != null) Destroy(rb.gameObject);
-        keypointBodies.Clear();
-    }
-
-    private void ClearCylinders()
-    {
-        foreach (var rb in jointBodies)
-            if (rb != null) Destroy(rb.gameObject);
-        jointBodies.Clear();
     }
 
     public void UpdateHand(List<Vector3> keypoints)

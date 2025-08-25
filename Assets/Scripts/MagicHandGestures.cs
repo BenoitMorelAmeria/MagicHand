@@ -1,0 +1,147 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class MagicHandGestures : MonoBehaviour
+{
+    [SerializeField] public MagicHand magicHand;
+    [SerializeField] private float flatnessThreshold = 0.001f;
+    public string handSignednessDebug = "Unknown";
+
+    public bool IsHandFlat = false;
+    public Vector3 palmNormal = Vector3.zero;
+
+    public enum Handedness { Left, Right }
+    Handedness HandednessDetected = Handedness.Right;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (!magicHand.IsAvailable())
+        {
+            IsHandFlat = false;
+            return;
+        }
+        List<Vector3> keypoints = magicHand.GetCurrentKeyPoints();
+        float flatness = ComputeFlatness(keypoints);
+        IsHandFlat = flatness < flatnessThreshold;
+        HandednessDetected = DetectHandedness(keypoints);
+        handSignednessDebug = HandednessDetected.ToString();
+        palmNormal = GetPalmNormal(keypoints, HandednessDetected);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public static float ComputeFlatness(List<Vector3> points)
+    {
+        if (points == null || points.Count < 3)
+            return 0f;
+
+        // 1. Compute centroid
+        Vector3 centroid = Vector3.zero;
+        foreach (var p in points) centroid += p;
+        centroid /= points.Count;
+
+        // 2. Build covariance matrix
+        float xx = 0, xy = 0, xz = 0;
+        float yy = 0, yz = 0, zz = 0;
+
+        foreach (var p in points)
+        {
+            Vector3 d = p - centroid;
+            xx += d.x * d.x;
+            xy += d.x * d.y;
+            xz += d.x * d.z;
+            yy += d.y * d.y;
+            yz += d.y * d.z;
+            zz += d.z * d.z;
+        }
+
+        // covariance matrix (symmetric)
+        var cov = new float[3, 3] {
+            { xx, xy, xz },
+            { xy, yy, yz },
+            { xz, yz, zz }
+        };
+
+        // 3. Find eigenvalues (we only care about the smallest one).
+        // Unity doesn’t have a built-in eigen solver, so:
+        // - You can use a small numerical solver (e.g. power iteration) OR
+        // - Use a plugin like Math.NET Numerics for proper eigen decomposition.
+
+        // Placeholder: naive "flatness" using determinant / trace
+        // (works as a proxy, but eigen decomposition is best).
+        float trace = xx + yy + zz;
+        float det =
+            xx * (yy * zz - yz * yz) -
+            xy * (xy * zz - xz * yz) +
+            xz * (xy * yz - yy * xz);
+
+        // Flatness score = determinant / (trace^3) as rough approximation
+        return det / (trace * trace * trace + Mathf.Epsilon);
+    }
+
+
+    public static Handedness DetectHandedness(List<Vector3> keypoints)
+    {
+        if (keypoints == null || keypoints.Count < 21)
+            return Handedness.Left;
+
+        Vector3 wrist = keypoints[0];
+        Vector3 indexBase = keypoints[5];
+        Vector3 pinkyBase = keypoints[17];
+        Vector3 thumbBase = keypoints[1];
+
+        // Palm normal
+        Vector3 palmVector1 = indexBase - wrist;
+        Vector3 palmVector2 = pinkyBase - wrist;
+        Vector3 palmNormal = Vector3.Cross(palmVector1, palmVector2).normalized;
+
+        // Thumb direction relative to wrist
+        Vector3 thumbDir = (thumbBase - wrist).normalized;
+
+        // Dot product
+        float dot = Vector3.Dot(palmNormal, thumbDir);
+
+        return dot < 0 ? Handedness.Right : Handedness.Left;
+    }
+
+    public static Vector3 GetPalmNormal(List<Vector3> keypoints, Handedness handedness)
+    {
+        if (keypoints == null || keypoints.Count < 21)
+            return Vector3.zero;
+
+        Vector3 wrist = keypoints[0];
+        Vector3 indexBase = keypoints[5];  // MCP joint
+        Vector3 pinkyBase = keypoints[17]; // MCP joint
+
+        // Compute raw palm normal
+        Vector3 v1 = indexBase - wrist;
+        Vector3 v2 = pinkyBase - wrist;
+        Vector3 normal = Vector3.Cross(v1, v2).normalized;
+
+        // Orient using handedness
+        // Cross product order makes it consistent with a right-handed coordinate system,
+        // so we just flip for left hand.
+        if (handedness == Handedness.Right)
+            normal = -normal;
+
+        return normal;
+    }
+}
