@@ -77,6 +77,13 @@ public class MagicHand : MonoBehaviour
         return gameObject.activeInHierarchy && keypointBodies.Count == 21;
     }
 
+    public void Start()
+    {
+
+        InitSpheres(initialKeypoints);
+        InitCylinders(initialKeypoints);
+    }
+
     public void Update()
     {
         if (Input.GetKeyDown(KeyCode.T))
@@ -97,15 +104,11 @@ public class MagicHand : MonoBehaviour
 
     private void OnEnable()
     {
-        InitSpheres(initialKeypoints);
-        InitCylinders(initialKeypoints);
 
     }
 
     private void OnDisable()
     {
-        ClearSpheres();
-        ClearCylinders();
     }
     private void InitSpheres(List<Vector3> positions)
     {
