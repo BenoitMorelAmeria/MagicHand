@@ -599,6 +599,7 @@ MonoBehaviour:
   otherFingersNonColinearityThreshold: 0.0075
   handSignednessDebug: Unknown
   IsHandFlat: 0
+  flatHandDuration: 0
   palmNormal: {x: 0, y: 0, z: 0}
   fingerColinearities:
   - 0
@@ -2170,6 +2171,10 @@ MonoBehaviour:
   DrawSpaceInterval: 0.003
   ObjectToAddPrefab: {fileID: 2324892745981259212, guid: 4e009f3138f38db4681f5e62cc51f699,
     type: 3}
+  drawSound: {fileID: 8300000, guid: f1c955a49c908154cb2f6c734c1601b9, type: 3}
+  soundCooldown: 0.1
+  minPitch: 0.5
+  maxPitch: 2.5
 --- !u!1 &1455187428 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1405462529750198065, guid: bd630aa4ef0c75346a2a562887a5c645,

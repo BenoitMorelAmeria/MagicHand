@@ -8,6 +8,14 @@ public class NaiveDrawer : InkDrawerBase
 {
     [SerializeField] float DrawSpaceInterval = 0.01f;
     [SerializeField] GameObject ObjectToAddPrefab;
+    [SerializeField] AudioClip drawSound;
+    [SerializeField] float soundCooldown = 0.1f;
+    [SerializeField] float minPitch = 0.1f;
+    [SerializeField] float maxPitch = 0.1f;
+
+    float lastSoundTime = -1f;
+
+    AudioSource _audioSource;
 
     struct Point
     {
@@ -22,6 +30,11 @@ public class NaiveDrawer : InkDrawerBase
     // Start is called before the first frame update
     void Start()
     {
+        _audioSource = gameObject.AddComponent<AudioSource>();
+        _audioSource.clip = drawSound;
+        _audioSource.loop = false;
+        _audioSource.playOnAwake = false;
+        _audioSource.volume = 0.7f;
     }
 
     // Update is called once per frame
@@ -35,10 +48,17 @@ public class NaiveDrawer : InkDrawerBase
     {
         _newCurveStarted = true;
         _history.Add(new List<Point>());
+        _audioSource.pitch = minPitch;
     }
 
     public override void NextPoint(Vector3 p, Color color, float brushSize)
     {
+        if (Time.time - lastSoundTime > soundCooldown)
+        {
+            _audioSource.pitch = Mathf.Min(maxPitch, _audioSource.pitch + 0.05f);
+            _audioSource.PlayOneShot(drawSound);
+            lastSoundTime = Time.time;
+        }
         if (_newCurveStarted)
         {
             _lastDrawPosition = p;
@@ -51,7 +71,6 @@ public class NaiveDrawer : InkDrawerBase
             Vector3 diff = p - _lastDrawPosition;
             _lastDrawPosition += diff.normalized * DrawSpaceInterval * brushSize;
             AddInk(_lastDrawPosition, color, Quaternion.identity, brushSize);
-            
         }
     }
 

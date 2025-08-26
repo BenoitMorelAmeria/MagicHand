@@ -12,7 +12,12 @@ public class MagicHandGestures : MonoBehaviour
 
     public string handSignednessDebug = "Unknown";
 
+    // is the hand currently float?
     public bool IsHandFlat = false;
+
+    // how long has the hand been flat (in seconds)
+    public float flatHandDuration = 0f;
+
     public Vector3 palmNormal = Vector3.zero;
 
     public enum Handedness { Left, Right }
@@ -42,6 +47,10 @@ public class MagicHandGestures : MonoBehaviour
         List<Vector3> keypoints = magicHand.GetCurrentKeyPoints();
         float flatness = ComputeFlatness(keypoints);
         IsHandFlat = flatness < flatnessThreshold;
+        if (IsHandFlat)
+            flatHandDuration += Time.deltaTime;
+        else
+            flatHandDuration = 0f;
         HandednessDetected = DetectHandedness(keypoints);
         handSignednessDebug = HandednessDetected.ToString();
         palmNormal = GetPalmNormal(keypoints, HandednessDetected);
