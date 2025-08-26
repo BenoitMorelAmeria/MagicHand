@@ -26,8 +26,10 @@ public class NaiveDrawer : InkDrawerBase
     Vector3 _lastDrawPosition;
     bool _newCurveStarted = false;
     List<List<Point>> _history = new List<List<Point>>();
-    
-    // Start is called before the first frame update
+
+    // Dictionary to store shared materials by color
+    private Dictionary<Color, Material> _materialCache = new Dictionary<Color, Material>();
+
     void Start()
     {
         _audioSource = gameObject.AddComponent<AudioSource>();
@@ -37,12 +39,7 @@ public class NaiveDrawer : InkDrawerBase
         _audioSource.volume = 0.7f;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    void Update() { }
 
     public override void StartNewCurve()
     {
@@ -80,10 +77,8 @@ public class NaiveDrawer : InkDrawerBase
         {
             _history.RemoveAt(_history.Count - 1);
         }
-        if (_history.Count == 0)
-        {
-            return;
-        }
+        if (_history.Count == 0) return;
+
         foreach (Point p in _history.Last())
         {
             Destroy(p.go);
@@ -93,10 +88,8 @@ public class NaiveDrawer : InkDrawerBase
 
     public override void ClearRecent(float timeDelta)
     {
-        if (_history.Count == 0)
-        {
-            return;
-        }
+        if (_history.Count == 0) return;
+
         List<Point> lastCurve = _history.Last();
         float threshold = Time.time - timeDelta;
         while (lastCurve.Count > 0 && lastCurve.Last().time > threshold)
@@ -113,12 +106,23 @@ public class NaiveDrawer : InkDrawerBase
         go.transform.position = position;
         go.transform.rotation = orientation;
         go.transform.localScale *= brushSize;
-        Material mat = go.GetComponent<Renderer>().material;
-        mat.SetColor("_EmissionColor", color);
-        mat.color = color;
-        Point p = new Point();
-        p.go = go;
-        p.time = Time.time;
+
+        // Use cached material if available
+        if (!_materialCache.TryGetValue(color, out Material mat))
+        {
+            mat = new Material(go.GetComponent<Renderer>().sharedMaterial);
+            mat.SetColor("_EmissionColor", color);
+            mat.color = color;
+            _materialCache[color] = mat;
+        }
+
+        go.GetComponent<Renderer>().material = mat;
+
+        Point p = new Point
+        {
+            go = go,
+            time = Time.time
+        };
         _history.Last().Add(p);
     }
 }
