@@ -25,11 +25,12 @@ public class MagicTranslation : MonoBehaviour
     {
         bool shouldStartTranslation = magicHandGestures.IsHandFlat && magicHandGestures.flatHandDuration > flatHandDurationThreshold;
         shouldStartTranslation &= Mathf.Abs(Vector3.Dot(magicHandGestures.palmNormal, Vector3.right)) > handOrientationThreshold;
+        shouldStartTranslation &= !translatingInProgress;
         if (shouldStartTranslation)
         {
             StartTranslation();
         }
-        bool shouldStopTranslation = !magicHandGestures.IsHandFlat;
+        bool shouldStopTranslation = !magicHandGestures.IsHandFlat && translatingInProgress;
         if (shouldStopTranslation)
         {
             StopTranslation();

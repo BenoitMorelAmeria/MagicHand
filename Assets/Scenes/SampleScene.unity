@@ -712,7 +712,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectToTranslate: {fileID: 1049945688}
   magicHandGestures: {fileID: 311480421}
-  flatHandDurationThreshold: 0.5
+  flatHandDurationThreshold: 0.1
   handOrientationThreshold: 0.85
   translatingInProgress: 0
 --- !u!1 &365506004
