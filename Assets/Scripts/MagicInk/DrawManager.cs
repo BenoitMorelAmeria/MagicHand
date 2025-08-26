@@ -26,6 +26,7 @@ public class DrawManager : MonoBehaviour
     [SerializeField] float rollbackTimeDelta = 0.1f;
 
     [SerializeField] float angleThreshold = 15f;
+    float lastAngleChangeTime = 0.0f;
 
     int _currentDrawerIndex = 0;
 
@@ -70,14 +71,16 @@ public class DrawManager : MonoBehaviour
         if (WasJustClicked())
         {
             drawers[_currentDrawerIndex].StartNewCurve();
+            lastAngleChangeTime = Time.time + 0.1f;
         }
         if (IsClickPressed())
         {
             Color color = brushColor;
             if (UpdateAndCheckAngleChange(GetPointer3D().transform.position))
             {
+                lastAngleChangeTime = Time.time;
                 // Sudden direction change detected
-                color = Color.white; // Change color to white on sudden direction change
+                //color = Color.white; // Change color to white on sudden direction change
             }
             drawers[_currentDrawerIndex].NextPoint(GetPointer3D().transform.position, color, brushSize);
             _wasClickLastFrame = true;
@@ -90,7 +93,8 @@ public class DrawManager : MonoBehaviour
             if (_wasClickLastFrame)
             {
                 if (pointerMode != PointerMode.Mouse)
-                    drawers[_currentDrawerIndex].ClearRecent(rollbackTimeDelta);
+                    //drawers[_currentDrawerIndex].ClearRecent(rollbackTimeDelta);
+                    drawers[_currentDrawerIndex].ClearRecent(Time.time - lastAngleChangeTime);
                 Debug.Log("unclick");
             }
             _wasClickLastFrame = false;
