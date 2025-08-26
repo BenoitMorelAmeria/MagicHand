@@ -17,6 +17,7 @@ public class MagicRotation : MonoBehaviour
     [SerializeField] bool rotateAroundHand = false;
 
     private Vector3 lastPalmOrientation;
+    private Vector3 rotationCenter;
 
     // Start is called before the first frame update
     void Start()
@@ -50,6 +51,7 @@ public class MagicRotation : MonoBehaviour
     {
         transformInProgress = true;
         lastPalmOrientation = magicHandGestures.palmNormal;
+        rotationCenter = magicHandGestures.magicHand.GetCenter();
     }
 
     public void StopRotation()
@@ -59,11 +61,6 @@ public class MagicRotation : MonoBehaviour
 
     public void UpdateRotation()
     {
-        Vector3 rotationCenter = magicHandGestures.magicHand.GetCenter();
-        if (!rotateAroundHand)
-        {
-            rotationCenter = Vector3.zero;
-        }
         Vector3 palmOrientation = magicHandGestures.palmNormal;
         Quaternion rotation = Quaternion.FromToRotation(lastPalmOrientation, palmOrientation);
 

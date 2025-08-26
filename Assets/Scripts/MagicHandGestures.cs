@@ -51,7 +51,10 @@ public class MagicHandGestures : MonoBehaviour
             flatHandDuration += Time.deltaTime;
         else
             flatHandDuration = 0f;
-        HandednessDetected = DetectHandedness(keypoints);
+        if (!IsHandFlat)
+        {
+            HandednessDetected = DetectHandedness(keypoints);
+        }        
         handSignednessDebug = HandednessDetected.ToString();
         palmNormal = GetPalmNormal(keypoints, HandednessDetected);
         UpdateFingersColinearity();
