@@ -14,6 +14,7 @@ public class MagicRotation : MonoBehaviour
     [SerializeField] float handOrientationThreshold = 0.85f;
 
     [SerializeField] bool transformInProgress = false;
+    [SerializeField] bool rotateAroundHand = false;
 
     private Vector3 lastPalmOrientation;
 
@@ -59,6 +60,10 @@ public class MagicRotation : MonoBehaviour
     public void UpdateRotation()
     {
         Vector3 rotationCenter = magicHandGestures.magicHand.GetCenter();
+        if (!rotateAroundHand)
+        {
+            rotationCenter = Vector3.zero;
+        }
         Vector3 palmOrientation = magicHandGestures.palmNormal;
         Quaternion rotation = Quaternion.FromToRotation(lastPalmOrientation, palmOrientation);
 
