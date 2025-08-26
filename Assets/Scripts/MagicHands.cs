@@ -45,6 +45,9 @@ public class MagicHands : MonoBehaviour
             }
             labelToHandIndex.Clear();
             assignedHandIndices.Clear();
+        } else
+        {
+            hands[0].gameObject.SetActive(true);
         }
     }
 
@@ -69,9 +72,16 @@ public class MagicHands : MonoBehaviour
         }
     }
 
-
     public void UpdateHand(List<HandKeypoints> inputHands)
     {
+        if (inputHands.Count > 0)
+        {
+            hands[0].UpdateHand(inputHands[0].Keypoints);
+        }
+    }
+    /*
+    public void UpdateHand(List<HandKeypoints> inputHands)
+    { 
         // detect which assigned indices are NOT in the input hands
         HashSet<int> labelsToRemove = new HashSet<int>();
         foreach (var kvp in labelToHandIndex)
@@ -141,5 +151,5 @@ public class MagicHands : MonoBehaviour
             List<Vector3> keyPoints = inputHand.Keypoints;
             magicHand.UpdateHand(keyPoints);
         }
-    }
+    }*/
 }

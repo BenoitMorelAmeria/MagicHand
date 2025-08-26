@@ -23,7 +23,6 @@ public class INAPointer : MonoBehaviour
     {
 
         pointer3D = new Vector3(info.pointer3DX, info.pointer3DY, -info.pointer3DZ);
-        Debug.Log("Pointer received: " + pointer3D);
     }
 
 

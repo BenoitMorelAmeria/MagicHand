@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 
-public class DrawManager: MonoBehaviour
+public class DrawManager : MonoBehaviour
 {
     public enum PointerMode
     {
@@ -16,18 +16,24 @@ public class DrawManager: MonoBehaviour
     [SerializeField] GameObject pointerMouse;
     [SerializeField] GameObject pointerMagicHand;
     [SerializeField] GameObject pointerINA;
-    [SerializeField] MagicHand magicHand; 
+    [SerializeField] MagicHand magicHand;
     [SerializeField] PointerMode pointerMode = PointerMode.MagicHand;
 
     [SerializeField] List<InkDrawerBase> drawers = new List<InkDrawerBase>();
     [SerializeField] float brushSize = 0.1f;
     [SerializeField] Color brushColor = Color.blue;
     [SerializeField] float hueStep = 0.1f;
+    [SerializeField] float rollbackTimeDelta = 0.1f;
+
+    [SerializeField] float angleThreshold = 15f;
 
     int _currentDrawerIndex = 0;
 
     private bool _pinchStateJustChanged = false;
     private bool _currentPinchState = false;
+    private bool _wasClickLastFrame = false;
+    private Vector3 _prevPos;
+    private Vector3 _prevDir;
 
     public void Update()
     {
@@ -41,13 +47,13 @@ public class DrawManager: MonoBehaviour
                 pointerMode = PointerMode.Mouse;
         }
         
-
+        
         pointerMagicHand.SetActive(pointerMode == PointerMode.MagicHand);
         pointerMouse.SetActive(pointerMode == PointerMode.Mouse);
         pointerINA.SetActive(pointerMode == PointerMode.INA);
 
         magicHand.SetVisible(pointerMode == PointerMode.MagicHand);
-
+        
         bool pinchState = magicHand.IsAvailable() && magicHand.GetPinchState();
         if (pinchState != _currentPinchState)
         {
@@ -67,9 +73,29 @@ public class DrawManager: MonoBehaviour
         }
         if (IsClickPressed())
         {
-            drawers[_currentDrawerIndex].NextPoint(GetPointer3D().transform.position, brushColor, brushSize);
+            Color color = brushColor;
+            if (UpdateAndCheckAngleChange(GetPointer3D().transform.position))
+            {
+                // Sudden direction change detected
+                color = Color.white; // Change color to white on sudden direction change
+            }
+            drawers[_currentDrawerIndex].NextPoint(GetPointer3D().transform.position, color, brushSize);
+            _wasClickLastFrame = true;
+
         }
-        if (Input.GetKeyDown(KeyCode.P))
+        else
+        {
+            _prevPos = Vector3.zero;
+            _prevDir = Vector3.zero;
+            if (_wasClickLastFrame)
+            {
+                if (pointerMode != PointerMode.Mouse)
+                    drawers[_currentDrawerIndex].ClearRecent(rollbackTimeDelta);
+                Debug.Log("unclick");
+            }
+            _wasClickLastFrame = false;
+        }
+            if (Input.GetKeyDown(KeyCode.P))
         {
             brushSize *= 1.2f;
         }
@@ -107,6 +133,35 @@ public class DrawManager: MonoBehaviour
         }
     }
 
+    private bool UpdateAndCheckAngleChange(Vector3 currentPos)
+    {
+        if (currentPos == Vector3.zero || currentPos == _prevPos)
+            return false;
+
+        Vector3 dir = (currentPos - _prevPos).normalized;
+        bool res = false;
+        Debug.Log(_prevDir + " " + dir);
+        if (_prevPos != Vector3.zero)
+        {
+            if (_prevDir != Vector3.zero)
+            {
+                // Check angle between directions
+                float angle = Vector3.Angle(_prevDir, dir);
+                if (angle > angleThreshold)
+                {
+                    res = true;
+                    Debug.Log($"Sudden direction change detected: {angle:F1}°");
+                    //OnDirectionChange(angle, currentPos);
+                }
+            }
+
+            _prevDir = dir;
+        }
+        _prevPos = currentPos;
+
+        return res;
+    }
+
     private bool WasJustClicked()
     {
         if (pointerMode != PointerMode.Mouse)
@@ -128,6 +183,5 @@ public class DrawManager: MonoBehaviour
         {
             return Input.GetMouseButton(0);
         }
-
     }
 }

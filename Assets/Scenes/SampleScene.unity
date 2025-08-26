@@ -1764,6 +1764,8 @@ MonoBehaviour:
   brushSize: 0.3
   brushColor: {r: 0, g: 0, b: 1, a: 1}
   hueStep: 0.1
+  rollbackTimeDelta: 0.01
+  angleThreshold: 15
 --- !u!1 &1073811590
 GameObject:
   m_ObjectHideFlags: 0

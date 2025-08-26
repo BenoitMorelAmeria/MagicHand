@@ -321,7 +321,7 @@ public class MagicHand : MonoBehaviour
         }
     }
 
-
+    /*
     private Mesh BuildPalmMesh(List<Vector3> keypoints)
     {
         // 6 palm points
@@ -350,7 +350,8 @@ public class MagicHand : MonoBehaviour
         mesh.RecalculateNormals();
         return mesh;
     }
-
+    */
+    /*
     private void InitPalm(List<Vector3> keypoints)
     {
         palmObject = new GameObject("PalmMesh");
@@ -366,5 +367,5 @@ public class MagicHand : MonoBehaviour
         if (palmMeshFilter != null)
             palmMeshFilter.mesh = BuildPalmMesh(keypoints);
     }
-
+    */
 }

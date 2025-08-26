@@ -9,10 +9,15 @@ public class NaiveDrawer : InkDrawerBase
     [SerializeField] float DrawSpaceInterval = 0.01f;
     [SerializeField] GameObject ObjectToAddPrefab;
 
+    struct Point
+    {
+        public GameObject go;
+        public float time;
+    }
+
     Vector3 _lastDrawPosition;
     bool _newCurveStarted = false;
-    List<List<GameObject>> _lastCurve = new List<List<GameObject>>();
-    int _currentColorIndex = 0;
+    List<List<Point>> _history = new List<List<Point>>();
     
     // Start is called before the first frame update
     void Start()
@@ -29,7 +34,7 @@ public class NaiveDrawer : InkDrawerBase
     public override void StartNewCurve()
     {
         _newCurveStarted = true;
-        _lastCurve.Add(new List<GameObject>());
+        _history.Add(new List<Point>());
     }
 
     public override void NextPoint(Vector3 p, Color color, float brushSize)
@@ -52,19 +57,35 @@ public class NaiveDrawer : InkDrawerBase
 
     public override void Rollback()
     {
-        while (_lastCurve.Count > 0 && _lastCurve.Last().Count == 0)
+        while (_history.Count > 0 && _history.Last().Count == 0)
         {
-            _lastCurve.RemoveAt(_lastCurve.Count - 1);
+            _history.RemoveAt(_history.Count - 1);
         }
-        if (_lastCurve.Count == 0)
+        if (_history.Count == 0)
         {
             return;
         }
-        foreach (GameObject go in _lastCurve.Last())
+        foreach (Point p in _history.Last())
         {
-            Destroy(go);
+            Destroy(p.go);
         }
-        _lastCurve.RemoveAt(_lastCurve.Count - 1);
+        _history.RemoveAt(_history.Count - 1);
+    }
+
+    public override void ClearRecent(float timeDelta)
+    {
+        if (_history.Count == 0)
+        {
+            return;
+        }
+        List<Point> lastCurve = _history.Last();
+        float threshold = Time.time - timeDelta;
+        while (lastCurve.Count > 0 && lastCurve.Last().time > threshold)
+        {
+            Point p = lastCurve.Last();
+            Destroy(p.go);
+            lastCurve.RemoveAt(lastCurve.Count - 1);
+        }
     }
 
     private void AddInk(Vector3 position, Color color, Quaternion orientation, float brushSize)
@@ -76,7 +97,9 @@ public class NaiveDrawer : InkDrawerBase
         Material mat = go.GetComponent<Renderer>().material;
         mat.SetColor("_EmissionColor", color);
         mat.color = color;
-
-        _lastCurve.Last().Add(go);
+        Point p = new Point();
+        p.go = go;
+        p.time = Time.time;
+        _history.Last().Add(p);
     }
 }

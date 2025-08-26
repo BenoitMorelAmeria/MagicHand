@@ -17,7 +17,7 @@ public class Pointer3MagicHand : MonoBehaviour
     {
         if (magicHand.IsAvailable())
         {
-            Vector3 position = magicHand.GetKeyPoint(8) ;
+            Vector3 position = magicHand.GetKeyPoint(4) ;
             transform.position = position;
         }
     }
