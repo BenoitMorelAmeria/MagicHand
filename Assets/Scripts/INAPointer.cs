@@ -5,8 +5,7 @@ using UnityEngine;
 public class INAPointer : MonoBehaviour
 {
 
-    public Vector2 relativeCursorPos = Vector2.zero;
-    public float depthInMeters = 0.0f;
+    public Vector3 pointer3D;
 
     // Start is called before the first frame update
     void Start()
@@ -22,9 +21,9 @@ public class INAPointer : MonoBehaviour
 
     public void OnInaPointerInfoReceived(InaPointerInfo info)
     {
-        Debug.Log($"INA Pointer Info: x={info.x}, y={info.y}, z={info.z}, distToScreen={info.distToScreen}");
-        relativeCursorPos = new Vector2(info.x / Screen.width, 1.0f - info.y / Screen.height);
-        depthInMeters = -info.distToScreen;
+
+        pointer3D = new Vector3(info.pointer3DX, info.pointer3DY, info.pointer3DZ);
+        Debug.Log("Pointer received: " + pointer3D);
     }
 
 

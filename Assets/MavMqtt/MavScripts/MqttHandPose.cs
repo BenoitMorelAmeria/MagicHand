@@ -39,6 +39,9 @@ public class InaPointerInfo
     public int command = 0;
     public float angleX = 0;
     public float angleZ = 0;
+    public float pointer3DX = 0.0f;
+    public float pointer3DY = 0.0f;
+    public float pointer3DZ = 0.0f;
 }
 
 [Serializable]

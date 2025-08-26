@@ -846,8 +846,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8ebbe00fa84b274a839cefa96b37abe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  relativeCursorPos: {x: 0, y: 0}
-  depthInMeters: 0
+  pointer3D: {x: 0, y: 0, z: 0}
 --- !u!4 &453091584
 Transform:
   m_ObjectHideFlags: 0
@@ -1761,7 +1760,7 @@ MonoBehaviour:
   pointerMagicHand: {fileID: 627389604}
   pointerINA: {fileID: 916979038}
   magicHand: {fileID: 640960582}
-  pointerMode: 1
+  pointerMode: 2
   drawers:
   - {fileID: 1445235410}
   brushSize: 0.3
