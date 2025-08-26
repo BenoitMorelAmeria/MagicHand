@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class MagicTranslation : MonoBehaviour
 {
-    [SerializeField] Transform objectToTranslate;
+    [SerializeField] Transform objectToTransform;
     [SerializeField] MagicHandGestures magicHandGestures;
+    [SerializeField] Vector3 palmOrientationToStart = Vector3.right;
 
     // how long the hand should stay flat to trigger the translation
     [SerializeField] float flatHandDurationThreshold = 0.5f;
     // how aligned the hand should be with the camera right or left vectors to trigger the translation
     [SerializeField] float handOrientationThreshold = 0.85f;
 
-    [SerializeField] bool translatingInProgress = false;
+    [SerializeField] bool transformInProgress = false;
     Vector3 lastPointerPos = Vector3.zero;
 
     void Start()
@@ -24,18 +25,19 @@ public class MagicTranslation : MonoBehaviour
     void Update()
     {
         bool shouldStartTranslation = magicHandGestures.IsHandFlat && magicHandGestures.flatHandDuration > flatHandDurationThreshold;
-        shouldStartTranslation &= Mathf.Abs(Vector3.Dot(magicHandGestures.palmNormal, Vector3.right)) > handOrientationThreshold;
-        shouldStartTranslation &= !translatingInProgress;
+        shouldStartTranslation &= Mathf.Abs(Vector3.Dot(magicHandGestures.palmNormal, palmOrientationToStart)) > handOrientationThreshold;
+        shouldStartTranslation &= !transformInProgress;
         if (shouldStartTranslation)
         {
             StartTranslation();
         }
-        bool shouldStopTranslation = !magicHandGestures.IsHandFlat && translatingInProgress;
+        bool shouldStopTranslation = !magicHandGestures.IsHandFlat && transformInProgress;
+        shouldStopTranslation |= !magicHandGestures.magicHand.IsAvailable();
         if (shouldStopTranslation)
         {
             StopTranslation();
         }
-        if (translatingInProgress)
+        if (transformInProgress)
         {
             UpdateTranslation();
         }
@@ -43,22 +45,22 @@ public class MagicTranslation : MonoBehaviour
 
     void StartTranslation()
     {
-        translatingInProgress = true;
+        transformInProgress = true;
         lastPointerPos = GetPointerPosition();
     }
 
     void StopTranslation()
     {
-        translatingInProgress = false;
+        transformInProgress = false;
     }
 
     private void UpdateTranslation()
     {
-        if (translatingInProgress)
+        if (transformInProgress)
         {
             Vector3 currentPointerPos = GetPointerPosition();
             Vector3 delta = currentPointerPos - lastPointerPos;
-            objectToTranslate.position += delta;
+            objectToTransform.position += delta;
             lastPointerPos = currentPointerPos;
         }
 
