@@ -121,7 +121,9 @@ public class MqttHandPose : MonoBehaviour
 
         else if (m.GetTopic() == "Ina/PointerInfo")
         {
+            Debug.Log("Pointer info " + m.GetString());
             InaPointerInfo parsedData = JsonConvert.DeserializeObject<InaPointerInfo>(m.GetString());
+            OnInaPointerInfoReceived?.Invoke(parsedData);
         }
         else if (m.GetTopic() == "Ina/MultiPointerInfo")
         {

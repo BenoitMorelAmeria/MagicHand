@@ -22,7 +22,8 @@ public class INAPointer : MonoBehaviour
 
     public void OnInaPointerInfoReceived(InaPointerInfo info)
     {
-        relativeCursorPos = new Vector2(info.x / Screen.width, info.y / Screen.height);
+        Debug.Log($"INA Pointer Info: x={info.x}, y={info.y}, z={info.z}, distToScreen={info.distToScreen}");
+        relativeCursorPos = new Vector2(info.x / Screen.width, 1.0f - info.y / Screen.height);
         depthInMeters = -info.distToScreen;
     }
 
