@@ -2,74 +2,79 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MagicTransform : MonoBehaviour
+public class MagicRotation : MonoBehaviour
 {
     [SerializeField] Transform objectToTransform;
     [SerializeField] MagicHandGestures magicHandGestures;
-    [SerializeField] Vector3 palmOrientationToStart = Vector3.down;
 
-    [SerializeField] float flatHandDurationThreshold = 0.5f;
+    [SerializeField] Vector3 palmOrientationToStart = Vector3.down; // how long the hand should stay flat to trigger the translation
+    [SerializeField] float flatHandDurationThreshold = 0.5f;        // how aligned the hand should be with the camera right or left vectors to trigger the translation
     [SerializeField] float handOrientationThreshold = 0.85f;
-
     [SerializeField] bool transformInProgress = false;
+    [SerializeField] bool rotateAroundHand = false;
 
-    private Quaternion initialHandRotation;   // hand orientation when starting
-    private Vector3 initialHandCenter;        // hand center when starting
-    private Quaternion objectLocalRotation;   // object rotation relative to hand
-    private Vector3 objectLocalPosition;      // object position relative to hand
+    private Vector3 lastPalmOrientation;
+    private Vector3 rotationCenter;
 
+    // Start is called before the first frame update
+    void Start()
+    {
+    }
+
+    // Update is called once per frame
     void Update()
     {
-        bool shouldStartTransform = magicHandGestures.IsHandFlat &&
-                                    magicHandGestures.flatHandDuration > flatHandDurationThreshold &&
-                                    Vector3.Dot(magicHandGestures.palmNormal, palmOrientationToStart) > handOrientationThreshold &&
-                                    !transformInProgress;
+        bool shouldStartRotation =
+            magicHandGestures.IsHandFlat &&
+            magicHandGestures.flatHandDuration > flatHandDurationThreshold;
 
-        if (shouldStartTransform)
+        shouldStartRotation &= Vector3.Dot(magicHandGestures.palmNormal, palmOrientationToStart) > handOrientationThreshold;
+        shouldStartRotation &= !transformInProgress;
+
+        if (shouldStartRotation)
         {
-            StartTransform();
+            StartRotation();
         }
 
-        bool shouldStopTransform = !magicHandGestures.IsHandFlat && transformInProgress;
-        shouldStopTransform |= !magicHandGestures.magicHand.IsAvailable();
+        bool shouldStopRotation = !magicHandGestures.IsHandFlat && transformInProgress;
+        shouldStopRotation |= !magicHandGestures.magicHand.IsAvailable();
 
-        if (shouldStopTransform)
+        if (shouldStopRotation)
         {
-            StopTransform();
+            StopRotation();
         }
 
         if (transformInProgress)
         {
-            UpdateTransform();
+            UpdateRotation();
         }
     }
 
-    public void StartTransform()
+    public void StartRotation()
     {
         transformInProgress = true;
-
-        // Use palmNormal directly as the hand "forward" orientation
-        initialHandRotation = Quaternion.LookRotation(magicHandGestures.palmNormal, Vector3.up);
-        initialHandCenter = magicHandGestures.magicHand.GetCenter();
-
-        // Compute object's relative transform in hand space
-        objectLocalPosition = Quaternion.Inverse(initialHandRotation) * (objectToTransform.position - initialHandCenter);
-        objectLocalRotation = Quaternion.Inverse(initialHandRotation) * objectToTransform.rotation;
+        lastPalmOrientation = magicHandGestures.palmNormal;
+        rotationCenter = magicHandGestures.magicHand.GetCenter();
     }
 
-    public void StopTransform()
+    public void StopRotation()
     {
         transformInProgress = false;
     }
 
-    public void UpdateTransform()
+    public void UpdateRotation()
     {
-        // Current hand rotation & position
-        Quaternion currentHandRotation = Quaternion.LookRotation(magicHandGestures.palmNormal, Vector3.up);
-        Vector3 currentHandCenter = magicHandGestures.magicHand.GetCenter();
+        Vector3 palmOrientation = magicHandGestures.palmNormal;
+        Quaternion rotation = Quaternion.FromToRotation(lastPalmOrientation, palmOrientation);
 
-        // Reapply relative transform
-        objectToTransform.position = currentHandCenter + currentHandRotation * objectLocalPosition;
-        objectToTransform.rotation = currentHandRotation * objectLocalRotation;
+        // Rotate position around center
+        Vector3 dir = objectToTransform.transform.position - rotationCenter; // offset from pivot
+        dir = rotation * dir;                                                // rotate the offset
+        objectToTransform.transform.position = rotationCenter + dir;         // new position
+
+        // Rotate object itself
+        objectToTransform.transform.rotation = rotation * objectToTransform.transform.rotation;
+
+        lastPalmOrientation = magicHandGestures.palmNormal;
     }
 }

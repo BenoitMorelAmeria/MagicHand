@@ -19,6 +19,7 @@ public class MagicHandGestures : MonoBehaviour
     public float flatHandDuration = 0f;
 
     public Vector3 palmNormal = Vector3.zero;
+    public Vector3 palmRight = Vector3.zero;
 
     public enum Handedness { Left, Right }
     Handedness HandednessDetected = Handedness.Right;
@@ -59,6 +60,7 @@ public class MagicHandGestures : MonoBehaviour
         IsThumbUp = ComputeThumbUp();
         handSignednessDebug = HandednessDetected.ToString();
         palmNormal = GetPalmNormal(keypoints, HandednessDetected);
+        palmRight = GetPalmRight(keypoints, HandednessDetected);
         UpdateFingersColinearity();
         UpdateFingersFrontness();
         IndexPointing = ComputeIsIndexFingerPointing();
@@ -162,6 +164,36 @@ public class MagicHandGestures : MonoBehaviour
 
         return normal;
     }
+
+    public static Vector3 GetPalmRight(List<Vector3> keypoints, Handedness handedness)
+    {
+        if (keypoints == null || keypoints.Count < 21)
+            return Vector3.zero;
+
+        Vector3 wrist = keypoints[0];
+        Vector3 indexBase = keypoints[5];   // MCP
+        Vector3 pinkyBase = keypoints[17];  // MCP
+
+        // Palm normal (same as your function)
+        Vector3 v1 = indexBase - wrist;
+        Vector3 v2 = pinkyBase - wrist;
+        Vector3 palmNormal = Vector3.Cross(v1, v2).normalized;
+        if (handedness == Handedness.Right)
+            palmNormal = -palmNormal;
+
+        // Raw right vector = indexBase -> pinkyBase
+        Vector3 rawRight = (pinkyBase - indexBase).normalized;
+
+        // Project onto palm plane to ensure orthogonality
+        Vector3 right = Vector3.ProjectOnPlane(rawRight, palmNormal).normalized;
+
+        // Flip direction so "right" always points toward the thumb
+        if (handedness == Handedness.Left)
+            right = -right;
+
+        return right;
+    }
+
 
     public float ComputeColinearity(List<Vector3> vector3s)
     {
