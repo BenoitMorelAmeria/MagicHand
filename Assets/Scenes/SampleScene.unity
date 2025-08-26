@@ -1091,8 +1091,6 @@ MonoBehaviour:
   sphereMaterial: {fileID: 2100000, guid: c25dec9ad56af374988c253d962955c4, type: 2}
   cylinderMaterial: {fileID: 2100000, guid: b8b6c60d628c7cd41843da5cdb431bca, type: 2}
   physicMaterial: {fileID: 13400000, guid: 4088577d034f445409c924e57a518e92, type: 2}
-  showDebugSpheres: 1
-  showDebugCylinders: 1
   jointPairs:
   - {x: 0, y: 1}
   - {x: 1, y: 2}
@@ -1760,7 +1758,7 @@ MonoBehaviour:
   pointerMagicHand: {fileID: 627389604}
   pointerINA: {fileID: 916979038}
   magicHand: {fileID: 640960582}
-  pointerMode: 2
+  pointerMode: 1
   drawers:
   - {fileID: 1445235410}
   brushSize: 0.3
@@ -1993,8 +1991,6 @@ MonoBehaviour:
   sphereMaterial: {fileID: 2100000, guid: c25dec9ad56af374988c253d962955c4, type: 2}
   cylinderMaterial: {fileID: 2100000, guid: b8b6c60d628c7cd41843da5cdb431bca, type: 2}
   physicMaterial: {fileID: 13400000, guid: 4088577d034f445409c924e57a518e92, type: 2}
-  showDebugSpheres: 1
-  showDebugCylinders: 1
   jointPairs:
   - {x: 0, y: 1}
   - {x: 1, y: 2}

@@ -31,10 +31,22 @@ public class DrawManager: MonoBehaviour
 
     public void Update()
     {
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            if (pointerMode == PointerMode.Mouse)
+                pointerMode = PointerMode.MagicHand;
+            else if (pointerMode == PointerMode.MagicHand)
+                pointerMode = PointerMode.INA;
+            else
+                pointerMode = PointerMode.Mouse;
+        }
+        
 
         pointerMagicHand.SetActive(pointerMode == PointerMode.MagicHand);
         pointerMouse.SetActive(pointerMode == PointerMode.Mouse);
         pointerINA.SetActive(pointerMode == PointerMode.INA);
+
+        magicHand.SetVisible(pointerMode == PointerMode.MagicHand);
 
         bool pinchState = magicHand.IsAvailable() && magicHand.GetPinchState();
         if (pinchState != _currentPinchState)
@@ -99,7 +111,7 @@ public class DrawManager: MonoBehaviour
     {
         if (pointerMode != PointerMode.Mouse)
         {
-            return _pinchStateJustChanged && _currentPinchState;
+            return Input.GetMouseButtonDown(0) || (_pinchStateJustChanged && _currentPinchState);
         } else
         {
             return Input.GetMouseButtonDown(0);
@@ -110,7 +122,7 @@ public class DrawManager: MonoBehaviour
     {
         if (pointerMode != PointerMode.Mouse)
         {
-            return _currentPinchState;
+            return _currentPinchState || Input.GetMouseButton(0);
         }
         else
         {

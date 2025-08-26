@@ -11,8 +11,6 @@ public class MagicHand : MonoBehaviour
     public Material sphereMaterial;
     public Material cylinderMaterial;
     public PhysicMaterial physicMaterial;
-    public bool showDebugSpheres = true;
-    public bool showDebugCylinders = true;
 
     [Header("Hand definition")]
     [SerializeField] private List<Vector2Int> jointPairs = new List<Vector2Int>();
@@ -24,6 +22,8 @@ public class MagicHand : MonoBehaviour
     private List<Rigidbody> keypointBodies = new List<Rigidbody>();
     private List<Rigidbody> jointBodies = new List<Rigidbody>();
     private List<Collider> keypointTriggers = new List<Collider>();
+    private List<Renderer> sphereRenderers = new List<Renderer>();
+    private List<Renderer> cylinderRenderers = new List<Renderer>();
     private bool transparent = true;
 
     private bool _pinchState = false;
@@ -128,27 +128,27 @@ public class MagicHand : MonoBehaviour
     {
         foreach (var pos in positions)
         {
-            
-            // --- Physics Sphere ---
             GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             sphere.transform.SetParent(transform, false);
             Vector3 globalScale = Vector3.one * sphereSize;
             SetGlobalScale(sphere.transform, globalScale);
+
+            Renderer rend = sphere.GetComponent<Renderer>();
             if (sphereMaterial != null)
-                sphere.GetComponent<Renderer>().material = sphereMaterial;
+                rend.material = sphereMaterial;
+
+            // Track renderer
+            sphereRenderers.Add(rend);
 
             SetPhysics(sphere);
             SetTriggers(sphere, PrimitiveType.Sphere);
             Rigidbody rb = sphere.GetComponent<Rigidbody>();
             keypointBodies.Add(rb);
 
-            if (!showDebugSpheres)
-                sphere.GetComponent<Renderer>().enabled = false;
             rb.MovePosition(transform.TransformPoint(pos));
-
-            
         }
     }
+
 
     private void SetPhysics(GameObject go)
     {
@@ -197,15 +197,34 @@ public class MagicHand : MonoBehaviour
             Vector3 globalScale = new Vector3(cylinderRadius, length / 2.0f, cylinderRadius);
             SetGlobalScale(cyl.transform, globalScale);
 
+            Renderer rend = cyl.GetComponent<Renderer>();
             if (cylinderMaterial != null)
-                cyl.GetComponent<Renderer>().material = cylinderMaterial;
+                rend.material = cylinderMaterial;
+
+            // Track renderer
+            cylinderRenderers.Add(rend);
+
 
             SetPhysics(cyl);
 
             jointBodies.Add(cyl.GetComponent<Rigidbody>());
 
-            if (!showDebugCylinders)
-                cyl.GetComponent<Renderer>().enabled = false;
+        }
+    }
+
+    public void SetVisible(bool visible)
+    {
+        foreach (var rend in sphereRenderers)
+            if (rend != null) rend.enabled = visible;
+
+        foreach (var rend in cylinderRenderers)
+            if (rend != null) rend.enabled = visible;
+
+        if (palmObject != null)
+        {
+            var palmRenderer = palmObject.GetComponent<Renderer>();
+            if (palmRenderer != null)
+                palmRenderer.enabled = visible;
         }
     }
 
