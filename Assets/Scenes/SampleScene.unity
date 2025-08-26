@@ -491,7 +491,7 @@ MonoBehaviour:
   magicHandGestures: {fileID: 311480421}
   drawManager: {fileID: 1049945689}
   thumbOrientationToStart: {x: 0, y: 1, z: 0}
-  thumbOrientationThreshold: 0.6
+  thumbOrientationThreshold: 0.8
   brushSizeChangeSpeed: 20
 --- !u!1 &289663826
 GameObject:
@@ -732,7 +732,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &344315179
 Transform:
   m_ObjectHideFlags: 0
