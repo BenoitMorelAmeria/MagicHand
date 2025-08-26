@@ -29,6 +29,7 @@ public class MagicHandGestures : MonoBehaviour
     public bool IndexPointing = false;
     public bool IsVictory = false;
     public bool IsSpiderMan = false;
+    public bool IsThumbUp = false;
 
     // Start is called before the first frame update
     void Start()
@@ -54,7 +55,8 @@ public class MagicHandGestures : MonoBehaviour
         if (!IsHandFlat)
         {
             HandednessDetected = DetectHandedness(keypoints);
-        }        
+        }
+        IsThumbUp = ComputeThumbUp();
         handSignednessDebug = HandednessDetected.ToString();
         palmNormal = GetPalmNormal(keypoints, HandednessDetected);
         UpdateFingersColinearity();
@@ -228,6 +230,20 @@ public class MagicHandGestures : MonoBehaviour
             return false;
         if (fingerFrontness[4] < 0.0f)
             return false;
+        return true;
+    }
+
+    private bool ComputeThumbUp()
+    {
+        if (!magicHand.IsAvailable())
+            return false;
+        if (fingerFrontness[0] < 0.75f)
+            return false;
+        for (int i = 1; i < 5; ++i)
+        {
+            if (fingerFrontness[i] > -0.2f)
+                return false;
+        }
         return true;
     }
 

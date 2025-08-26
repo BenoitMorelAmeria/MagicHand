@@ -444,6 +444,55 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bd630aa4ef0c75346a2a562887a5c645, type: 3}
+--- !u!1 &261218146
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 261218147}
+  - component: {fileID: 261218148}
+  m_Layer: 0
+  m_Name: BrushSizeController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &261218147
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 261218146}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 607913962}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &261218148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 261218146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed10a90810a9b3e4aab23135aaec2543, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  magicHandGestures: {fileID: 311480421}
+  drawManager: {fileID: 1049945689}
+  thumbOrientationToStart: {x: 0, y: 1, z: 0}
+  thumbOrientationThreshold: 0.75
+  brushSizeChangeSpeed: 0.2
 --- !u!1 &289663826
 GameObject:
   m_ObjectHideFlags: 0
@@ -616,6 +665,7 @@ MonoBehaviour:
   IndexPointing: 0
   IsVictory: 0
   IsSpiderMan: 0
+  IsThumbUp: 0
 --- !u!1 &323234508
 GameObject:
   m_ObjectHideFlags: 0
@@ -1033,6 +1083,7 @@ Transform:
   - {fileID: 1049945688}
   - {fileID: 344315179}
   - {fileID: 1889825248}
+  - {fileID: 261218147}
   m_Father: {fileID: 1637025339}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &607913963
@@ -2969,6 +3020,7 @@ MonoBehaviour:
   flatHandDurationThreshold: 0.1
   handOrientationThreshold: 0.85
   transformInProgress: 0
+  rotateAroundHand: 0
 --- !u!1 &1892380878
 GameObject:
   m_ObjectHideFlags: 0

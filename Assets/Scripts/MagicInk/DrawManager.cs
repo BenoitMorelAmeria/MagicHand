@@ -20,7 +20,7 @@ public class DrawManager : MonoBehaviour
     [SerializeField] PointerMode pointerMode = PointerMode.MagicHand;
 
     [SerializeField] List<InkDrawerBase> drawers = new List<InkDrawerBase>();
-    [SerializeField] float brushSize = 0.1f;
+    [SerializeField] public float brushSize = 0.1f;
     [SerializeField] Color brushColor = Color.blue;
     [SerializeField] float hueStep = 0.1f;
     [SerializeField] float rollbackTimeDelta = 0.1f;
