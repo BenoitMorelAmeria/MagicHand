@@ -33,6 +33,7 @@ public class BrushSizeController : MonoBehaviour
         Vector3 thumbOrientation = magicHandGestures.magicHand.GetKeyPoint(3) - magicHandGestures.magicHand.GetKeyPoint(1);
         thumbOrientation.Normalize();
         float dot = Vector3.Dot(thumbOrientation, thumbOrientationToStart);
+        Debug.Log("Dot: " + dot);
         if (dot < thumbOrientationThreshold)
         {
             _isChangingBrushSize = false;
@@ -46,8 +47,9 @@ public class BrushSizeController : MonoBehaviour
         else
         {
             float thumbY = magicHandGestures.magicHand.GetKeyPoint(3).y;
-            float scale = Mathf.Pow(brushSizeChangeSpeed, -(thumbY - _lastThumbY));
+            float scale = Mathf.Pow(2, brushSizeChangeSpeed * (thumbY - _lastThumbY));
             drawManager.brushSize *= scale;
+            Debug.Log("scale: " +  scale);
         }
         _lastThumbY = magicHandGestures.magicHand.GetKeyPoint(3).y;
 

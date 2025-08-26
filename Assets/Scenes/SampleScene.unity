@@ -491,8 +491,8 @@ MonoBehaviour:
   magicHandGestures: {fileID: 311480421}
   drawManager: {fileID: 1049945689}
   thumbOrientationToStart: {x: 0, y: 1, z: 0}
-  thumbOrientationThreshold: 0.75
-  brushSizeChangeSpeed: 0.2
+  thumbOrientationThreshold: 0.6
+  brushSizeChangeSpeed: 20
 --- !u!1 &289663826
 GameObject:
   m_ObjectHideFlags: 0
