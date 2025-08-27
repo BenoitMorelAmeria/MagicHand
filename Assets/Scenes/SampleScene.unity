@@ -1997,6 +1997,7 @@ MonoBehaviour:
   pointerMouse: {fileID: 1455187428}
   pointerMagicHand: {fileID: 627389604}
   pointerINA: {fileID: 916979038}
+  pointerMaterial: {fileID: 2100000, guid: a7c9722168e97594c9aed57a2da52537, type: 2}
   magicHand: {fileID: 640960582}
   magicHandGestures: {fileID: 311480421}
   pointerMode: 1

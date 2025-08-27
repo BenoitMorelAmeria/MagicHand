@@ -16,6 +16,7 @@ public class DrawManager : MonoBehaviour
     [SerializeField] GameObject pointerMouse;
     [SerializeField] GameObject pointerMagicHand;
     [SerializeField] GameObject pointerINA;
+    [SerializeField] Material pointerMaterial;
     [SerializeField] MagicHand magicHand;
     [SerializeField] MagicHandGestures magicHandGestures;
     [SerializeField] PointerMode pointerMode = PointerMode.MagicHand;
@@ -127,6 +128,11 @@ public class DrawManager : MonoBehaviour
             if (h > 1f) h -= 1f; // wrap around
             brushColor = Color.HSVToRGB(h, s, v);
         }
+
+
+        pointerMaterial.color = brushColor;
+        // set emission color
+        pointerMaterial.SetColor("_EmissionColor", brushColor * 2.0f);
     }
 
     public float GetHue()
