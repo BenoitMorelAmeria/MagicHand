@@ -2107,7 +2107,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectToTransform: {fileID: 1049945688}
   magicHandGestures: {fileID: 311480421}
-  palmOrientationToStart: {x: 0, y: -1, z: 0}
+  palmOrientationsToStartTranslation:
+  - {x: 0, y: -1, z: 0}
+  palmOrientationsToStartTransform:
+  - {x: 1, y: 0, z: 0}
+  - {x: -1, y: 0, z: 0}
   flatHandDurationThreshold: 0.1
   handOrientationThreshold: 0.85
 --- !u!1001 &1156272144
