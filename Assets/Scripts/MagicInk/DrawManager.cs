@@ -129,6 +129,18 @@ public class DrawManager : MonoBehaviour
         }
     }
 
+    public float GetHue()
+    {
+        Color.RGBToHSV(brushColor, out float h, out float s, out float v);
+        return h;
+    }
+
+    public void SetHue(float hue)
+    {
+        Color.RGBToHSV(brushColor, out float h, out float s, out float v);
+        brushColor = Color.HSVToRGB(hue, s, v);
+    }
+
     private void Rollback()
     {
         drawers[_currentDrawerIndex].Rollback();
