@@ -40,16 +40,21 @@ public class MagicRotationTranslation : MonoBehaviour
                                     magicHandGestures.flatHandDuration > flatHandDurationThreshold &&
                                     !transformInProgress;
 
-        if (IsOrientationInList(magicHandGestures.palmNormal, palmOrientationsToStartTransform))
+
+        if (shouldStartTransform)
         {
-            onlyTranslation = false;  
-        } else if (IsOrientationInList(magicHandGestures.palmNormal, palmOrientationsToStartTranslation))
-        {
-            onlyTranslation = true;
-        }
-        else
-        {
-            shouldStartTransform = false;
+            if (IsOrientationInList(magicHandGestures.palmNormal, palmOrientationsToStartTransform))
+            {
+                onlyTranslation = false;
+            }
+            else if (IsOrientationInList(magicHandGestures.palmNormal, palmOrientationsToStartTranslation))
+            {
+                onlyTranslation = true;
+            }
+            else
+            {
+                shouldStartTransform = false;
+            }
         }
 
         if (shouldStartTransform)
@@ -84,13 +89,12 @@ public class MagicRotationTranslation : MonoBehaviour
 
         if (onlyTranslation)
         {
-            // World-space offset (ignores hand rotation)
+            // Don’t involve rotation in the math
             objectLocalPosition = objectToTransform.position - initialHandCenter;
             savedObjectRotation = objectToTransform.rotation;
         }
         else
         {
-            // Hand-space offset (rotates with hand)
             objectLocalPosition = Quaternion.Inverse(initialHandRotation) * (objectToTransform.position - initialHandCenter);
             objectLocalRotation = Quaternion.Inverse(initialHandRotation) * objectToTransform.rotation;
         }
@@ -107,18 +111,15 @@ public class MagicRotationTranslation : MonoBehaviour
 
         if (onlyTranslation)
         {
-            // World space: no jump when rotating hand
             objectToTransform.position = currentHandCenter + objectLocalPosition;
-            objectToTransform.rotation = savedObjectRotation;
+            objectToTransform.rotation = savedObjectRotation; // keep original
         }
         else
         {
-            // Hand space: object rigidly follows hand
             objectToTransform.position = currentHandCenter + currentHandRotation * objectLocalPosition;
             objectToTransform.rotation = currentHandRotation * objectLocalRotation;
         }
     }
-
 
     public void StopTransform()
     {
