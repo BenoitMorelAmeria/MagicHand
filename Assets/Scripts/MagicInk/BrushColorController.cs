@@ -54,8 +54,8 @@ public class BrushColorController : MonoBehaviour
         }
         else
         {
-            float deltaX = thumbY - _startThumbY;
-            float hue = Wrap01(_startingHue + deltaX * hueChangeSpeed);
+            float deltaY = thumbY - _startThumbY;
+            float hue = Wrap01(_startingHue + deltaY * hueChangeSpeed);
             drawManager.SetHue(hue);
         }
     }
