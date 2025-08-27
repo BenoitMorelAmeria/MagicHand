@@ -84,12 +84,13 @@ public class MagicRotationTranslation : MonoBehaviour
 
         if (onlyTranslation)
         {
-            // Don’t involve rotation in the math
+            // World-space offset (ignores hand rotation)
             objectLocalPosition = objectToTransform.position - initialHandCenter;
             savedObjectRotation = objectToTransform.rotation;
         }
         else
         {
+            // Hand-space offset (rotates with hand)
             objectLocalPosition = Quaternion.Inverse(initialHandRotation) * (objectToTransform.position - initialHandCenter);
             objectLocalRotation = Quaternion.Inverse(initialHandRotation) * objectToTransform.rotation;
         }
@@ -106,15 +107,18 @@ public class MagicRotationTranslation : MonoBehaviour
 
         if (onlyTranslation)
         {
+            // World space: no jump when rotating hand
             objectToTransform.position = currentHandCenter + objectLocalPosition;
-            objectToTransform.rotation = savedObjectRotation; // keep original
+            objectToTransform.rotation = savedObjectRotation;
         }
         else
         {
+            // Hand space: object rigidly follows hand
             objectToTransform.position = currentHandCenter + currentHandRotation * objectLocalPosition;
             objectToTransform.rotation = currentHandRotation * objectLocalRotation;
         }
     }
+
 
     public void StopTransform()
     {
