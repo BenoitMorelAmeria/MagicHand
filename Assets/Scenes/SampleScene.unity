@@ -571,8 +571,8 @@ MonoBehaviour:
   drawManager: {fileID: 1049945689}
   thumbOrientationToStart: {x: 0, y: 1, z: 0}
   thumbOrientationThreshold: 0.8
-  brushSizeChangeSpeed: 20
-  minBrushSize: 0.001
+  brushSizeChangeSpeed: 100
+  minBrushSize: 0.01
   maxBrushSize: 1
 --- !u!1 &289663826
 GameObject:
