@@ -50,7 +50,7 @@ public class BrushColorController : MonoBehaviour
         {
             _isChanging = true;
             _startThumbY = thumbY; // store reference X
-            _startingHue = drawManager.brushSize;
+            _startingHue = drawManager.GetHue();
         }
         else
         {
