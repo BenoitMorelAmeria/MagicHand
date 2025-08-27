@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -31,6 +32,21 @@ public class MagicHandGestures : MonoBehaviour
     public bool IsVictory = false;
     public bool IsSpiderMan = false;
     public bool IsThumbUp = false;
+
+    // cut gesture: triggered when:
+    // - hand is victory pose
+    // - index and middle fingers are far enough from each other
+    // - then they come close enough again
+    [SerializeField] public float cutMinStartingDistance = 0.5f; 
+    [SerializeField] public float cutTriggerDistanceThreshold = 0.5f;
+    enum CutGestureState { NoVictory, // no victory pose 
+        VictoryButTooClose, // victory, but movement hasnt started yet 
+        VictoryButTooFar // victory, movement started, waiting for fingers to come close enough
+    }
+    CutGestureState cutGestureState;
+
+    public event Action OnCutGesture;
+
 
     // Start is called before the first frame update
     void Start()
@@ -66,6 +82,41 @@ public class MagicHandGestures : MonoBehaviour
         IndexPointing = ComputeIsIndexFingerPointing();
         IsVictory = ComputeIsVictory();
         IsSpiderMan = ComputeIsSpiderMan();
+        UpdateCut();
+    }
+
+    public void UpdateCut()
+    {
+        if (!IsVictory) {
+            cutGestureState = CutGestureState.NoVictory;
+            return;
+        }
+
+        if (cutGestureState == CutGestureState.NoVictory)
+        {
+            cutGestureState = CutGestureState.VictoryButTooClose; 
+        }
+
+        float fingerDistance = Vector3.Distance(magicHand.GetKeyPoint(8), magicHand.GetKeyPoint(12));
+        if (cutGestureState == CutGestureState.VictoryButTooClose)
+        {
+            if (fingerDistance > cutMinStartingDistance)
+            {
+                cutGestureState = CutGestureState.VictoryButTooFar;
+            }
+        }
+
+        if (cutGestureState == CutGestureState.VictoryButTooFar)
+        {
+            if (fingerDistance < cutTriggerDistanceThreshold)
+            {
+                // trigger cut
+                OnCutGesture?.Invoke();
+                cutGestureState = CutGestureState.VictoryButTooClose;
+                Debug.Log("cut");
+            }
+        }
+        //Debug.Log("finger distance: " + fingerDistance + " state: " + cutGestureState);
     }
 
     public static float ComputeFlatness(List<Vector3> points)

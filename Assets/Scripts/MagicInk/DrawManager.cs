@@ -17,6 +17,7 @@ public class DrawManager : MonoBehaviour
     [SerializeField] GameObject pointerMagicHand;
     [SerializeField] GameObject pointerINA;
     [SerializeField] MagicHand magicHand;
+    [SerializeField] MagicHandGestures magicHandGestures;
     [SerializeField] PointerMode pointerMode = PointerMode.MagicHand;
 
     [SerializeField] List<InkDrawerBase> drawers = new List<InkDrawerBase>();
@@ -35,6 +36,14 @@ public class DrawManager : MonoBehaviour
     private bool _wasClickLastFrame = false;
     private Vector3 _prevPos;
     private Vector3 _prevDir;
+
+    public void Start()
+    {
+        magicHandGestures.OnCutGesture += () =>
+        {
+            Rollback();
+        };
+    }
 
     public void Update()
     {
@@ -109,8 +118,7 @@ public class DrawManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            Debug.Log("z pressed");
-            drawers[_currentDrawerIndex].Rollback();
+            Rollback();
         }
         if (Input.GetKeyDown(KeyCode.C))
         {
@@ -119,6 +127,11 @@ public class DrawManager : MonoBehaviour
             if (h > 1f) h -= 1f; // wrap around
             brushColor = Color.HSVToRGB(h, s, v);
         }
+    }
+
+    private void Rollback()
+    {
+        drawers[_currentDrawerIndex].Rollback();
     }
 
     private GameObject GetPointer3D()

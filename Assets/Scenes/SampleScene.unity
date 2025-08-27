@@ -748,6 +748,8 @@ MonoBehaviour:
   IsVictory: 0
   IsSpiderMan: 0
   IsThumbUp: 0
+  cutMinStartingDistance: 0.04
+  cutTriggerDistanceThreshold: 0.025
 --- !u!1 &323234508
 GameObject:
   m_ObjectHideFlags: 0
@@ -1945,6 +1947,7 @@ MonoBehaviour:
   pointerMagicHand: {fileID: 627389604}
   pointerINA: {fileID: 916979038}
   magicHand: {fileID: 640960582}
+  magicHandGestures: {fileID: 311480421}
   pointerMode: 1
   drawers:
   - {fileID: 1445235410}
