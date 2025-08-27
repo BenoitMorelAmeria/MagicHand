@@ -18,7 +18,7 @@ public class BrushSizeController : MonoBehaviour
     public float maxBrushSize = 1.0f;
 
     private bool _isChangingBrushSize = false;
-    private float _startThumbY;
+    private float _startThumbX;
 
     void Update()
     {
@@ -28,7 +28,7 @@ public class BrushSizeController : MonoBehaviour
             return;
         }
 
-        // Check thumb orientation
+        // Thumb vector (tip - base)
         Vector3 thumbOrientation = magicHandGestures.magicHand.GetKeyPoint(3) - magicHandGestures.magicHand.GetKeyPoint(1);
         thumbOrientation.Normalize();
         float dot = Vector3.Dot(thumbOrientation, thumbOrientationToStart);
@@ -38,22 +38,25 @@ public class BrushSizeController : MonoBehaviour
             return;
         }
 
+        Vector3 thumbTip = magicHandGestures.magicHand.GetKeyPoint(3);
+        Vector3 thumbBase = magicHandGestures.magicHand.GetKeyPoint(1); // base of thumb
+        float thumbX = thumbTip.x - thumbBase.x; // horizontal offset
+
         if (!_isChangingBrushSize)
         {
             _isChangingBrushSize = true;
-            _startThumbY = magicHandGestures.magicHand.GetKeyPoint(3).y;
+            _startThumbX = thumbX; // store reference X
         }
         else
         {
-            float currentThumbY = magicHandGestures.magicHand.GetKeyPoint(3).y;
-            float deltaY = currentThumbY - _startThumbY;
+            float deltaX = thumbX - _startThumbX;
 
-            // DeltaY drives growth/shrink rate
-            float scaleChange = Mathf.Exp(deltaY * brushSizeChangeSpeed * Time.deltaTime);
+            // Horizontal movement drives scale
+            float scaleChange = Mathf.Exp(deltaX * brushSizeChangeSpeed * Time.deltaTime);
             drawManager.brushSize *= scaleChange;
 
-            // Clamp brush size
             drawManager.brushSize = Mathf.Clamp(drawManager.brushSize, minBrushSize, maxBrushSize);
         }
     }
+
 }
