@@ -570,7 +570,7 @@ MonoBehaviour:
   magicHandGestures: {fileID: 311480421}
   drawManager: {fileID: 1049945689}
   thumbOrientationToStart: {x: 0, y: 1, z: 0}
-  thumbOrientationThreshold: 0.8
+  thumbOrientationThreshold: 0.6
   brushSizeChangeSpeed: 100
   minBrushSize: 0.01
   maxBrushSize: 1
@@ -1952,7 +1952,7 @@ MonoBehaviour:
   drawers:
   - {fileID: 1445235410}
   brushSize: 0.3
-  brushColor: {r: 0, g: 0, b: 1, a: 1}
+  brushColor: {r: 0.78467035, g: 0, b: 1, a: 1}
   hueStep: 0.1
   rollbackTimeDelta: 0.01
   angleThreshold: 15
