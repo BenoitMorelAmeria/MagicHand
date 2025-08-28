@@ -125,9 +125,13 @@ namespace SRD.Core
                 var isActive = (isActiveProperty != null) && (ScalingMode.OriginalSize == (ScalingMode)isActiveProperty.enumValueIndex);
                 EditorGUI.BeginDisabledGroup(!isActive);
                 EditorGUI.indentLevel++;
-                using(new EditorGUI.PropertyScope(position, label, property))
+                if (_enumAppearances != null && _enumValues != null)
                 {
-                    property.intValue = EditorGUI.IntPopup(position, label, property.intValue, _enumAppearances, _enumValues);
+
+                    using (new EditorGUI.PropertyScope(position, label, property))
+                    {
+                        property.intValue = EditorGUI.IntPopup(position, label, property.intValue, _enumAppearances, _enumValues);
+                    }
                 }
                 EditorGUI.indentLevel--;
                 EditorGUI.EndDisabledGroup();

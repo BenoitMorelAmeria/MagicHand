@@ -23,7 +23,7 @@ public class ShootingFinger : MonoBehaviour
         shootSource.clip = shootClip;
         shootSource.playOnAwake = false;
         shootSource.loop = false;
-        shootSource.volume = 0.5f;
+        shootSource.volume = 0.4f;
 
     }
 
