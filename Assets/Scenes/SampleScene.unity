@@ -1745,7 +1745,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8340df51fef25f14aa16de28dd427856, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scale: {x: 1, y: 1, z: 1}
+  scale: {x: 0.85, y: 0.85, z: 0.85}
   position: {x: 0, y: 0, z: 0}
 --- !u!1 &877022473
 GameObject:

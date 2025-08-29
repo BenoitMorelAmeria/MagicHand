@@ -55,10 +55,11 @@ public class MagicpINCHZoom : MonoBehaviour
         return magicHandGestures.magicHand.IsAvailable()
             && thumbAlignment > minFingerAlignmentToZ
             && indexAlignment > minFingerAlignmentToZ
-            && Mathf.Abs(magicHandGestures.magicHand.GetCenter().z) < maxDistanceToScreen
-            && magicHandGestures.fingerFrontness[2] < 0.0f
-            && magicHandGestures.fingerFrontness[3] < 0.0f
-            && magicHandGestures.fingerFrontness[4] < 0.0f;
+            && GetDistanceToScreen() < maxDistanceToScreen
+            //&& magicHandGestures.fingerFrontness[2] < 0.0f
+            //&& magicHandGestures.fingerFrontness[3] < 0.0f
+            //&& magicHandGestures.fingerFrontness[4] < 0.0f
+            ;
     }
 
     private bool IsStartZoomConditionMet()
@@ -104,7 +105,8 @@ public class MagicpINCHZoom : MonoBehaviour
 
     private Vector3 GetZoomPosition()
     {
-        return (magicHandGestures.magicHand.GetKeyPoint(4) + magicHandGestures.magicHand.GetKeyPoint(8)) / 2.0f;
+        Vector3 v3 = (magicHandGestures.magicHand.GetKeyPoint(4) + magicHandGestures.magicHand.GetKeyPoint(8)) / 2.0f;
+        return new Vector3(v3.x, v3.y, 0.0f);
     }
 
     private float GetDistance()
@@ -120,5 +122,15 @@ public class MagicpINCHZoom : MonoBehaviour
         int index2 = fingerIndex * 4 + 4;
         Vector3 fingerDirection = magicHandGestures.magicHand.GetKeyPointDiff(index2, index1).normalized;
         return Mathf.Abs(Vector3.Dot(fingerDirection, Vector3.forward));
+    }
+
+    private float GetFingerDistanceToScreen(int fingerIndex)
+    {
+        return Mathf.Abs(magicHandGestures.magicHand.GetKeyPoint(4 + 4 * fingerIndex).z);
+    }
+
+    private float GetDistanceToScreen()
+    {
+        return Mathf.Max(GetFingerDistanceToScreen(0), GetFingerDistanceToScreen(1));
     }
 }
