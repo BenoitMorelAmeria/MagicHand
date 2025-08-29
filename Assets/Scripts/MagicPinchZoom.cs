@@ -1,0 +1,123 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class MagicpINCHZoom : MonoBehaviour
+{
+    [Header("References")]
+    [SerializeField] Transform objectToTransform;
+    [SerializeField] MagicHandGestures magicHandGestures;
+
+    [Header("Zoom parameters")]
+    [SerializeField] float maxDistanceToScreen = 0.15f; // Max distance from hand to screen to start scrolling
+    [SerializeField] float fingerDistanceEpsilon = 0.01f;
+    [SerializeField] float minFingerAlignmentToZ = 0.5f; // Min alignment of thumb and index finger to Z axis to start zooming
+
+    // current state
+    bool isZooming = false;
+    Vector3 lastPosition = Vector3.zero;
+    float lastDistance = 0.0f; 
+
+
+    // Start is called before the first frame update
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (IsStartZoomConditionMet())
+        {
+            StartZoom();
+        }
+        else if (IsStopZoomConditionMet())
+        {
+            StopZoom();
+        }
+        if (isZooming)
+        {
+            UpdateZoom();
+        }
+    }
+
+    private bool IsHandInZoomMode()
+    {
+        if (!magicHandGestures.magicHand.IsAvailable())
+        {
+            return false;
+        }
+        float thumbAlignment = GetFingerAlignmentToZ(0);
+        float indexAlignment = GetFingerAlignmentToZ(1);
+        Debug.Log(thumbAlignment + " " + indexAlignment);    
+        return magicHandGestures.magicHand.IsAvailable()
+            && thumbAlignment > minFingerAlignmentToZ
+            && indexAlignment > minFingerAlignmentToZ
+            && magicHandGestures.magicHand.GetCenter().z < maxDistanceToScreen
+            && magicHandGestures.fingerFrontness[2] < 0.0f
+            && magicHandGestures.fingerFrontness[3] < 0.0f
+            && magicHandGestures.fingerFrontness[4] < 0.0f;
+    }
+
+    private bool IsStartZoomConditionMet()
+    {
+        return !isZooming && IsHandInZoomMode();
+    }
+
+    private bool IsStopZoomConditionMet()
+    {
+        return isZooming && !IsHandInZoomMode();
+    }
+
+    private void StartZoom()
+    {
+        isZooming = true;
+        lastDistance = GetDistance();
+        lastPosition = GetZoomPosition();
+    }
+
+    private void StopZoom()
+    {
+        isZooming = false;
+    }
+
+    private void UpdateZoom()
+    {
+
+        // scale change is the ratio of the current distance to the last distance between fingers
+        float distance = GetDistance();
+        Vector3 position = GetZoomPosition();
+        float scaleChange = distance / lastDistance;
+        Vector3 positionDelta = position - lastPosition;
+        // apply position change
+        objectToTransform.position += positionDelta;
+        if (distance != 0.0f && lastDistance != 0.0f)
+        {
+            // apply scale change
+            objectToTransform.localScale *= scaleChange;
+        }
+        lastDistance = distance;
+        lastPosition = position;
+    }
+
+    private Vector3 GetZoomPosition()
+    {
+        return (magicHandGestures.magicHand.GetKeyPoint(4) + magicHandGestures.magicHand.GetKeyPoint(8));
+    }
+
+    private float GetDistance()
+    {
+        return Mathf.Max(fingerDistanceEpsilon, 
+            Vector3.Distance(magicHandGestures.magicHand.GetKeyPoint(4),
+                                magicHandGestures.magicHand.GetKeyPoint(8)));
+    }
+
+    private float GetFingerAlignmentToZ(int fingerIndex)
+    {
+        int index1 = fingerIndex * 4 + 1;
+        int index2 = fingerIndex * 4 + 4;
+        Vector3 fingerDirection = magicHandGestures.magicHand.GetKeyPointDiff(index2, index1).normalized;
+        return Mathf.Abs(Vector3.Dot(fingerDirection, Vector3.forward));
+    }
+}

@@ -63,6 +63,11 @@ public class MagicHand : MonoBehaviour
         return keypointBodies[index].gameObject.transform.position;
     }
 
+    public Vector3 GetKeyPointDiff(int indexP1, int indexP2)
+    {
+        return GetKeyPoint(indexP1) - GetKeyPoint(indexP2);
+    }
+
     public Vector3 GetCenter()
     {
         Vector3 center = Vector3.zero;

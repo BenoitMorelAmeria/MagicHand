@@ -9,7 +9,7 @@ public class MagicScroller : MonoBehaviour
     [SerializeField] MagicHandGestures magicHandGestures;
 
     [Header("Activation conditions")]
-    [SerializeField] float maxDistanceToScreen = 0.2f; // Max distance from hand to screen to start scrolling
+    [SerializeField] float maxDistanceToScreen = 0.25f; // Max distance from hand to screen to start scrolling
 
 
     [Header("Inertia Settings")]
