@@ -5,7 +5,8 @@ using UnityEngine;
 public class MagicpINCHZoom : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] Transform objectToTransform;
+    [SerializeField] Transform objectToTranslate;
+    [SerializeField] Transform objectToZoom;
     [SerializeField] MagicHandGestures magicHandGestures;
 
     [Header("Zoom parameters")]
@@ -54,7 +55,7 @@ public class MagicpINCHZoom : MonoBehaviour
         return magicHandGestures.magicHand.IsAvailable()
             && thumbAlignment > minFingerAlignmentToZ
             && indexAlignment > minFingerAlignmentToZ
-            && magicHandGestures.magicHand.GetCenter().z < maxDistanceToScreen
+            && Mathf.Abs(magicHandGestures.magicHand.GetCenter().z) < maxDistanceToScreen
             && magicHandGestures.fingerFrontness[2] < 0.0f
             && magicHandGestures.fingerFrontness[3] < 0.0f
             && magicHandGestures.fingerFrontness[4] < 0.0f;
@@ -91,11 +92,11 @@ public class MagicpINCHZoom : MonoBehaviour
         float scaleChange = distance / lastDistance;
         Vector3 positionDelta = position - lastPosition;
         // apply position change
-        objectToTransform.position += positionDelta;
+        objectToTranslate.position += positionDelta;
         if (distance != 0.0f && lastDistance != 0.0f)
         {
             // apply scale change
-            objectToTransform.localScale *= scaleChange;
+            objectToZoom.localScale *= scaleChange;
         }
         lastDistance = distance;
         lastPosition = position;
@@ -103,7 +104,7 @@ public class MagicpINCHZoom : MonoBehaviour
 
     private Vector3 GetZoomPosition()
     {
-        return (magicHandGestures.magicHand.GetKeyPoint(4) + magicHandGestures.magicHand.GetKeyPoint(8));
+        return (magicHandGestures.magicHand.GetKeyPoint(4) + magicHandGestures.magicHand.GetKeyPoint(8)) / 2.0f;
     }
 
     private float GetDistance()
