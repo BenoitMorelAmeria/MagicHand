@@ -38,17 +38,26 @@ public class MagicScroller : MonoBehaviour
 
     public bool IsStartScrollConditionMet()
     {
+        if (isScrolling)
+        {
+            return false;
+        }
         // Hand must be flat
-        return magicHandGestures.magicHand.IsAvailable() 
-            && !isScrolling 
+        return magicHandGestures.magicHand.IsAvailable()
             && magicHandGestures.IsHandFlat
             && Mathf.Abs(magicHandGestures.magicHand.GetCenter().z) < maxDistanceToScreen;
     }
 
     public bool IsStopScrollConditionMet()
     {
-        // Hand must not be flat
-        return !IsStartScrollConditionMet();
+
+        if (!isScrolling)
+        {
+            return false;
+        }
+        return !magicHandGestures.magicHand.IsAvailable()
+            || !magicHandGestures.IsHandFlat
+            || Mathf.Abs(magicHandGestures.magicHand.GetCenter().z) >= maxDistanceToScreen;
     }
 
     public void StartScroll()
@@ -56,10 +65,12 @@ public class MagicScroller : MonoBehaviour
         lastHandPosition = magicHandGestures.magicHand.GetCenter();
         velocity = Vector3.zero; // reset velocity
         isScrolling = true;
+        Debug.Log("start scroll");
     }
 
     public void StopScroll()
     {
+        Debug.Log("stop  scroll");
         isScrolling = false;
         inertiaTimer = 0f; // start inertia timer
     }
