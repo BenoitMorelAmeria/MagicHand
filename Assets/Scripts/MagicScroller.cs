@@ -8,6 +8,10 @@ public class MagicScroller : MonoBehaviour
     [SerializeField] Transform objectToScroll;
     [SerializeField] MagicHandGestures magicHandGestures;
 
+    [Header("Activation conditions")]
+    [SerializeField] float maxDistanceToScreen = 0.2f; // Max distance from hand to screen to start scrolling
+
+
     [Header("Inertia Settings")]
     [SerializeField] float inertiaDuration = 1.0f;   // How long inertia lasts
     [SerializeField] float deceleration = 5.0f;      // Higher = stops faster
@@ -35,13 +39,16 @@ public class MagicScroller : MonoBehaviour
     public bool IsStartScrollConditionMet()
     {
         // Hand must be flat
-        return !isScrolling && magicHandGestures.IsHandFlat;
+        return magicHandGestures.magicHand.IsAvailable() 
+            && !isScrolling 
+            && magicHandGestures.IsHandFlat
+            && Mathf.Abs(magicHandGestures.magicHand.GetCenter().z) < maxDistanceToScreen;
     }
 
     public bool IsStopScrollConditionMet()
     {
         // Hand must not be flat
-        return isScrolling && !magicHandGestures.IsHandFlat;
+        return !IsStartScrollConditionMet();
     }
 
     public void StartScroll()
