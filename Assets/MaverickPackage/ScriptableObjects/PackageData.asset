@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9a62d4a2fb765348a85cef96a41303c, type: 3}
   m_Name: PackageData
   m_EditorClassIdentifier: 
-  Id: Hand-PoseDemo-SRD
-  Title: Hand PoseDemo SRD
-  Version: 1.0.11
+  Id: Hand-PoseDemo
+  Title: Hand PoseDemo
+  Version: 1.0.13
   IconPath: Assets/MaverickPackage/icon.png
   Scenes:
   - Assets/Scenes/SampleScene.unity
