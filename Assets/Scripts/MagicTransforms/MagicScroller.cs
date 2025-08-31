@@ -9,7 +9,11 @@ public class MagicScroller : MonoBehaviour
     [SerializeField] MagicHandGestures magicHandGestures;
 
     [Header("Activation conditions")]
-    [SerializeField] float maxDistanceToScreen = 0.25f; // Max distance from hand to screen to start scrolling
+    [SerializeField] bool requireHandFlat = true; // Require hand to be flat to start scrolling
+    [SerializeField] float maxDistanceToScreen = 0.25f; // Max distance from hand to screen if requireHandFlat is true
+
+    [SerializeField] float maxFingerDistanceToScreen = 0.1f; // Max distance between finger and
+    [SerializeField] int numberOfFingersToIntersect = 4; // Number of fingers required to be opened and to intersect the plane
 
 
     [Header("Inertia Settings")]
@@ -36,6 +40,33 @@ public class MagicScroller : MonoBehaviour
         UpdateScroll();
     }
 
+    private bool CheckCondition()
+    {
+        if (!magicHandGestures.magicHand.IsAvailable())
+        {
+            return false;
+        }
+        if (requireHandFlat)
+        {
+            return magicHandGestures.IsHandFlat
+           && Mathf.Abs(magicHandGestures.magicHand.GetCenter().z) < maxDistanceToScreen;
+        }
+        else
+        {
+            // count the number of opened fingers close enough
+            int count = 0;
+            for (int i = 0; i < 5; ++i)
+            {
+                if (magicHandGestures.fingerFrontness[i] > 0.0f // finger is opened
+                    && Mathf.Abs(magicHandGestures.magicHand.GetKeyPoint(4 * i + 4).z) < maxFingerDistanceToScreen) // fingertip is close enough to the screen
+                {
+                    count++;
+                }
+            }
+            return count >= numberOfFingersToIntersect;
+        }
+    }
+
     public bool IsStartScrollConditionMet()
     {
         if (isScrolling)
@@ -43,9 +74,7 @@ public class MagicScroller : MonoBehaviour
             return false;
         }
         // Hand must be flat
-        return magicHandGestures.magicHand.IsAvailable()
-            && magicHandGestures.IsHandFlat
-            && Mathf.Abs(magicHandGestures.magicHand.GetCenter().z) < maxDistanceToScreen;
+        return CheckCondition();
     }
 
     public bool IsStopScrollConditionMet()
@@ -55,9 +84,7 @@ public class MagicScroller : MonoBehaviour
         {
             return false;
         }
-        return !magicHandGestures.magicHand.IsAvailable()
-            || !magicHandGestures.IsHandFlat
-            || Mathf.Abs(magicHandGestures.magicHand.GetCenter().z) >= maxDistanceToScreen;
+        return !CheckCondition();
     }
 
     public void StartScroll()

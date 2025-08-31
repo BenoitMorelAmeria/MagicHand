@@ -3926,7 +3926,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectToScroll: {fileID: 1396882210}
   magicHandGestures: {fileID: 311480421}
+  requireHandFlat: 0
   maxDistanceToScreen: 0.25
+  maxFingerDistanceToScreen: 0.1
+  numberOfFingersToIntersect: 3
   inertiaDuration: 1
   deceleration: 5
   useInertia: 1
