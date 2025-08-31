@@ -151,7 +151,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 781286187}
+  - {fileID: 1899344607}
   m_Father: {fileID: 876446094}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &22206393
@@ -327,7 +329,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hands:
-  - {fileID: 640960582}
+  - {fileID: 0}
   debugMouse: 0
 --- !u!1 &139587531
 GameObject:
@@ -650,7 +652,7 @@ GameObject:
   - component: {fileID: 311480420}
   - component: {fileID: 311480421}
   m_Layer: 0
-  m_Name: MagicHandGestures1
+  m_Name: MagicHandGestures
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -683,7 +685,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9237219c2b8d16144abe6cc13bdace81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  magicHand: {fileID: 640960582}
+  magicHand: {fileID: 640960583}
   flatnessThreshold: 0.003
   indexFingerColinearityThreshold: 0.003
   otherFingersNonColinearityThreshold: 0.0075
@@ -1082,7 +1084,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c1074ce9e3a64e4e8ce15dbfd20d131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  magicHand: {fileID: 640960582}
+  magicHand: {fileID: 640960583}
   fileName: Assets/Recordings/MagicMap.json
   autoPlayOnStart: 1
 --- !u!1001 &606216469
@@ -1097,7 +1099,7 @@ PrefabInstance:
         type: 3}
       propertyPath: magicHand
       value: 
-      objectReference: {fileID: 640960582}
+      objectReference: {fileID: 640960583}
     - target: {fileID: 4494788986145180828, guid: baf3dda7b9a1b2b4590972e7b727f74f,
         type: 3}
       propertyPath: attractionRadius
@@ -1251,7 +1253,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b96070f528b244f4980eca444186db44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  magicHand: {fileID: 640960582}
+  magicHand: {fileID: 0}
 --- !u!4 &627389606
 Transform:
   m_ObjectHideFlags: 0
@@ -1277,9 +1279,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 640960581}
-  - component: {fileID: 640960582}
+  - component: {fileID: 640960583}
   m_Layer: 0
-  m_Name: MagicHand1
+  m_Name: MagicHand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1297,10 +1299,12 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 793329061}
+  - {fileID: 1587868241}
   m_Father: {fileID: 49395558}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &640960582
+--- !u!114 &640960583
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1309,39 +1313,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 640960580}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a8af304bee73da4593de1c63c2dc285, type: 3}
+  m_Script: {fileID: 11500000, guid: a8d54b3b08f97c24393e6765f2d00aa9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sphereSize: 0.01
-  cylinderRadius: 0.0075
-  sphereMaterial: {fileID: 2100000, guid: c25dec9ad56af374988c253d962955c4, type: 2}
-  cylinderMaterial: {fileID: 2100000, guid: b8b6c60d628c7cd41843da5cdb431bca, type: 2}
-  physicMaterial: {fileID: 13400000, guid: 4088577d034f445409c924e57a518e92, type: 2}
-  jointPairs:
-  - {x: 0, y: 1}
-  - {x: 1, y: 2}
-  - {x: 2, y: 3}
-  - {x: 3, y: 4}
-  - {x: 5, y: 6}
-  - {x: 6, y: 7}
-  - {x: 7, y: 8}
-  - {x: 9, y: 10}
-  - {x: 10, y: 11}
-  - {x: 11, y: 12}
-  - {x: 13, y: 14}
-  - {x: 14, y: 15}
-  - {x: 15, y: 16}
-  - {x: 17, y: 18}
-  - {x: 18, y: 19}
-  - {x: 19, y: 20}
-  - {x: 1, y: 5}
-  - {x: 5, y: 9}
-  - {x: 9, y: 13}
-  - {x: 13, y: 17}
-  - {x: 17, y: 0}
-  handLayer:
-    serializedVersion: 2
-    m_Bits: 64
+  rendererComp: {fileID: 793329062}
+  physicsComp: {fileID: 1587868242}
 --- !u!1 &720346406
 GameObject:
   m_ObjectHideFlags: 0
@@ -1436,7 +1412,7 @@ PrefabInstance:
         type: 3}
       propertyPath: magicHand
       value: 
-      objectReference: {fileID: 640960582}
+      objectReference: {fileID: 640960583}
     - target: {fileID: 4494788986145180828, guid: baf3dda7b9a1b2b4590972e7b727f74f,
         type: 3}
       propertyPath: attractionRadius
@@ -1590,6 +1566,125 @@ Transform:
   - {fileID: 1181974700}
   m_Father: {fileID: 1396882210}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &781286186
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 781286187}
+  - component: {fileID: 781286188}
+  m_Layer: 0
+  m_Name: IndexVisualFeedback
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &781286187
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 781286186}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 22206392}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &781286188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 781286186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26cbef06835f7274f9a6af87c028d62e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  magicHand: {fileID: 640960583}
+  feedbackPrefab: {fileID: 3667557707792725676, guid: 82da95765717e6849883b9fc85b824d7,
+    type: 3}
+  fingerIndex: 1
+  zIntersection: -0.1
+--- !u!1 &793329060
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 793329061}
+  - component: {fileID: 793329062}
+  m_Layer: 0
+  m_Name: MagicHandRenderer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &793329061
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 793329060}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 640960581}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &793329062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 793329060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4e7d36bec4a67d46aeac193ffb0315c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sphereSize: 0.005
+  cylinderRadius: 0.005
+  sphereMaterial: {fileID: 2100000, guid: b8b6c60d628c7cd41843da5cdb431bca, type: 2}
+  cylinderMaterial: {fileID: 2100000, guid: b8b6c60d628c7cd41843da5cdb431bca, type: 2}
+  jointPairs:
+  - {x: 0, y: 1}
+  - {x: 1, y: 2}
+  - {x: 2, y: 3}
+  - {x: 3, y: 4}
+  - {x: 5, y: 6}
+  - {x: 6, y: 7}
+  - {x: 7, y: 8}
+  - {x: 9, y: 10}
+  - {x: 10, y: 11}
+  - {x: 11, y: 12}
+  - {x: 13, y: 14}
+  - {x: 14, y: 15}
+  - {x: 15, y: 16}
+  - {x: 17, y: 18}
+  - {x: 18, y: 19}
+  - {x: 19, y: 20}
+  - {x: 1, y: 5}
+  - {x: 5, y: 9}
+  - {x: 9, y: 13}
+  - {x: 13, y: 17}
+  - {x: 17, y: 0}
 --- !u!1 &806689681
 GameObject:
   m_ObjectHideFlags: 0
@@ -1761,7 +1856,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &876446094
 Transform:
   m_ObjectHideFlags: 0
@@ -1794,7 +1889,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8340df51fef25f14aa16de28dd427856, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scale: {x: 0.85, y: 0.85, z: 0.85}
+  scale: {x: 1, y: 1, z: 1}
   position: {x: 0, y: 0, z: 0}
 --- !u!1 &877022473
 GameObject:
@@ -2322,7 +2417,7 @@ MonoBehaviour:
   pointerMagicHand: {fileID: 627389604}
   pointerINA: {fileID: 916979038}
   pointerMaterial: {fileID: 2100000, guid: a7c9722168e97594c9aed57a2da52537, type: 2}
-  magicHand: {fileID: 640960582}
+  magicHand: {fileID: 640960583}
   magicHandGestures: {fileID: 311480421}
   pointerMode: 1
   drawers:
@@ -2330,7 +2425,7 @@ MonoBehaviour:
   brushSize: 0.2
   brushColor: {r: 0, g: 0.06772518, b: 1, a: 1}
   hueStep: 0.1
-  rollbackTimeDelta: 0.01
+  cutSound: {fileID: 8300000, guid: 1bacade492a8fa34e8e9b7df20b2db20, type: 3}
   angleThreshold: 15
 --- !u!1 &1073811590
 GameObject:
@@ -2500,7 +2595,7 @@ PrefabInstance:
         type: 3}
       propertyPath: magicHand
       value: 
-      objectReference: {fileID: 640960582}
+      objectReference: {fileID: 640960583}
     - target: {fileID: 4671052005961311597, guid: baf3dda7b9a1b2b4590972e7b727f74f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3118,8 +3213,79 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05a1ba54fa9d5ac49b5f137b96108d27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  magicHand: {fileID: 640960582}
+  magicHand: {fileID: 0}
   filePath: Assets/recordedHandData.json
+--- !u!1 &1587868240
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1587868241}
+  - component: {fileID: 1587868242}
+  m_Layer: 0
+  m_Name: MagicHandPhysics
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1587868241
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1587868240}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 640960581}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1587868242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1587868240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f91738d65243b64fae5deaddec5ec5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  physicMaterial: {fileID: 13400000, guid: 4088577d034f445409c924e57a518e92, type: 2}
+  cylinderRadius: 0.0075
+  jointPairs:
+  - {x: 0, y: 1}
+  - {x: 1, y: 2}
+  - {x: 2, y: 3}
+  - {x: 3, y: 4}
+  - {x: 5, y: 6}
+  - {x: 6, y: 7}
+  - {x: 7, y: 8}
+  - {x: 9, y: 10}
+  - {x: 10, y: 11}
+  - {x: 11, y: 12}
+  - {x: 13, y: 14}
+  - {x: 14, y: 15}
+  - {x: 15, y: 16}
+  - {x: 17, y: 18}
+  - {x: 18, y: 19}
+  - {x: 19, y: 20}
+  - {x: 1, y: 5}
+  - {x: 5, y: 9}
+  - {x: 9, y: 13}
+  - {x: 13, y: 17}
+  - {x: 17, y: 0}
 --- !u!1 &1609270591
 GameObject:
   m_ObjectHideFlags: 0
@@ -3628,7 +3794,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d9312044fcf8b349b5d87350659a259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  magicHand: {fileID: 640960582}
+  magicHand: {fileID: 640960583}
   magicHandGestures: {fileID: 311480421}
   ProjectilePrefab: {fileID: 4418417278731887432, guid: 287111ca277fd5944ab4665ec5ecbe49,
     type: 3}
@@ -3681,7 +3847,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   asteroidPrefab: {fileID: 882166752418085491, guid: 4d3f67596b161e943b396b1450076ea1,
     type: 3}
-  magicHand: {fileID: 640960582}
+  magicHand: {fileID: 640960583}
   spawnInterval: 3
   spawnAreaSize: {x: 0.3, y: 0.3, z: 0.01}
   spawnAreaCenter: {x: 0, y: 0, z: 0.35}
@@ -3689,6 +3855,55 @@ MonoBehaviour:
   initialForceMax: 0.2
   initialTorqueMin: 0.001
   initialTorqueMax: 0.001
+--- !u!1 &1899344606
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1899344607}
+  - component: {fileID: 1899344608}
+  m_Layer: 0
+  m_Name: ThumbVisualFeedback
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1899344607
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1899344606}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 22206392}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1899344608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1899344606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26cbef06835f7274f9a6af87c028d62e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  magicHand: {fileID: 640960583}
+  feedbackPrefab: {fileID: 3667557707792725676, guid: 82da95765717e6849883b9fc85b824d7,
+    type: 3}
+  fingerIndex: 0
+  zIntersection: -0.1
 --- !u!1 &1982122640
 GameObject:
   m_ObjectHideFlags: 0

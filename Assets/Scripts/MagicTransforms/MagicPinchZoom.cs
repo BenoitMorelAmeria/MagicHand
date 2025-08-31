@@ -51,7 +51,6 @@ public class MagicpINCHZoom : MonoBehaviour
         }
         float thumbAlignment = GetFingerAlignmentToZ(0);
         float indexAlignment = GetFingerAlignmentToZ(1);
-        Debug.Log(thumbAlignment + " " + indexAlignment);    
         return magicHandGestures.magicHand.IsAvailable()
             && thumbAlignment > minFingerAlignmentToZ
             && indexAlignment > minFingerAlignmentToZ
@@ -120,7 +119,7 @@ public class MagicpINCHZoom : MonoBehaviour
     {
         int index1 = fingerIndex * 4 + 1;
         int index2 = fingerIndex * 4 + 4;
-        Vector3 fingerDirection = magicHandGestures.magicHand.GetKeyPointDiff(index2, index1).normalized;
+        Vector3 fingerDirection = magicHandGestures.magicHand.Data.GetKeyPointDiff(index2, index1).normalized;
         return Mathf.Abs(Vector3.Dot(fingerDirection, Vector3.forward));
     }
 

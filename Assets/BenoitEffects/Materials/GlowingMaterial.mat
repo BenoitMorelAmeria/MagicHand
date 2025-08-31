@@ -54,7 +54,7 @@ Material:
     - _AmbiantFresnel: 0
     - _FocusIntensity: 3
     - _FocusPower: 56545344
-    - _FresnelPower: 4
+    - _FresnelPower: 1
     - _QueueControl: 1
     - _QueueOffset: 0
     - _TexPower: 1

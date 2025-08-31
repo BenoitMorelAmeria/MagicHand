@@ -68,7 +68,7 @@ public class MagicHands : MonoBehaviour
     {
         foreach (MagicHand hand in hands)
         {
-            hand.UpdatePinchState(pinchState);
+            hand.SetPinchState(pinchState);
         }
     }
 

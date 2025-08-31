@@ -25,7 +25,8 @@ public class DrawManager : MonoBehaviour
     [SerializeField] public float brushSize = 0.1f;
     [SerializeField] Color brushColor = Color.blue;
     [SerializeField] float hueStep = 0.1f;
-    [SerializeField] float rollbackTimeDelta = 0.1f;
+
+    [SerializeField] AudioClip cutSound;
 
     [SerializeField] float angleThreshold = 15f;
     float lastAngleChangeTime = 0.0f;
@@ -37,11 +38,18 @@ public class DrawManager : MonoBehaviour
     private bool _wasClickLastFrame = false;
     private Vector3 _prevPos;
     private Vector3 _prevDir;
+    private AudioSource _cutAudioSource;
 
     public void Start()
     {
+        _cutAudioSource = gameObject.AddComponent<AudioSource>();
+        _cutAudioSource.clip = cutSound;
+        _cutAudioSource.playOnAwake = false;
+
+
         magicHandGestures.OnCutGesture += () =>
         {
+            _cutAudioSource.Play();
             Rollback();
         };
     }
