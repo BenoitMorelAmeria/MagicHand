@@ -4,6 +4,8 @@ using System.Collections.Generic;
 public class MagicHand : MonoBehaviour
 {
     public MagicHandData Data { get; private set; }
+    [SerializeField] public List<Vector2Int> jointPairs = new List<Vector2Int>();
+
     [SerializeField] private MagicHandRenderer rendererComp;
     [SerializeField] private MagicHandPhysics physicsComp;
 

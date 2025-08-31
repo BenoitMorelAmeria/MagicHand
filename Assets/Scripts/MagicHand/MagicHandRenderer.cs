@@ -12,7 +12,7 @@ public class MagicHandRenderer : MonoBehaviour
     public Material cylinderMaterial;
 
     [Header("Definition")]
-    [SerializeField] private List<Vector2Int> jointPairs = new List<Vector2Int>();
+    [SerializeField] public List<Vector2Int> jointPairs = new List<Vector2Int>();
 
     private List<Renderer> sphereRenderers = new List<Renderer>();
     private List<Renderer> cylinderRenderers = new List<Renderer>();

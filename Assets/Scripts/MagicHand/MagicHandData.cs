@@ -4,7 +4,6 @@ using UnityEngine;
 public class MagicHandData
 {
     public List<Vector3> Keypoints { get; private set; }
-    [SerializeField] public List<Vector2Int> jointPairs = new List<Vector2Int>();
 
     public bool PinchState { get; private set; }
 

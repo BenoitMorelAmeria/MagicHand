@@ -5,37 +5,71 @@ using UnityEngine;
 public class FingerIntersectionFeedback : MonoBehaviour
 {
     [SerializeField] MagicHand magicHand;
+    [SerializeField] MagicHandGestures magicHandGestures;
     [SerializeField] GameObject feedbackPrefab;
-    [SerializeField] int fingerIndex = 0;
+    [SerializeField] int fingerIndex = 0; // 0 = thumb, 1 = index, 2 = middle, 3 = ring, 4 = pinky, <0 = all fingers
     [SerializeField] float zIntersection = 0;
+    [SerializeField] bool onlyIfFingerOpen = false;
 
-    GameObject feedback;
+    List<Vector2Int> joinsToCheck = new List<Vector2Int>();
+
+    List<GameObject> feedbacks = new List<GameObject>();
 
     void Start()
     {
-        feedback = Instantiate(feedbackPrefab);
+        if (fingerIndex >= 0 && fingerIndex < 5)
+        {
+            joinsToCheck.Add(new Vector2Int(4 * fingerIndex + 1, 4 * fingerIndex + 2));
+            joinsToCheck.Add(new Vector2Int(4 * fingerIndex + 2, 4 * fingerIndex + 3));
+            joinsToCheck.Add(new Vector2Int(4 * fingerIndex + 3, 4 * fingerIndex + 4));
+        }
+        else
+        {
+            foreach (var jp in magicHand.jointPairs)
+            {
+                joinsToCheck.Add(jp);
+            }
+        }
+
+        for (int i = 0; i < joinsToCheck.Count; ++i)
+        {
+            feedbacks.Add(Instantiate(feedbackPrefab, transform));
+        }
     }
 
     // Update is called once per frame
     public void Update()
-    {      
-        MagicHandData data = magicHand.Data;
-        bool doesIntersect = false;
-        Vector3 intersection = Vector3.zero;
-        for (int i = 0; i < 3; ++i)
+    {    
+        
+        bool cancelRendering = !magicHand.IsAvailable();
+        if (!cancelRendering && onlyIfFingerOpen && 0 <= fingerIndex && fingerIndex < 5)
         {
-            Vector3 p1 = data.GetKeypoint(4 * fingerIndex + i + 1);
-            Vector3 p2 = data.GetKeypoint(4 * fingerIndex + i + 2);
-            doesIntersect |= IntersectZPlane(p1, p2, zIntersection, out intersection);
-            if (doesIntersect) break;
-        }
-        feedback.SetActive(doesIntersect);
-        if (doesIntersect)
-        {
-            Debug.Log("does intersect");
-            feedback.transform.position = intersection;
+            cancelRendering |= magicHandGestures.fingerFrontness[fingerIndex] < 0.0f;
         }
 
+        if (cancelRendering)
+        {
+            foreach (var fb in feedbacks)
+                fb.SetActive(false);
+            return;
+        }
+
+
+        MagicHandData data = magicHand.Data;
+        foreach (var join in joinsToCheck)
+        {
+            bool doesIntersect = false;
+            Vector3 intersection = Vector3.zero;
+            Vector3 p1 = data.GetKeypoint(join.x);
+            Vector3 p2 = data.GetKeypoint(join.y);
+            doesIntersect |= IntersectZPlane(p1, p2, zIntersection, out intersection);
+            GameObject feedback = feedbacks[joinsToCheck.IndexOf(join)];
+            feedback.SetActive(doesIntersect);
+            if (doesIntersect)
+            {
+                feedback.transform.position = intersection;
+            }
+        }
     }
 
 
