@@ -1283,7 +1283,7 @@ GameObject:
   m_Component:
   - component: {fileID: 640960581}
   - component: {fileID: 640960583}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MagicHand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1651,7 +1651,7 @@ GameObject:
   m_Component:
   - component: {fileID: 793329061}
   - component: {fileID: 793329062}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MagicHandRenderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3351,13 +3351,13 @@ GameObject:
   m_Component:
   - component: {fileID: 1587868241}
   - component: {fileID: 1587868242}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MagicHandPhysics
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1587868241
 Transform:
   m_ObjectHideFlags: 0
@@ -3389,6 +3389,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   physicMaterial: {fileID: 13400000, guid: 4088577d034f445409c924e57a518e92, type: 2}
+  sphereRadius: 0.0075
   cylinderRadius: 0.0075
   jointPairs:
   - {x: 0, y: 1}

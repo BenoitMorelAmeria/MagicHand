@@ -24,6 +24,7 @@ public class MagicHand : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.T))
             rendererComp.ToggleTransparency();
+        physicsComp.UpdatePhysics(Data.Keypoints);
 
     }
 
@@ -35,7 +36,6 @@ public class MagicHand : MonoBehaviour
 
         Data.UpdateKeypoints(transformedPoints);
         rendererComp.UpdateKeypoints(Data.Keypoints);
-        physicsComp.UpdatePhysics(Data.Keypoints);
     }
 
     public void SetVisible(bool visible) => rendererComp.SetVisible(visible);
