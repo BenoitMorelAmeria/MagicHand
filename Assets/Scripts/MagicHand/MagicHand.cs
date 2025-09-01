@@ -30,7 +30,11 @@ public class MagicHand : MonoBehaviour
 
     public void UpdateHand(List<Vector3> keypoints)
     {
-        Data.UpdateKeypoints(keypoints);
+        List<Vector3> transformedPoints = new List<Vector3>();
+        foreach (var p in keypoints)
+            transformedPoints.Add(transform.TransformPoint(p));
+
+        Data.UpdateKeypoints(transformedPoints);
         rendererComp.UpdateKeypoints(Data.Keypoints);
     }
 
