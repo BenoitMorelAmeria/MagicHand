@@ -9,11 +9,15 @@ public class MagicHand : MonoBehaviour
     [SerializeField] private MagicHandRenderer rendererComp;
     [SerializeField] private MagicHandPhysics physicsComp;
 
-    void Start()
+    private void Awake()
     {
         Data = new MagicHandData();
         rendererComp.Init(Data.Keypoints);
         physicsComp.Init(Data.Keypoints);
+    }
+
+    void Start()
+    {
     }
 
     void Update()

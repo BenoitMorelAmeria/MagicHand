@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class FingerIntersectionFeedback : MonoBehaviour
 {
-    [SerializeField] MagicHand magicHand;
     [SerializeField] MagicHandGestures magicHandGestures;
     [SerializeField] GameObject feedbackPrefab;
     [SerializeField] int fingerIndex = 0; // 0 = thumb, 1 = index, 2 = middle, 3 = ring, 4 = pinky, <0 = all fingers
@@ -25,7 +24,7 @@ public class FingerIntersectionFeedback : MonoBehaviour
         }
         else
         {
-            foreach (var jp in magicHand.jointPairs)
+            foreach (var jp in magicHandGestures.magicHand.jointPairs)
             {
                 joinsToCheck.Add(jp);
             }
@@ -40,8 +39,17 @@ public class FingerIntersectionFeedback : MonoBehaviour
     // Update is called once per frame
     public void Update()
     {    
-        
-        bool cancelRendering = !magicHand.IsAvailable();
+        if (magicHandGestures == null)
+        {
+            Debug.Log("null gestures");
+            return;
+        }
+        if (magicHandGestures.magicHand == null)
+        {
+            Debug.Log("null magic");
+            return;
+        }
+        bool cancelRendering = !magicHandGestures.magicHand.IsAvailable();
         if (!cancelRendering && onlyIfFingerOpen && 0 <= fingerIndex && fingerIndex < 5)
         {
             cancelRendering |= magicHandGestures.fingerFrontness[fingerIndex] < 0.0f;
@@ -55,7 +63,7 @@ public class FingerIntersectionFeedback : MonoBehaviour
         }
 
 
-        MagicHandData data = magicHand.Data;
+        MagicHandData data = magicHandGestures.magicHand.Data;
         foreach (var join in joinsToCheck)
         {
             bool doesIntersect = false;

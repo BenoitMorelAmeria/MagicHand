@@ -174,7 +174,7 @@ MonoBehaviour:
   objectToTranslate: {fileID: 1396882210}
   objectToZoom: {fileID: 750775627}
   magicHandGestures: {fileID: 311480421}
-  maxDistanceToScreen: 0.1
+  maxDistanceToScreen: 0.15
   fingerDistanceEpsilon: 0.01
   minFingerAlignmentToZ: 0.5
 --- !u!1 &37311777
@@ -332,7 +332,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hands:
-  - {fileID: 0}
+  - {fileID: 640960583}
   debugMouse: 0
 --- !u!1 &139587531
 GameObject:
@@ -1256,7 +1256,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b96070f528b244f4980eca444186db44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  magicHand: {fileID: 0}
+  magicHand: {fileID: 640960583}
 --- !u!4 &627389606
 Transform:
   m_ObjectHideFlags: 0
@@ -1635,12 +1635,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26cbef06835f7274f9a6af87c028d62e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  magicHand: {fileID: 640960583}
   magicHandGestures: {fileID: 311480421}
   feedbackPrefab: {fileID: 3667557707792725676, guid: 82da95765717e6849883b9fc85b824d7,
     type: 3}
   fingerIndex: 0
-  zIntersection: -0.1
+  zIntersection: -0.15
   onlyIfFingerOpen: 1
 --- !u!1 &793329060
 GameObject:
@@ -1916,7 +1915,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8340df51fef25f14aa16de28dd427856, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scale: {x: 1, y: 1, z: 1}
+  scale: {x: 0.5, y: 0.5, z: 0.5}
   position: {x: 0, y: 0, z: 0}
 --- !u!1 &877022473
 GameObject:
@@ -3012,12 +3011,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26cbef06835f7274f9a6af87c028d62e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  magicHand: {fileID: 640960583}
   magicHandGestures: {fileID: 311480421}
   feedbackPrefab: {fileID: 3667557707792725676, guid: 82da95765717e6849883b9fc85b824d7,
     type: 3}
   fingerIndex: 2
-  zIntersection: -0.1
+  zIntersection: -0.15
   onlyIfFingerOpen: 1
 --- !u!1 &1396882209
 GameObject:
@@ -3337,12 +3335,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26cbef06835f7274f9a6af87c028d62e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  magicHand: {fileID: 640960583}
   magicHandGestures: {fileID: 311480421}
   feedbackPrefab: {fileID: 3667557707792725676, guid: 82da95765717e6849883b9fc85b824d7,
     type: 3}
   fingerIndex: 3
-  zIntersection: -0.1
+  zIntersection: -0.15
   onlyIfFingerOpen: 1
 --- !u!1 &1587868240
 GameObject:
@@ -3512,6 +3509,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: MavMqtt
       objectReference: {fileID: 0}
+    - target: {fileID: 5671676502006043689, guid: 7e9b156a7196d4d4888dd499fd3bb9c8,
+        type: 3}
+      propertyPath: OnMessageArrived.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5671676502006043689, guid: 7e9b156a7196d4d4888dd499fd3bb9c8,
+        type: 3}
+      propertyPath: OnMessageArrived.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1047881801}
+    - target: {fileID: 5671676502006043689, guid: 7e9b156a7196d4d4888dd499fd3bb9c8,
+        type: 3}
+      propertyPath: OnMessageArrived.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnMessageArrived
+      objectReference: {fileID: 0}
+    - target: {fileID: 5671676502006043689, guid: 7e9b156a7196d4d4888dd499fd3bb9c8,
+        type: 3}
+      propertyPath: OnMessageArrived.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: MqttHandPose, Assembly-CSharp
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -3565,12 +3582,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26cbef06835f7274f9a6af87c028d62e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  magicHand: {fileID: 640960583}
   magicHandGestures: {fileID: 311480421}
   feedbackPrefab: {fileID: 3667557707792725676, guid: 82da95765717e6849883b9fc85b824d7,
     type: 3}
   fingerIndex: 1
-  zIntersection: -0.1
+  zIntersection: -0.15
   onlyIfFingerOpen: 1
 --- !u!1 &1637025338
 GameObject:
@@ -3928,7 +3944,7 @@ MonoBehaviour:
   magicHandGestures: {fileID: 311480421}
   requireHandFlat: 0
   maxDistanceToScreen: 0.25
-  maxFingerDistanceToScreen: 0.1
+  maxFingerDistanceToScreen: 0.15
   numberOfFingersToIntersect: 3
   inertiaDuration: 1
   deceleration: 5
@@ -4114,12 +4130,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26cbef06835f7274f9a6af87c028d62e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  magicHand: {fileID: 640960583}
   magicHandGestures: {fileID: 311480421}
   feedbackPrefab: {fileID: 3667557707792725676, guid: 82da95765717e6849883b9fc85b824d7,
     type: 3}
   fingerIndex: 4
-  zIntersection: -0.1
+  zIntersection: -0.15
   onlyIfFingerOpen: 1
 --- !u!1 &2001871035
 GameObject:
