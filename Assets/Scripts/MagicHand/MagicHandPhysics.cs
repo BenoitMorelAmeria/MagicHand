@@ -8,6 +8,7 @@ public class MagicHandPhysics : MonoBehaviour
     [SerializeField] private float sphereRadius = 0.01f;
     [SerializeField] private float cylinderRadius = 0.01f;
     [SerializeField] private List<Vector2Int> jointPairs = new List<Vector2Int>();
+    [SerializeField] private bool showPhysics;
 
     private List<Rigidbody> keypointBodies = new List<Rigidbody>();
     private List<Rigidbody> jointBodies = new List<Rigidbody>();
@@ -24,6 +25,7 @@ public class MagicHandPhysics : MonoBehaviour
         foreach (var pos in positions)
         {
             GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.GetComponent<Renderer>().enabled = showPhysics;
             sphere.transform.localScale = new Vector3(sphereRadius, sphereRadius, sphereRadius);
             sphere.transform.SetParent(transform, false);
 
@@ -52,6 +54,7 @@ public class MagicHandPhysics : MonoBehaviour
             GameObject cyl = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             cyl.transform.SetParent(transform, false);
 
+            cyl.GetComponent<Renderer>().enabled = showPhysics;
 
 
             cyl.transform.position = mid;
