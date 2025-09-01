@@ -8,6 +8,7 @@ using UnityEngine.SpatialTracking; // Make sure you include this!
 public class CameraManager : MonoBehaviour
 {
     public Camera mainCamera;
+    public Transform camerasParentTransform;
 
     [SerializeField] private Camera defaultMainCamera;
     [SerializeField] private Camera srdScreenMainCamera;

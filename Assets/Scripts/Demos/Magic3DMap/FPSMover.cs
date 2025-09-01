@@ -5,21 +5,32 @@ public class FreeFlyController : MonoBehaviour
     public float moveSpeed = 5f;
     public float mouseSensitivity = 2f;
     public Transform sceneRoot; // assign your world root (all objects under here)
+    public CameraManager cameraManager;
 
     private float yaw = 0f;
     private float pitch = 0f;
     private bool moveCamera = true; // toggle with Tab
+    private bool mouseVisible = false;
 
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        SetMouseVisible(false);
+    }
+
+    private void SetMouseVisible(bool visible)
+    {
+
+        Cursor.lockState = visible ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = visible;
+        mouseVisible = visible;
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Tab))
             moveCamera = !moveCamera;
+        if (Input.GetKeyDown(KeyCode.M))
+            SetMouseVisible(!mouseVisible);
 
         HandleMouseLook();
         HandleMovement();
@@ -55,7 +66,7 @@ public class FreeFlyController : MonoBehaviour
     void LateUpdate()
     {
         // Apply pitch + yaw to the actual camera
-        Camera.main.transform.SetPositionAndRotation(
+        cameraManager.camerasParentTransform.SetPositionAndRotation(
             transform.position,
             Quaternion.Euler(pitch, yaw, 0f)
         );

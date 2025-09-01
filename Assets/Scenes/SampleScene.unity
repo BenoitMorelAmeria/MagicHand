@@ -1675,8 +1675,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 100
   mouseSensitivity: 2
-  playerCamera: {fileID: 2346907437378145829}
   sceneRoot: {fileID: 2021289052}
+  cameraManager: {fileID: 4216428590830783620}
 --- !u!1 &720346406
 GameObject:
   m_ObjectHideFlags: 0
@@ -4609,7 +4609,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: b309f5f6e596ab34e942a41441962733, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5345,6 +5345,11 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4511025738201442301, guid: a7096565a372d7c4aa72842f9611cfb3,
+        type: 3}
+      propertyPath: camerasParentTransform
+      value: 
+      objectReference: {fileID: 2346907437378145829}
     - target: {fileID: 4644143985505019558, guid: a7096565a372d7c4aa72842f9611cfb3,
         type: 3}
       propertyPath: m_ClearFlags
