@@ -1685,8 +1685,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4e7d36bec4a67d46aeac193ffb0315c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sphereSize: 0.005
-  cylinderRadius: 0.005
+  sphereSize: 0.0075
+  cylinderRadius: 0.0075
   sphereMaterial: {fileID: 2100000, guid: b8b6c60d628c7cd41843da5cdb431bca, type: 2}
   cylinderMaterial: {fileID: 2100000, guid: b8b6c60d628c7cd41843da5cdb431bca, type: 2}
   jointPairs:

@@ -42,6 +42,7 @@ public class DrawManager : MonoBehaviour
 
     public void Start()
     {
+        Debug.Log("Draw manager start");
         _cutAudioSource = gameObject.AddComponent<AudioSource>();
         _cutAudioSource.clip = cutSound;
         _cutAudioSource.playOnAwake = false;
@@ -49,7 +50,6 @@ public class DrawManager : MonoBehaviour
 
         magicHandGestures.OnCutGesture += () =>
         {
-            _cutAudioSource.Play();
             Rollback();
         };
     }
@@ -157,6 +157,11 @@ public class DrawManager : MonoBehaviour
 
     private void Rollback()
     {
+
+        if (_cutAudioSource != null)
+        {
+            _cutAudioSource.Play();
+        }
         drawers[_currentDrawerIndex].Rollback();
     }
 
