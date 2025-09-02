@@ -13,15 +13,16 @@ public class FreeFlyController : MonoBehaviour
     [SerializeField] public CameraManager cameraManager;
 
     [Header("Hand pose")]
-    [SerializeField] private float handZCenter = 0.2f; // z position of the hand where the camera is at origin
-    [SerializeField] private float handPoseForwardSpeed = 10f; // z position of the hand where the camera is at origin
-    [SerializeField] private float handZDeadZone = 0.01f; // z position dead zone around center to avoid jitter
-    [SerializeField] private float handRotationSpeed = 60f; // degrees per second
+    [SerializeField] private float handZCenter = 0.2f;
+    [SerializeField] private float handPoseForwardSpeed = 10f;
+    [SerializeField] private float handZDeadZone = 0.01f;
+    [SerializeField] private float handRotationSpeed = 5f; // blend speed (higher = snappier)
 
-
-    private float yaw = 0f;
-    private float pitch = 0f;
     private bool mouseVisible = false;
+
+    // Rotation state
+    private Quaternion currentRotation = Quaternion.identity;
+    private Quaternion handNeutral = Quaternion.LookRotation(Vector3.forward, Vector3.down);
 
     void Start()
     {
@@ -30,7 +31,6 @@ public class FreeFlyController : MonoBehaviour
 
     private void SetMouseVisible(bool visible)
     {
-
         Cursor.lockState = visible ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = visible;
         mouseVisible = visible;
@@ -48,104 +48,82 @@ public class FreeFlyController : MonoBehaviour
             HandleMouseLook();
             HandleKeyboardMovement();
         }
-        handleHandPos();
+
+        HandleHandPos();
     }
 
     void HandleMouseLook()
     {
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
-        yaw += mouseX;
-        pitch -= mouseY;
-        pitch = Mathf.Clamp(pitch, -89f, 89f); // prevent flipping
+
+        // Incremental yaw/pitch as quaternions
+        Quaternion yawRot = Quaternion.AngleAxis(mouseX, Vector3.up);
+        Quaternion pitchRot = Quaternion.AngleAxis(-mouseY, Vector3.right);
+
+        // Apply to current rotation
+        currentRotation = yawRot * currentRotation * pitchRot;
     }
 
     void HandleKeyboardMovement()
     {
-        float h = Input.GetAxis("Horizontal"); // A/D up/down
-        float v = Input.GetAxis("Vertical");   // W/S left/right
-        // Forward is camera's forward, Right is camera's right
-        Vector3 move = (GetCurrentRotation() * new Vector3(h, 0, v)) * moveSpeed * Time.deltaTime;
+        float h = Input.GetAxis("Horizontal"); // A/D
+        float v = Input.GetAxis("Vertical");   // W/S
+        Vector3 move = (currentRotation * new Vector3(h, 0, v)) * moveSpeed * Time.deltaTime;
         transform.position += move;
     }
 
-    Quaternion GetCurrentRotation() => Quaternion.Euler(pitch, yaw, 0f);
-
     void LateUpdate()
     {
-        Quaternion camRot = Quaternion.Euler(pitch, yaw, 0f);
-
         if (moveCamera)
         {
             // Move the camera normally
             cameraManager.camerasParentTransform.SetPositionAndRotation(
                 transform.position,
-                camRot
+                currentRotation
             );
         }
         else
         {
-            // Move the world as if the camera moved
-            Quaternion inverseRot = Quaternion.Inverse(camRot);
+            // Move the world instead
+            Quaternion inverseRot = Quaternion.Inverse(currentRotation);
             Vector3 inversePos = -(inverseRot * transform.position);
 
-            sceneRoot.SetPositionAndRotation(
-                inversePos,
-                inverseRot
-            );
+            sceneRoot.SetPositionAndRotation(inversePos, inverseRot);
         }
     }
 
-
-    public void handleHandPos()
+    public void HandleHandPos()
     {
         if (!magicHandGestures.magicHand.IsAvailable())
             return;
 
-        // --- Forward/Backward movement based on hand Z ---
+        // --- Forward/Backward movement ---
         Vector3 handPosePos = magicHandGestures.magicHand.GetCenter();
         float zOffset = handPosePos.z - handZCenter;
 
         if (Mathf.Abs(zOffset) > handZDeadZone)
         {
-            Vector3 move = (GetCurrentRotation() * new Vector3(0, 0, zOffset))
+            Vector3 move = (currentRotation * new Vector3(0, 0, zOffset))
                            * handPoseForwardSpeed * Time.deltaTime;
             transform.position += move;
         }
 
-        // --- Orientation-based camera rotation ---
-        Vector3 palmNormal = magicHandGestures.palmNormal.normalized;
+        // --- Orientation-based rotation ---
+        Vector3 palmNormal = magicHandGestures.palmNormal.normalized; // acts as local "up"
+        Vector3 palmRight = -magicHandGestures.palmRight.normalized;   // acts as local "right"
 
-        // "Neutral" is Vector3.down  compute deviation from down
-        // Project palmNormal onto XZ plane (ignoring Y) for yaw
-        Vector3 flat = new Vector3(palmNormal.x, 0, palmNormal.z).normalized;
-        float targetYawDelta = 0f;
-        if (flat.sqrMagnitude > 0.0001f)
-        {
-            // Compare against forward (Z+) to get signed yaw angle
-            targetYawDelta = Vector3.SignedAngle(Vector3.forward, flat, Vector3.up);
-        }
+        // Derive palm forward using right × up
+        Vector3 palmForward = Vector3.Cross(palmRight, palmNormal).normalized;
 
-        // Pitch: check how much palmNormal tilts away from straight down
-        // palmNormal = (0,-1,0)  pitch=0
-        // tilt forward/back changes X/Z components
-        float verticalDeviation = Vector3.Angle(Vector3.down, palmNormal);
-        // Map to signed value using palmNormal.x (left/right tilt) or z (forward/back tilt)
-        float targetPitchDelta = 0f;
-        if (Mathf.Abs(palmNormal.y) < 0.999f) // avoid gimbal issues
-        {
-            // Use dot with forward to decide sign
-            float sign = Mathf.Sign(Vector3.Dot(palmNormal, Vector3.forward));
-            targetPitchDelta = verticalDeviation * sign;
-        }
+        // Construct orientation from basis vectors
+        Quaternion handRot = Quaternion.LookRotation(palmForward, palmNormal);
 
-        // Apply deltas smoothly relative to speed
-        yaw += targetYawDelta * handRotationSpeed * Time.deltaTime;
-        pitch += targetPitchDelta * handRotationSpeed * Time.deltaTime;
+        // Relative to neutral (palm down)
+        Quaternion targetRotation = handRot * Quaternion.Inverse(handNeutral);
 
-        // Clamp pitch to avoid flipping
-        pitch = Mathf.Clamp(pitch, -89f, 89f);
+        // Apply instantly (no smoothing)
+        currentRotation = targetRotation;
     }
-
 
 }
