@@ -42,12 +42,14 @@ public class MagicHands : MonoBehaviour
             foreach (MagicHand hand in hands)
             {
                 hand.gameObject.SetActive(false);
+                hand.SetHandPoseEnabled(false);
             }
             labelToHandIndex.Clear();
             assignedHandIndices.Clear();
         } else
         {
             hands[0].gameObject.SetActive(true);
+            hands[0].SetHandPoseEnabled(true);
         }
     }
 

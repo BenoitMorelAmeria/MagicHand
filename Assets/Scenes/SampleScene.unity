@@ -793,7 +793,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &278101282
 Transform:
   m_ObjectHideFlags: 0
@@ -1674,9 +1674,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 100
+  moveCamera: 0
+  enableMouseAndKeyboard: 1
   mouseSensitivity: 2
+  magicHandGestures: {fileID: 311480421}
   sceneRoot: {fileID: 2021289052}
   cameraManager: {fileID: 4216428590830783620}
+  handZCenter: -0.1
+  handZDeadZone: 0.05
 --- !u!1 &720346406
 GameObject:
   m_ObjectHideFlags: 0

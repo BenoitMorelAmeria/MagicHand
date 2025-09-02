@@ -38,6 +38,11 @@ public class MagicHand : MonoBehaviour
         rendererComp.UpdateKeypoints(Data.Keypoints);
     }
 
+    public void SetHandPoseEnabled(bool enabled)
+    {
+        Data.enabled = enabled;
+    }
+
     public void SetVisible(bool visible) => rendererComp.SetVisible(visible);
 
     public void SetPinchState(bool state) => Data.SetPinchState(state);

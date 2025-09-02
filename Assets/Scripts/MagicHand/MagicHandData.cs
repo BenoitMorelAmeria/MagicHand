@@ -4,6 +4,7 @@ using UnityEngine;
 public class MagicHandData
 {
     public List<Vector3> Keypoints { get; private set; }
+    public bool enabled = false;
 
     public bool PinchState { get; private set; }
 
@@ -30,7 +31,7 @@ public class MagicHandData
         return Keypoints.Count > 0 ? center / Keypoints.Count : Vector3.zero;
     }
 
-    public bool IsAvailable() => Keypoints.Count == 21; // could extend later
+    public bool IsAvailable() => Keypoints.Count == 21 && enabled; // could extend later
 
     public Vector3 GetKeyPointDiff(int index1, int index2) => Keypoints[index1] - Keypoints[index2];
 }
