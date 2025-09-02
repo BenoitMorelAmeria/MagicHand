@@ -1681,7 +1681,9 @@ MonoBehaviour:
   sceneRoot: {fileID: 2021289052}
   cameraManager: {fileID: 4216428590830783620}
   handZCenter: -0.1
-  handZDeadZone: 0.05
+  handPoseForwardSpeed: 10000
+  handZDeadZone: 0
+  handRotationSpeed: 60
 --- !u!1 &720346406
 GameObject:
   m_ObjectHideFlags: 0

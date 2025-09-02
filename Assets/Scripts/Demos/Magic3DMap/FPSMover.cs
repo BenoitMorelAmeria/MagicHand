@@ -16,6 +16,8 @@ public class FreeFlyController : MonoBehaviour
     [SerializeField] private float handZCenter = 0.2f; // z position of the hand where the camera is at origin
     [SerializeField] private float handPoseForwardSpeed = 10f; // z position of the hand where the camera is at origin
     [SerializeField] private float handZDeadZone = 0.01f; // z position dead zone around center to avoid jitter
+    [SerializeField] private float handRotationSpeed = 60f; // degrees per second
+
 
     private float yaw = 0f;
     private float pitch = 0f;
@@ -94,20 +96,56 @@ public class FreeFlyController : MonoBehaviour
         }
     }
 
+
     public void handleHandPos()
     {
         if (!magicHandGestures.magicHand.IsAvailable())
-        {
             return;
-        }
-        // move forward or background depending on the hand z position
-        Vector3 handPosePos = magicHandGestures.magicHand.GetCenter(); 
-        float zOffset = handPosePos.z - handZCenter;
-        Debug.Log("hand z=" + handPosePos.z + " zOffset=" + zOffset);
-        Vector3 move = (GetCurrentRotation() * new Vector3(0, 0, zOffset)) * handPoseForwardSpeed * Time.deltaTime;
-        Debug.Log("Move: " + move);
-        transform.position += move;
 
+        // --- Forward/Backward movement based on hand Z ---
+        Vector3 handPosePos = magicHandGestures.magicHand.GetCenter();
+        float zOffset = handPosePos.z - handZCenter;
+
+        if (Mathf.Abs(zOffset) > handZDeadZone)
+        {
+            Vector3 move = (GetCurrentRotation() * new Vector3(0, 0, zOffset))
+                           * handPoseForwardSpeed * Time.deltaTime;
+            transform.position += move;
+        }
+
+        // --- Orientation-based camera rotation ---
+        Vector3 palmNormal = magicHandGestures.palmNormal.normalized;
+
+        // "Neutral" is Vector3.down  compute deviation from down
+        // Project palmNormal onto XZ plane (ignoring Y) for yaw
+        Vector3 flat = new Vector3(palmNormal.x, 0, palmNormal.z).normalized;
+        float targetYawDelta = 0f;
+        if (flat.sqrMagnitude > 0.0001f)
+        {
+            // Compare against forward (Z+) to get signed yaw angle
+            targetYawDelta = Vector3.SignedAngle(Vector3.forward, flat, Vector3.up);
+        }
+
+        // Pitch: check how much palmNormal tilts away from straight down
+        // palmNormal = (0,-1,0)  pitch=0
+        // tilt forward/back changes X/Z components
+        float verticalDeviation = Vector3.Angle(Vector3.down, palmNormal);
+        // Map to signed value using palmNormal.x (left/right tilt) or z (forward/back tilt)
+        float targetPitchDelta = 0f;
+        if (Mathf.Abs(palmNormal.y) < 0.999f) // avoid gimbal issues
+        {
+            // Use dot with forward to decide sign
+            float sign = Mathf.Sign(Vector3.Dot(palmNormal, Vector3.forward));
+            targetPitchDelta = verticalDeviation * sign;
+        }
+
+        // Apply deltas smoothly relative to speed
+        yaw += targetYawDelta * handRotationSpeed * Time.deltaTime;
+        pitch += targetPitchDelta * handRotationSpeed * Time.deltaTime;
+
+        // Clamp pitch to avoid flipping
+        pitch = Mathf.Clamp(pitch, -89f, 89f);
     }
+
 
 }
