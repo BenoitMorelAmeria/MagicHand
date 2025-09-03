@@ -56,9 +56,10 @@ public class LevelManager : MonoBehaviour
             return;
         }
         GameObject toClone = levels[level];
+        toClone.GetComponent<Level>().OnLoadLevel(sceneTransform);
         currentLevel = Instantiate(toClone, toClone.transform.parent);
         levelIndex = level;
         currentLevel.gameObject.SetActive(true);
-        currentLevel.GetComponent<Level>().OnLoadLevel(sceneTransform);
+        //currentLevel.GetComponent<Level>().OnLoadLevel(sceneTransform);
     }
 }

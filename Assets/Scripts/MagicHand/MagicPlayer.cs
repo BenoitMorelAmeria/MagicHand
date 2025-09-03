@@ -13,6 +13,7 @@ public class MagicPlayer : MonoBehaviour
     private float playbackStartTime;
     private int currentFrame = 0;
     private bool isPlaying = false;
+    private bool paused = false;
 
     void Start()
     {
@@ -23,7 +24,20 @@ public class MagicPlayer : MonoBehaviour
 
     void Update()
     {
-        if (!isPlaying || recording == null || recording.frames.Count == 0)
+        // Check for pause/resume keys
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            paused = true;
+            Debug.Log("Playback paused.");
+        }
+        else if (Input.GetKeyDown(KeyCode.Q))
+        {
+            paused = false;
+            // Restart playback from beginning
+            Play();
+        }
+
+        if (!isPlaying || paused || recording == null || recording.frames.Count == 0)
             return;
 
         float elapsed = Time.time - playbackStartTime;
@@ -67,12 +81,12 @@ public class MagicPlayer : MonoBehaviour
         currentFrame = 0;
         playbackStartTime = Time.time;
         isPlaying = true;
+        paused = false;
         Debug.Log("Playback started.");
     }
 
     private void LoadRecording()
     {
-        
         string json = File.ReadAllText(fileName);
         recording = JsonUtility.FromJson<HandRecording>(json);
 
