@@ -71,7 +71,7 @@ public class MagicHandPhysics : MonoBehaviour
         go.layer = Mathf.RoundToInt(Mathf.Log(handLayer.value, 2));
 
         Rigidbody rb = go.AddComponent<Rigidbody>();
-        rb.isKinematic = true;
+        rb.isKinematic = false;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         Collider col = go.GetComponent<Collider>();
         col.material = physicMaterial;
@@ -90,34 +90,67 @@ public class MagicHandPhysics : MonoBehaviour
         {
             Debug.LogWarning("Mismatch between keypoints and rigidbodies! " + keypoints.Count + " " + keypointBodies.Count);
             return;
-        }   
-
-        // update spheres
-        for (int i = 0; i < keypoints.Count; i++)
-        {
-            Vector3 target = keypoints[i];// transform.TransformPoint(keypoints[i]);
-            keypointBodies[i].MovePosition(target);
-            keypointTriggers[i].transform.position = target;
         }
 
-        // update cylinders
+        float positionSpring = 100f; // adjust for stiffness
+        float positionDamping = 5f;
+
+        float rotationSpring = 50f;   // adjust for rotation response
+        float rotationDamping = 1f;
+
+        // Update spheres with forces
+        for (int i = 0; i < keypoints.Count; i++)
+        {
+            Rigidbody rb = keypointBodies[i];
+            Vector3 target = keypoints[i];
+
+            // Position spring force
+            Vector3 displacement = target - rb.position;
+            Vector3 springForce = displacement * positionSpring;
+            Vector3 dampingForce = -rb.velocity * positionDamping;
+            rb.AddForce(springForce + dampingForce, ForceMode.Force);
+
+            // Update trigger visuals
+            keypointTriggers[i].transform.position = rb.position;
+        }
+
+        // Update cylinders with torque forces
         for (int i = 0; i < jointPairs.Count; i++)
         {
             var pair = jointPairs[i];
-            Vector3 p1 = keypoints[pair.x]; // transform.TransformPoint(keypoints[pair.x]);
-            Vector3 p2 = keypoints[pair.y]; // transform.TransformPoint(keypoints[pair.y]);
+            Vector3 p1 = keypoints[pair.x];
+            Vector3 p2 = keypoints[pair.y];
             Vector3 mid = (p1 + p2) / 2f;
             Vector3 dir = p2 - p1;
             float length = dir.magnitude;
 
             Rigidbody rb = jointBodies[i];
-            rb.MovePosition(mid);
+
+            // Position spring for mid-point
+            Vector3 displacement = mid - rb.position;
+            Vector3 springForce = displacement * positionSpring;
+            Vector3 dampingForce = -rb.velocity * positionDamping;
+            rb.AddForce(springForce + dampingForce, ForceMode.Force);
+
+            // Rotation spring
             if (dir != Vector3.zero)
-                rb.MoveRotation(Quaternion.FromToRotation(Vector3.up, dir));
+            {
+                Quaternion targetRot = Quaternion.FromToRotation(Vector3.up, dir);
+                Quaternion deltaRot = targetRot * Quaternion.Inverse(rb.rotation);
+                deltaRot.ToAngleAxis(out float angle, out Vector3 axis);
+                if (angle > 180f) angle -= 360f;
+                if (Mathf.Abs(angle) > 0.01f)
+                {
+                    axis.Normalize();
+                    Vector3 desiredAngularVel = axis * (angle * Mathf.Deg2Rad * rotationSpring);
+                    Vector3 torque = (desiredAngularVel - rb.angularVelocity) * rotationDamping;
+                    rb.AddTorque(torque, ForceMode.Force);
+                }
+            }
 
+            // Scale update
             Vector3 globalScale = new Vector3(cylinderRadius, length / 2f, cylinderRadius);
-            SetGlobalScale(jointBodies[i].transform, globalScale);
-
+            SetGlobalScale(rb.transform, globalScale);
         }
     }
     public static void SetGlobalScale(Transform transform, Vector3 globalScale)

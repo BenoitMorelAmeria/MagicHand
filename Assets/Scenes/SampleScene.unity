@@ -5508,7 +5508,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   physicMaterial: {fileID: 13400000, guid: 4088577d034f445409c924e57a518e92, type: 2}
-  sphereRadius: 0.0075
+  sphereRadius: 0.0175
   cylinderRadius: 0.0075
   jointPairs:
   - {x: 0, y: 1}

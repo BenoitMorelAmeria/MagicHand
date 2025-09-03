@@ -31,6 +31,8 @@ public class MagicHandRenderer : MonoBehaviour
             GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             sphere.transform.SetParent(transform, false);
             SetGlobalScale(sphere.transform, Vector3.one * sphereSize);
+            Collider col = sphere.GetComponent<Collider>();
+            if (col != null) col.enabled = false;
 
             Renderer rend = sphere.GetComponent<Renderer>();
             if (sphereMaterial != null) rend.material = sphereMaterial;
@@ -58,6 +60,9 @@ public class MagicHandRenderer : MonoBehaviour
             Renderer rend = cyl.GetComponent<Renderer>();
             if (cylinderMaterial != null) rend.material = cylinderMaterial;
             cylinderRenderers.Add(rend);
+
+            Collider colCyl = cyl.GetComponent<Collider>();
+            if (colCyl != null) colCyl.enabled = false;
         }
     }
 
