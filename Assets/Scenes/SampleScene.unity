@@ -171,7 +171,7 @@ MonoBehaviour:
   objectToZoom: {fileID: 750775627}
   magicHandGestures: {fileID: 311480421}
   maxDistanceToScreen: 0.05
-  fingerDistanceEpsilon: 0.01
+  fingerDistanceEpsilon: 0.025
   minFingerAlignmentToZ: 0.5
 --- !u!1001 &35340229
 PrefabInstance:
@@ -384,7 +384,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &45511626
 Transform:
   m_ObjectHideFlags: 0
@@ -3521,7 +3521,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &928426696
 Transform:
   m_ObjectHideFlags: 0
@@ -5761,9 +5761,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levels:
-  - {fileID: 45511625}
-  - {fileID: 278101281}
   - {fileID: 876446093}
+  - {fileID: 278101281}
   - {fileID: 607913961}
   - {fileID: 2017667087}
   - {fileID: 877022473}

@@ -71,7 +71,7 @@ public class MagicHandPhysics : MonoBehaviour
         go.layer = Mathf.RoundToInt(Mathf.Log(handLayer.value, 2));
 
         Rigidbody rb = go.AddComponent<Rigidbody>();
-        rb.isKinematic = false;
+        rb.isKinematic = true;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         Collider col = go.GetComponent<Collider>();
         col.material = physicMaterial;
