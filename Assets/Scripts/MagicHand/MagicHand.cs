@@ -12,8 +12,8 @@ public class MagicHand : MonoBehaviour
     private void Awake()
     {
         Data = new MagicHandData();
-        rendererComp.Init(Data.Keypoints);
-        physicsComp.Init(Data.Keypoints);
+        rendererComp.Init(Data.Keypoints, jointPairs);
+        physicsComp.Init(Data.Keypoints, jointPairs);
     }
 
     void Start()

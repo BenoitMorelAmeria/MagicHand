@@ -7,15 +7,17 @@ public class MagicHandPhysics : MonoBehaviour
     [SerializeField] private PhysicMaterial physicMaterial;
     [SerializeField] private float sphereRadius = 0.01f;
     [SerializeField] private float cylinderRadius = 0.01f;
-    [SerializeField] private List<Vector2Int> jointPairs = new List<Vector2Int>();
     [SerializeField] private bool showPhysics;
 
+
+    private List<Vector2Int> _jointPairs = new List<Vector2Int>();
     private List<Rigidbody> keypointBodies = new List<Rigidbody>();
     private List<Rigidbody> jointBodies = new List<Rigidbody>();
     private List<Collider> keypointTriggers = new List<Collider>();
 
-    public void Init(List<Vector3> initialKeypoints)
+    public void Init(List<Vector3> initialKeypoints, List<Vector2Int> jointPairs)
     {
+        _jointPairs = jointPairs;
         InitKeypoints(initialKeypoints);
         InitJoints(initialKeypoints);
     }
@@ -40,7 +42,7 @@ public class MagicHandPhysics : MonoBehaviour
 
     private void InitJoints(List<Vector3> positions)
     {
-        foreach (var pair in jointPairs)
+        foreach (var pair in _jointPairs)
         {
             if (pair.x < 0 || pair.x >= positions.Count || pair.y < 0 || pair.y >= positions.Count)
                 continue;
@@ -115,9 +117,9 @@ public class MagicHandPhysics : MonoBehaviour
         }
 
         // Update cylinders with torque forces
-        for (int i = 0; i < jointPairs.Count; i++)
+        for (int i = 0; i < _jointPairs.Count; i++)
         {
-            var pair = jointPairs[i];
+            var pair = _jointPairs[i];
             Vector3 p1 = keypoints[pair.x];
             Vector3 p2 = keypoints[pair.y];
             Vector3 mid = (p1 + p2) / 2f;

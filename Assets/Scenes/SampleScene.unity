@@ -1878,7 +1878,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &552225002
 Transform:
   m_ObjectHideFlags: 0
@@ -2969,28 +2969,6 @@ MonoBehaviour:
   cylinderRadius: 0.0075
   sphereMaterial: {fileID: 2100000, guid: b8b6c60d628c7cd41843da5cdb431bca, type: 2}
   cylinderMaterial: {fileID: 2100000, guid: b8b6c60d628c7cd41843da5cdb431bca, type: 2}
-  jointPairs:
-  - {x: 0, y: 1}
-  - {x: 1, y: 2}
-  - {x: 2, y: 3}
-  - {x: 3, y: 4}
-  - {x: 5, y: 6}
-  - {x: 6, y: 7}
-  - {x: 7, y: 8}
-  - {x: 9, y: 10}
-  - {x: 10, y: 11}
-  - {x: 11, y: 12}
-  - {x: 13, y: 14}
-  - {x: 14, y: 15}
-  - {x: 15, y: 16}
-  - {x: 17, y: 18}
-  - {x: 18, y: 19}
-  - {x: 19, y: 20}
-  - {x: 1, y: 5}
-  - {x: 5, y: 9}
-  - {x: 9, y: 13}
-  - {x: 13, y: 17}
-  - {x: 17, y: 0}
 --- !u!1 &809225587
 GameObject:
   m_ObjectHideFlags: 0
@@ -3114,7 +3092,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &876446094
 Transform:
   m_ObjectHideFlags: 0
@@ -5510,28 +5488,6 @@ MonoBehaviour:
   physicMaterial: {fileID: 13400000, guid: 4088577d034f445409c924e57a518e92, type: 2}
   sphereRadius: 0.0175
   cylinderRadius: 0.0075
-  jointPairs:
-  - {x: 0, y: 1}
-  - {x: 1, y: 2}
-  - {x: 2, y: 3}
-  - {x: 3, y: 4}
-  - {x: 5, y: 6}
-  - {x: 6, y: 7}
-  - {x: 7, y: 8}
-  - {x: 9, y: 10}
-  - {x: 10, y: 11}
-  - {x: 11, y: 12}
-  - {x: 13, y: 14}
-  - {x: 14, y: 15}
-  - {x: 15, y: 16}
-  - {x: 17, y: 18}
-  - {x: 18, y: 19}
-  - {x: 19, y: 20}
-  - {x: 1, y: 5}
-  - {x: 5, y: 9}
-  - {x: 9, y: 13}
-  - {x: 13, y: 17}
-  - {x: 17, y: 0}
   showPhysics: 0
 --- !u!1 &1609270591
 GameObject:

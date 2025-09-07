@@ -11,15 +11,15 @@ public class MagicHandRenderer : MonoBehaviour
     public Material sphereMaterial;
     public Material cylinderMaterial;
 
-    [Header("Definition")]
-    [SerializeField] public List<Vector2Int> jointPairs = new List<Vector2Int>();
+    private List<Vector2Int> _jointPairs = new List<Vector2Int>();
 
     private List<Renderer> sphereRenderers = new List<Renderer>();
     private List<Renderer> cylinderRenderers = new List<Renderer>();
     private bool transparent = true;
 
-    public void Init(List<Vector3> initialKeypoints)
+    public void Init(List<Vector3> initialKeypoints, List<Vector2Int> jointPairs)
     {
+        _jointPairs = jointPairs;
         InitSpheres(initialKeypoints);
         InitCylinders(initialKeypoints);
     }
@@ -42,7 +42,7 @@ public class MagicHandRenderer : MonoBehaviour
 
     private void InitCylinders(List<Vector3> positions)
     {
-        foreach (var pair in jointPairs)
+        foreach (var pair in _jointPairs)
         {
             if (pair.x < 0 || pair.x >= positions.Count || pair.y < 0 || pair.y >= positions.Count)
                 continue;
@@ -74,10 +74,10 @@ public class MagicHandRenderer : MonoBehaviour
             if (sphereRenderers[i] != null)
                 sphereRenderers[i].transform.position = positions[i];
         }
-        count = Mathf.Min(jointPairs.Count, cylinderRenderers.Count);
+        count = Mathf.Min(_jointPairs.Count, cylinderRenderers.Count);
         for (int i = 0; i < count; i++)
         {
-            var pair = jointPairs[i];
+            var pair = _jointPairs[i];
             if (pair.x < 0 || pair.x >= positions.Count || pair.y < 0 || pair.y >= positions.Count)
                 continue;
             Vector3 p1 = positions[pair.x];
