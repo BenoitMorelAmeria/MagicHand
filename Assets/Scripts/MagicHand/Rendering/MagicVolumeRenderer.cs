@@ -1,14 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
+public class MagicVolumeRenderer : MonoBehaviour, IMagicHandRenderer
 {
     [Header("Rendering")]
-    [SerializeField] private Material ghostHandMaterial; // assign GhostHandRaymarch.mat in Inspector
+    [SerializeField] private CameraManager cameraManager;
+    [SerializeField] private Material ghostHandMaterial; 
     [SerializeField] private GameObject volumeCubePrefab; // assign a Cube prefab
     [SerializeField] private float capsuleRadius = 0.02f;
     [SerializeField] private float sphereRadius = 0.02f;
     [SerializeField] private float stepSize = 0.01f;
+    
+    
 
     private GameObject volumeCube;
     private List<Vector3> keypoints;
@@ -103,7 +106,8 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
             A[i] = la;
             B[i] = lb;
         }
-
+        Vector3 camPosOS = volumeCube.transform.InverseTransformPoint(cameraManager.mainCamera.transform.position);
+        ghostHandMaterial.SetVector("_CameraPos", camPosOS);
         ghostHandMaterial.SetVectorArray("_CapsuleA", A);
         ghostHandMaterial.SetVectorArray("_CapsuleB", B);
         ghostHandMaterial.SetInt("_CapsuleCount", jointPairs.Count);

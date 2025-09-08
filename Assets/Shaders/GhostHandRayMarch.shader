@@ -1,4 +1,4 @@
-Shader "Custom/GhostHandRaymarch"
+Shader "Custom/GhostHandRaymarch_URP_XR_Universal"
 {
     Properties
     {
@@ -8,30 +8,36 @@ Shader "Custom/GhostHandRaymarch"
         _MaxDistance ("Max March Distance", Range(1,10)) = 5
         _CapsuleRadius ("Capsule Radius", Range(0.01,0.1)) = 0.03
         _SphereRadius ("Sphere Radius", Range(0.01,0.1)) = 0.03
+        _CameraPos ("Camera Position (object space)", Vector) = (0,0,0,1)
     }
     SubShader
     {
-		Tags { "Queue" = "Transparent" "RenderType" = "Transparent"}
-		Blend One OneMinusSrcAlpha
-		LOD 100
+        Tags { "Queue"="Transparent" "RenderType"="Transparent" }
+        Blend SrcAlpha OneMinusSrcAlpha
+        ZWrite Off
+        LOD 100
+
         Pass
         {
-            Blend SrcAlpha OneMinusSrcAlpha
-            ZWrite Off
-            ZTest LEqual
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma multi_compile_instancing
             #include "UnityCG.cginc"
 
             struct appdata { float4 vertex : POSITION; };
-            struct v2f { float4 pos : SV_POSITION; float3 rayOrigin : TEXCOORD0; float3 rayDir : TEXCOORD1; };
+            struct v2f
+            {
+                float4 pos : SV_POSITION;
+                float3 rayOrigin : TEXCOORD0;
+                float3 rayDir : TEXCOORD1;
+            };
 
             float4 _Color;
             float _FresnelPower, _StepSize, _MaxDistance;
             float _CapsuleRadius, _SphereRadius;
+            float4 _CameraPos; // in object space
 
-            // maximum number of capsules/spheres
             #define MAX_CAPSULES 64
             #define MAX_SPHERES 64
 
@@ -57,7 +63,6 @@ Shader "Custom/GhostHandRaymarch"
                 return lerp(d2, d1, h) - k*h*(1.0-h);
             }
 
-            // Ray-AABB intersection for cube [-0.5, +0.5]
             bool RayBoxIntersect(float3 rayOrigin, float3 rayDir, out float tMin, out float tMax)
             {
                 float3 invDir = 1.0 / rayDir;
@@ -77,18 +82,18 @@ Shader "Custom/GhostHandRaymarch"
             {
                 float d = 9999.0;
 
-                // capsules
+                // Capsules (finger bones)
                 for (int i = 0; i < _CapsuleCount; i++)
                 {
                     float cd = sdCapsule(p, _CapsuleA[i].xyz, _CapsuleB[i].xyz, _CapsuleRadius);
-                    d = smoothUnion(d, cd, 0.01); // small k for thin fingers
+                    d = smoothUnion(d, cd, 0.01);
                 }
 
-                // spheres at keypoints
+                // Spheres (joints + fingertips)
                 for (int i = 0; i < _SphereCount; i++)
                 {
                     float sd = length(p - _SpherePos[i].xyz) - _SphereRadius;
-                    d = min(d, sd); // sharp spheres for joints
+                    d = min(d, sd);
                 }
 
                 return d;
@@ -99,12 +104,11 @@ Shader "Custom/GhostHandRaymarch"
                 v2f o;
                 o.pos = UnityObjectToClipPos(v.vertex);
 
-                // camera origin in object space
-                o.rayOrigin = mul(unity_WorldToObject, float4(_WorldSpaceCameraPos, 1.0)).xyz;
+                // Ray origin in object space (set from C#)
+                o.rayOrigin = _CameraPos.xyz;
 
-                // ray direction in object space
-                float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
-                float3 objPos = mul(unity_WorldToObject, float4(worldPos,1.0)).xyz;
+                // Ray direction in object space
+                float3 objPos = v.vertex.xyz;
                 o.rayDir = normalize(objPos - o.rayOrigin);
 
                 return o;
@@ -129,15 +133,16 @@ Shader "Custom/GhostHandRaymarch"
                     if (t > tMax) discard;
                 }
 
-                // compute normal
+                // Compute normal
+                float eps = 0.01;
                 float3 n = normalize(float3(
-                    map(pos + float3(0.01,0,0)) - map(pos - float3(0.01,0,0)),
-                    map(pos + float3(0,0.01,0)) - map(pos - float3(0,0.01,0)),
-                    map(pos + float3(0,0,0.01)) - map(pos - float3(0,0,0.01))
+                    map(pos + float3(eps,0,0)) - map(pos - float3(eps,0,0)),
+                    map(pos + float3(0,eps,0)) - map(pos - float3(0,eps,0)),
+                    map(pos + float3(0,0,eps)) - map(pos - float3(0,0,eps))
                 ));
 
-                float3 vDir = normalize(i.rayOrigin - pos);
-                float fresnel = pow(1.0 - saturate(dot(n, vDir)), _FresnelPower);
+                float3 viewDir = normalize(i.rayOrigin - pos);
+                float fresnel = pow(1.0 - saturate(dot(n, viewDir)), _FresnelPower);
 
                 return float4(_Color.rgb, _Color.a * fresnel);
             }
