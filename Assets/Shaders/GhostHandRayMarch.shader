@@ -1,4 +1,4 @@
-Shader "Custom/GhostHandRaymarch_XR_CG"
+Shader "Custom/GhostHandRaymarch_URP"
 {
     Properties
     {
@@ -9,28 +9,24 @@ Shader "Custom/GhostHandRaymarch_XR_CG"
         _CapsuleRadius ("Capsule Radius", Range(0.01,0.1)) = 0.03
         _SphereRadius ("Sphere Radius", Range(0.01,0.1)) = 0.03
     }
+
     SubShader
     {
         Tags { "Queue"="Transparent" "RenderType"="Transparent" }
-        Blend One OneMinusSrcAlpha
+        Blend SrcAlpha OneMinusSrcAlpha
+        ZWrite Off
         LOD 100
 
         Pass
         {
-            Blend SrcAlpha OneMinusSrcAlpha
-            ZWrite Off
-            ZTest LEqual
-
-            CGPROGRAM
+            HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #pragma multi_compile_instancing
-            #include "UnityCG.cginc"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
             struct appdata
             {
                 float4 vertex : POSITION;
-                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct v2f
@@ -38,7 +34,6 @@ Shader "Custom/GhostHandRaymarch_XR_CG"
                 float4 pos : SV_POSITION;
                 float3 rayOrigin : TEXCOORD0;
                 float3 rayDir : TEXCOORD1;
-                UNITY_VERTEX_OUTPUT_STEREO
             };
 
             float4 _Color;
@@ -58,7 +53,7 @@ Shader "Custom/GhostHandRaymarch_XR_CG"
             int _SphereCount;
             float4 _SpherePos[MAX_SPHERES];
 
-            // --- SDF ---
+            // --- SDF functions ---
             float sdCapsule(float3 p, float3 a, float3 b, float r)
             {
                 float3 pa = p - a;
@@ -69,22 +64,32 @@ Shader "Custom/GhostHandRaymarch_XR_CG"
 
             float smoothUnion(float d1, float d2, float k)
             {
-                float h = saturate(0.5 + 0.5*(d2 - d1)/k);
-                return lerp(d2, d1, h) - k*h*(1.0-h);
+                float h = saturate(0.5 + 0.5 * (d2 - d1) / k);
+                return lerp(d2, d1, h) - k * h * (1.0 - h);
+            }
+
+            bool RayBoxIntersect(float3 rayOrigin, float3 rayDir, out float tMin, out float tMax)
+            {
+                float3 invDir = 1.0 / rayDir;
+                float3 t0s = (-0.5 - rayOrigin) * invDir;
+                float3 t1s = (0.5 - rayOrigin) * invDir;
+                float3 tsmaller = min(t0s, t1s);
+                float3 tbigger = max(t0s, t1s);
+                tMin = max(max(tsmaller.x, tsmaller.y), tsmaller.z);
+                tMax = min(min(tbigger.x, tbigger.y), tbigger.z);
+                return tMax > max(tMin, 0.0);
             }
 
             float map(float3 p)
             {
                 float d = 9999.0;
 
-                // capsules
                 for (int i = 0; i < _CapsuleCount; i++)
                 {
                     float cd = sdCapsule(p, _CapsuleA[i].xyz, _CapsuleB[i].xyz, _CapsuleRadius);
                     d = smoothUnion(d, cd, 0.01);
                 }
 
-                // spheres
                 for (int i = 0; i < _SphereCount; i++)
                 {
                     float sd = length(p - _SpherePos[i].xyz) - _SphereRadius;
@@ -94,49 +99,22 @@ Shader "Custom/GhostHandRaymarch_XR_CG"
                 return d;
             }
 
-            bool RayBoxIntersect(float3 rayOrigin, float3 rayDir, out float tMin, out float tMax)
-            {
-                float3 invDir = 1.0 / rayDir;
-                float3 t0s = (-0.5 - rayOrigin) * invDir;
-                float3 t1s = ( 0.5 - rayOrigin) * invDir;
-                float3 tsmaller = min(t0s, t1s);
-                float3 tbigger  = max(t0s, t1s);
-                tMin = max(max(tsmaller.x, tsmaller.y), tsmaller.z);
-                tMax = min(min(tbigger.x, tbigger.y), tbigger.z);
-                return tMax > max(tMin, 0.0);
-            }
-
             v2f vert(appdata IN)
             {
                 v2f OUT;
-                UNITY_SETUP_INSTANCE_ID(IN);
-                UNITY_INITIALIZE_OUTPUT(v2f, OUT);
-                UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
 
-                float3 worldVertex = mul(unity_ObjectToWorld, IN.vertex).xyz;
+                // camera position in object space
+                float3 camWorld = _WorldSpaceCameraPos;
+                OUT.rayOrigin = mul(unity_WorldToObject, float4(camWorld, 1.0)).xyz;
 
-                // transform camera position per-eye
-                float3 camPos = _WorldSpaceCameraPos; // will be automatically correct in URP single-pass
-                OUT.rayOrigin = mul(unity_WorldToObject, float4(camPos, 1)).xyz;
+                // vertex position in object space
+                float3 objVertex = IN.vertex.xyz;
 
-                // ray direction per-eye
-                float3 objVertex = mul(unity_WorldToObject, float4(worldVertex,1)).xyz;
+                // ray direction from camera to vertex
                 OUT.rayDir = normalize(objVertex - OUT.rayOrigin);
 
-                OUT.pos = UnityObjectToClipPos(IN.vertex);
-
+                OUT.pos = TransformObjectToHClip(IN.vertex);
                 return OUT;
-            }
-
-
-            float3 estimateNormal(float3 p)
-            {
-                float eps = 0.001;
-                return normalize(float3(
-                    map(p + float3(eps,0,0)) - map(p - float3(eps,0,0)),
-                    map(p + float3(0,eps,0)) - map(p - float3(0,eps,0)),
-                    map(p + float3(0,0,eps)) - map(p - float3(0,0,eps))
-                ));
             }
 
             float4 frag(v2f i) : SV_Target
@@ -146,24 +124,31 @@ Shader "Custom/GhostHandRaymarch_XR_CG"
                     discard;
 
                 float t = max(tMin, 0.0);
-                float3 pos = i.rayOrigin;
-                for (int j=0; j<128; j++)
+                float3 pos = i.rayOrigin + i.rayDir * t;
+                float dist = 0.0;
+
+                for (int j = 0; j < 128; j++)
                 {
                     pos = i.rayOrigin + i.rayDir * t;
-                    float dist = map(pos);
+                    dist = map(pos);
                     if (dist < 0.001) break;
                     t += dist;
                     if (t > tMax) discard;
                 }
 
-                float3 n = estimateNormal(pos);
-                float3 viewDir = normalize(i.rayOrigin - pos);
-                float fresnel = pow(1.0 - saturate(dot(n, viewDir)), _FresnelPower);
+                float3 n = normalize(float3(
+                    map(pos + float3(0.01,0,0)) - map(pos - float3(0.01,0,0)),
+                    map(pos + float3(0,0.01,0)) - map(pos - float3(0,0.01,0)),
+                    map(pos + float3(0,0,0.01)) - map(pos - float3(0,0,0.01))
+                ));
+
+                float3 vDir = normalize(i.rayOrigin - pos);
+                float fresnel = pow(1.0 - saturate(dot(n, vDir)), _FresnelPower);
 
                 return float4(_Color.rgb, _Color.a * fresnel);
             }
 
-            ENDCG
+            ENDHLSL
         }
     }
 }
