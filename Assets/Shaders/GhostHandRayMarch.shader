@@ -1,4 +1,4 @@
-Shader "Custom/GhostHandRaymarch_URP_XR_Universal"
+Shader "Custom/GhostHandRaymarch_XR"
 {
     Properties
     {
@@ -8,13 +8,13 @@ Shader "Custom/GhostHandRaymarch_URP_XR_Universal"
         _MaxDistance ("Max March Distance", Range(1,10)) = 5
         _CapsuleRadius ("Capsule Radius", Range(0.01,0.1)) = 0.03
         _SphereRadius ("Sphere Radius", Range(0.01,0.1)) = 0.03
-        _CameraPos ("Camera Position (object space)", Vector) = (0,0,0,1)
     }
     SubShader
     {
-        Tags { "Queue"="Transparent" "RenderType"="Transparent" }
+        Tags { "Queue" = "Transparent" "RenderType" = "Transparent"}
         Blend SrcAlpha OneMinusSrcAlpha
         ZWrite Off
+        ZTest LEqual
         LOD 100
 
         Pass
@@ -23,7 +23,8 @@ Shader "Custom/GhostHandRaymarch_URP_XR_Universal"
             #pragma vertex vert
             #pragma fragment frag
             #pragma multi_compile_instancing
-            #include "UnityCG.cginc"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
 
             struct appdata { float4 vertex : POSITION; };
             struct v2f
@@ -31,12 +32,12 @@ Shader "Custom/GhostHandRaymarch_URP_XR_Universal"
                 float4 pos : SV_POSITION;
                 float3 rayOrigin : TEXCOORD0;
                 float3 rayDir : TEXCOORD1;
+                float3 objectVertex : TEXCOORD2;
             };
 
             float4 _Color;
             float _FresnelPower, _StepSize, _MaxDistance;
             float _CapsuleRadius, _SphereRadius;
-            float4 _CameraPos; // in object space
 
             #define MAX_CAPSULES 64
             #define MAX_SPHERES 64
@@ -48,7 +49,7 @@ Shader "Custom/GhostHandRaymarch_URP_XR_Universal"
             int _SphereCount;
             float4 _SpherePos[MAX_SPHERES];
 
-            // --- SDF functions ---
+            // --- SDF ---
             float sdCapsule(float3 p, float3 a, float3 b, float r)
             {
                 float3 pa = p - a;
@@ -67,10 +68,10 @@ Shader "Custom/GhostHandRaymarch_URP_XR_Universal"
             {
                 float3 invDir = 1.0 / rayDir;
                 float3 t0s = (-0.5 - rayOrigin) * invDir;
-                float3 t1s = ( 0.5 - rayOrigin) * invDir;
+                float3 t1s = (0.5 - rayOrigin) * invDir;
 
                 float3 tsmaller = min(t0s, t1s);
-                float3 tbigger  = max(t0s, t1s);
+                float3 tbigger = max(t0s, t1s);
 
                 tMin = max(max(tsmaller.x, tsmaller.y), tsmaller.z);
                 tMax = min(min(tbigger.x, tbigger.y), tbigger.z);
@@ -78,43 +79,48 @@ Shader "Custom/GhostHandRaymarch_URP_XR_Universal"
                 return tMax > max(tMin, 0.0);
             }
 
-            float map(float3 p)
+           float map(float3 p)
             {
                 float d = 9999.0;
 
-                // Capsules (finger bones)
-                for (int i = 0; i < _CapsuleCount; i++)
+                // Capsules
+                for (int ci = 0; ci < _CapsuleCount; ci++)
                 {
-                    float cd = sdCapsule(p, _CapsuleA[i].xyz, _CapsuleB[i].xyz, _CapsuleRadius);
+                    float cd = sdCapsule(p, _CapsuleA[ci].xyz, _CapsuleB[ci].xyz, _CapsuleRadius);
                     d = smoothUnion(d, cd, 0.01);
                 }
 
-                // Spheres (joints + fingertips)
-                for (int i = 0; i < _SphereCount; i++)
+                // Spheres
+                for (int si = 0; si < _SphereCount; si++)
                 {
-                    float sd = length(p - _SpherePos[i].xyz) - _SphereRadius;
+                    float sd = length(p - _SpherePos[si].xyz) - _SphereRadius;
                     d = min(d, sd);
                 }
 
                 return d;
             }
 
-            v2f vert(appdata v)
+          v2f vert(appdata IN)
             {
-                v2f o;
-                o.pos = UnityObjectToClipPos(v.vertex);
+                v2f OUT;
 
-                // Ray origin in object space (set from C#)
-                o.rayOrigin = _CameraPos.xyz;
+                // Object-space vertex
+                OUT.objectVertex = IN.vertex;
 
-                // Ray direction in object space
-                float3 objPos = v.vertex.xyz;
-                o.rayDir = normalize(objPos - o.rayOrigin);
+                // Clip-space
+                OUT.pos = TransformObjectToHClip(IN.vertex.xyz);
 
-                return o;
+                // Camera in object space
+                OUT.rayOrigin = mul(unity_WorldToObject, float4(_WorldSpaceCameraPos, 1)).xyz;
+
+                // Object-space ray direction
+                OUT.rayDir = normalize(IN.vertex.xyz - OUT.rayOrigin);
+
+                return OUT;
             }
 
-            fixed4 frag(v2f i) : SV_Target
+
+            float4  frag(v2f i) : SV_Target
             {
                 float tMin, tMax;
                 if (!RayBoxIntersect(i.rayOrigin, i.rayDir, tMin, tMax))
@@ -133,7 +139,6 @@ Shader "Custom/GhostHandRaymarch_URP_XR_Universal"
                     if (t > tMax) discard;
                 }
 
-                // Compute normal
                 float eps = 0.01;
                 float3 n = normalize(float3(
                     map(pos + float3(eps,0,0)) - map(pos - float3(eps,0,0)),
@@ -144,7 +149,7 @@ Shader "Custom/GhostHandRaymarch_URP_XR_Universal"
                 float3 viewDir = normalize(i.rayOrigin - pos);
                 float fresnel = pow(1.0 - saturate(dot(n, viewDir)), _FresnelPower);
 
-                return float4(_Color.rgb, _Color.a * fresnel);
+                return float4(_Color.rgb, _Color.a * fresnel); 
             }
 
             ENDHLSL
