@@ -1878,7 +1878,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &552225002
 Transform:
   m_ObjectHideFlags: 0
@@ -3069,6 +3069,9 @@ MonoBehaviour:
   ghostHandMaterial: {fileID: 2100000, guid: 02d0e022efeb59544af688981d0a6ef5, type: 2}
   volumeCubePrefab: {fileID: 5455820024760282874, guid: 9f1a27bf20c4c274ea1773909b3a7541,
     type: 3}
+  capsuleRadius: 0.02
+  sphereRadius: 0.02
+  stepSize: 0.01
 --- !u!198 &833012206 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 8052797462155213915, guid: 20284e3a7fbfb0f4991db6a774345be9,

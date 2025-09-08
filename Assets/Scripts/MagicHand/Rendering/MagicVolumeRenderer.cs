@@ -7,6 +7,7 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
     [SerializeField] private Material ghostHandMaterial; // assign GhostHandRaymarch.mat in Inspector
     [SerializeField] private GameObject volumeCubePrefab; // assign a Cube prefab
     [SerializeField] private float capsuleRadius = 0.02f;
+    [SerializeField] private float sphereRadius = 0.02f;
     [SerializeField] private float stepSize = 0.01f;
 
     private GameObject volumeCube;
@@ -22,19 +23,15 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
         this.keypoints = initialKeypoints;
         this.jointPairs = jointPairs;
 
-        // create cube if needed
         if (volumeCube == null)
         {
             volumeCube = Instantiate(volumeCubePrefab, transform);
             volumeCube.name = "GhostHandCube";
         }
 
-        // assign material
         var renderer = volumeCube.GetComponent<Renderer>();
         if (renderer != null)
-        {
             renderer.material = ghostHandMaterial;
-        }
 
         UpdateKeypoints(initialKeypoints);
     }
@@ -43,7 +40,6 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
     {
         if (positions == null || positions.Count == 0 || volumeCube == null) return;
 
-        // --- compute bounding box ---
         Vector3 min = positions[0];
         Vector3 max = positions[0];
         foreach (var p in positions)
@@ -54,10 +50,10 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
         Vector3 center = (min + max) * 0.5f;
         Vector3 size = (max - min) + Vector3.one * padding;
 
-        // update cube transform
         volumeCube.transform.position = center;
         volumeCube.transform.localScale = size;
     }
+
     public void UpdateKeypoints(List<Vector3> positions)
     {
         if (positions == null || jointPairs == null || ghostHandMaterial == null) return;
@@ -75,14 +71,8 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
 
         Vector3 center = (min + max) * 0.5f;
         Vector3 size = (max - min) + Vector3.one * padding;
-
-        // update cube transform
         volumeCube.transform.position = center;
         volumeCube.transform.localScale = size;
-
-        // normalize joints into cube local [-0.5..0.5] space
-        Vector4[] A = new Vector4[jointPairs.Count];
-        Vector4[] B = new Vector4[jointPairs.Count];
 
         Vector3 safeSize = new Vector3(
             Mathf.Max(size.x, 0.0001f),
@@ -90,12 +80,15 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
             Mathf.Max(size.z, 0.0001f)
         );
 
+        // --- update capsules ---
+        Vector4[] A = new Vector4[jointPairs.Count];
+        Vector4[] B = new Vector4[jointPairs.Count];
+
         for (int i = 0; i < jointPairs.Count; i++)
         {
             Vector3 pa = positions[jointPairs[i].x];
             Vector3 pb = positions[jointPairs[i].y];
 
-            // component-wise normalization
             Vector3 la = new Vector3(
                 (pa.x - center.x) / safeSize.x,
                 (pa.y - center.y) / safeSize.y,
@@ -107,17 +100,31 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
                 (pb.z - center.z) / safeSize.z
             );
 
-            //la -= Vector3.one * 0.5f;
-            //lb -= Vector3.one * 0.5f;
-
             A[i] = la;
             B[i] = lb;
         }
+
         ghostHandMaterial.SetVectorArray("_CapsuleA", A);
         ghostHandMaterial.SetVectorArray("_CapsuleB", B);
         ghostHandMaterial.SetInt("_CapsuleCount", jointPairs.Count);
         ghostHandMaterial.SetFloat("_CapsuleRadius", capsuleRadius);
         ghostHandMaterial.SetFloat("_StepSize", stepSize);
+
+        // --- update spheres at keypoints ---
+        Vector4[] spherePositions = new Vector4[positions.Count];
+        for (int i = 0; i < positions.Count; i++)
+        {
+            Vector3 localPos = new Vector3(
+                (positions[i].x - center.x) / safeSize.x,
+                (positions[i].y - center.y) / safeSize.y,
+                (positions[i].z - center.z) / safeSize.z
+            );
+            spherePositions[i] = localPos;
+        }
+
+        ghostHandMaterial.SetVectorArray("_SpherePos", spherePositions);
+        ghostHandMaterial.SetInt("_SphereCount", positions.Count);
+        ghostHandMaterial.SetFloat("_SphereRadius", sphereRadius);
     }
 
     public void SetVisible(bool visible)

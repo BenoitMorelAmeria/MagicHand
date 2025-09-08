@@ -5,8 +5,9 @@ Shader "Custom/GhostHandRaymarch"
         _Color ("Tint", Color) = (0, 0.8, 1, 0.4)
         _FresnelPower ("Fresnel Power", Range(1,8)) = 3
         _StepSize ("Step Size", Range(0.001,0.05)) = 0.01
-        _MaxDistance ("Max March Distance", Range(1,10)) = 3
-        _CapsuleRadius ("Capsule Radius", Range(0.01,0.2)) = 0.05
+        _MaxDistance ("Max March Distance", Range(1,10)) = 5
+        _CapsuleRadius ("Capsule Radius", Range(0.01,0.1)) = 0.03
+        _SphereRadius ("Sphere Radius", Range(0.01,0.1)) = 0.03
     }
     SubShader
     {
@@ -24,22 +25,32 @@ Shader "Custom/GhostHandRaymarch"
             struct v2f { float4 pos : SV_POSITION; float3 rayOrigin : TEXCOORD0; float3 rayDir : TEXCOORD1; };
 
             float4 _Color;
-            float _FresnelPower, _StepSize, _MaxDistance, _CapsuleRadius;
+            float _FresnelPower, _StepSize, _MaxDistance;
+            float _CapsuleRadius, _SphereRadius;
 
-            // max numbers (adjust if needed)
+            // maximum number of capsules/spheres
             #define MAX_CAPSULES 64
+            #define MAX_SPHERES 64
+
+            int _CapsuleCount;
             float4 _CapsuleA[MAX_CAPSULES];
             float4 _CapsuleB[MAX_CAPSULES];
-            int _CapsuleCount;
 
-            // ---- SDF Primitives ----
-            float sdCapsule(float3 p, float3 a, float3 b, float r) {
-                float3 pa = p - a, ba = b - a;
+            int _SphereCount;
+            float4 _SpherePos[MAX_SPHERES];
+
+            // --- SDF functions ---
+            float sdCapsule(float3 p, float3 a, float3 b, float r)
+            {
+                float3 pa = p - a;
+                float3 ba = b - a;
                 float h = saturate(dot(pa, ba) / dot(ba, ba));
                 return length(pa - ba * h) - r;
             }
-            float smoothUnion(float d1, float d2, float k) {
-                float h = saturate(0.5 + 0.5*(d2-d1)/k);
+
+            float smoothUnion(float d1, float d2, float k)
+            {
+                float h = saturate(0.5 + 0.5*(d2 - d1)/k);
                 return lerp(d2, d1, h) - k*h*(1.0-h);
             }
 
@@ -59,64 +70,75 @@ Shader "Custom/GhostHandRaymarch"
                 return tMax > max(tMin, 0.0);
             }
 
-
-            // ---- Hand SDF ----
-            float map(float3 p) {
+            float map(float3 p)
+            {
                 float d = 9999.0;
-                for (int i = 0; i < _CapsuleCount; i++) {
-                    float3 a = _CapsuleA[i].xyz;
-                    float3 b = _CapsuleB[i].xyz;
-                    float cd = sdCapsule(p, a, b, _CapsuleRadius);
-                    d = smoothUnion(d, cd, 0.05);
+
+                // capsules
+                for (int i = 0; i < _CapsuleCount; i++)
+                {
+                    float cd = sdCapsule(p, _CapsuleA[i].xyz, _CapsuleB[i].xyz, _CapsuleRadius);
+                    d = smoothUnion(d, cd, 0.01); // small k for thin fingers
                 }
+
+                // spheres at keypoints
+                for (int i = 0; i < _SphereCount; i++)
+                {
+                    float sd = length(p - _SpherePos[i].xyz) - _SphereRadius;
+                    d = min(d, sd); // sharp spheres for joints
+                }
+
                 return d;
             }
 
-            v2f vert(appdata v) {
+            v2f vert(appdata v)
+            {
                 v2f o;
                 o.pos = UnityObjectToClipPos(v.vertex);
 
                 // camera origin in object space
                 o.rayOrigin = mul(unity_WorldToObject, float4(_WorldSpaceCameraPos, 1.0)).xyz;
 
-                // ray dir: from camera to vertex in object space
+                // ray direction in object space
                 float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
-                float3 objPos = mul(unity_WorldToObject, float4(worldPos, 1.0)).xyz;
+                float3 objPos = mul(unity_WorldToObject, float4(worldPos,1.0)).xyz;
                 o.rayDir = normalize(objPos - o.rayOrigin);
 
                 return o;
             }
 
-           fixed4 frag(v2f i) : SV_Target {
+            fixed4 frag(v2f i) : SV_Target
+            {
                 float tMin, tMax;
                 if (!RayBoxIntersect(i.rayOrigin, i.rayDir, tMin, tMax))
-                    discard; // ray misses cube
+                    discard;
 
                 float t = max(tMin, 0.0);
                 float3 pos = 0;
                 float dist = 0.0;
 
-                for (int j = 0; j < 128; j++) {
+                for (int j = 0; j < 128; j++)
+                {
                     pos = i.rayOrigin + i.rayDir * t;
                     dist = map(pos);
                     if (dist < 0.001) break;
                     t += dist;
-                    if (t > tMax) discard; // ray marched past cube
+                    if (t > tMax) discard;
                 }
 
-                // surface normal
+                // compute normal
                 float3 n = normalize(float3(
                     map(pos + float3(0.01,0,0)) - map(pos - float3(0.01,0,0)),
                     map(pos + float3(0,0.01,0)) - map(pos - float3(0,0.01,0)),
                     map(pos + float3(0,0,0.01)) - map(pos - float3(0,0,0.01))
                 ));
 
-                // fresnel shading
                 float3 vDir = normalize(i.rayOrigin - pos);
                 float fresnel = pow(1.0 - saturate(dot(n, vDir)), _FresnelPower);
 
                 return float4(_Color.rgb, _Color.a * fresnel);
             }
+
             ENDHLSL
         }
     }
