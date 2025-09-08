@@ -114,11 +114,20 @@ Shader "Custom/GhostHandRaymarch_XR_CG"
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
 
                 float3 worldVertex = mul(unity_ObjectToWorld, IN.vertex).xyz;
-                OUT.rayOrigin = mul(unity_WorldToObject, float4(_WorldSpaceCameraPos, 1)).xyz;
-                OUT.rayDir = normalize(mul(unity_WorldToObject, float4(worldVertex,1)).xyz - OUT.rayOrigin);
+
+                // transform camera position per-eye
+                float3 camPos = _WorldSpaceCameraPos; // will be automatically correct in URP single-pass
+                OUT.rayOrigin = mul(unity_WorldToObject, float4(camPos, 1)).xyz;
+
+                // ray direction per-eye
+                float3 objVertex = mul(unity_WorldToObject, float4(worldVertex,1)).xyz;
+                OUT.rayDir = normalize(objVertex - OUT.rayOrigin);
+
                 OUT.pos = UnityObjectToClipPos(IN.vertex);
+
                 return OUT;
             }
+
 
             float3 estimateNormal(float3 p)
             {
