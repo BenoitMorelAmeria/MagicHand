@@ -11,11 +11,14 @@ Shader "Custom/GhostHandRaymarch"
     }
     SubShader
     {
-        Tags { "Queue"="Transparent" "RenderType"="Transparent" }
-        Blend SrcAlpha OneMinusSrcAlpha
-        ZWrite Off
+		Tags { "Queue" = "Transparent" "RenderType" = "Transparent"}
+		Blend One OneMinusSrcAlpha
+		LOD 100
         Pass
         {
+            Blend SrcAlpha OneMinusSrcAlpha
+            ZWrite Off
+            ZTest LEqual
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag

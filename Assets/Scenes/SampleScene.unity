@@ -3069,8 +3069,8 @@ MonoBehaviour:
   ghostHandMaterial: {fileID: 2100000, guid: 02d0e022efeb59544af688981d0a6ef5, type: 2}
   volumeCubePrefab: {fileID: 5455820024760282874, guid: 9f1a27bf20c4c274ea1773909b3a7541,
     type: 3}
-  capsuleRadius: 0.02
-  sphereRadius: 0.02
+  capsuleRadius: 0.035
+  sphereRadius: 0.035
   stepSize: 0.01
 --- !u!198 &833012206 stripped
 ParticleSystem:
