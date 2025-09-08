@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 
-public class MagicHandRenderer : MonoBehaviour
+public class MagicHandRenderer : MonoBehaviour, IMagicHandRenderer
 {
     [Header("Visuals")]
     public float sphereSize = 0.02f;

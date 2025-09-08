@@ -2307,6 +2307,7 @@ Transform:
   m_Children:
   - {fileID: 793329061}
   - {fileID: 1587868241}
+  - {fileID: 820707741}
   m_Father: {fileID: 49395558}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &640960583
@@ -2343,7 +2344,7 @@ MonoBehaviour:
   - {x: 9, y: 13}
   - {x: 13, y: 17}
   - {x: 17, y: 0}
-  rendererComp: {fileID: 793329062}
+  rendererComp: {fileID: 820707742}
   physicsComp: {fileID: 1587868242}
 --- !u!1 &654965026
 GameObject:
@@ -2962,11 +2963,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 793329060}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4e7d36bec4a67d46aeac193ffb0315c, type: 3}
+  m_Script: {fileID: 11500000, guid: c1db141157febf64ca4805474ccbf2ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sphereSize: 0.0075
-  cylinderRadius: 0.0075
+  sphereSize: 0.005
+  cylinderRadius: 0.01
   sphereMaterial: {fileID: 2100000, guid: b8b6c60d628c7cd41843da5cdb431bca, type: 2}
   cylinderMaterial: {fileID: 2100000, guid: b8b6c60d628c7cd41843da5cdb431bca, type: 2}
 --- !u!1 &809225587
@@ -3021,6 +3022,53 @@ MonoBehaviour:
   spawnCooldown: 3
   verticalityThreshold: 0.95
   magicSound: {fileID: 8300000, guid: 5dfcbff3898ee4645a296d009f72cd38, type: 3}
+--- !u!1 &820707740
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 820707741}
+  - component: {fileID: 820707742}
+  m_Layer: 6
+  m_Name: MagicVolumeRenderer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &820707741
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 820707740}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 640960581}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &820707742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 820707740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4876bc18a80c295409df675cd0be1914, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ghostHandMaterial: {fileID: 2100000, guid: 02d0e022efeb59544af688981d0a6ef5, type: 2}
+  volumeCubePrefab: {fileID: 5455820024760282874, guid: 9f1a27bf20c4c274ea1773909b3a7541,
+    type: 3}
 --- !u!198 &833012206 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 8052797462155213915, guid: 20284e3a7fbfb0f4991db6a774345be9,
@@ -3092,7 +3140,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &876446094
 Transform:
   m_ObjectHideFlags: 0

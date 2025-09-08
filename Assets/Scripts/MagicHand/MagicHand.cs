@@ -6,13 +6,16 @@ public class MagicHand : MonoBehaviour
     public MagicHandData Data { get; private set; }
     [SerializeField] public List<Vector2Int> jointPairs = new List<Vector2Int>();
 
-    [SerializeField] private MagicHandRenderer rendererComp;
+    [SerializeField] private MonoBehaviour rendererComp;
     [SerializeField] private MagicHandPhysics physicsComp;
+
+    IMagicHandRenderer magicHandRenderer;
 
     private void Awake()
     {
         Data = new MagicHandData();
-        rendererComp.Init(Data.Keypoints, jointPairs);
+        magicHandRenderer = rendererComp as IMagicHandRenderer;
+        magicHandRenderer.Init(Data.Keypoints, jointPairs);
         physicsComp.Init(Data.Keypoints, jointPairs);
     }
 
@@ -23,7 +26,7 @@ public class MagicHand : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.T))
-            rendererComp.ToggleTransparency();
+            magicHandRenderer.ToggleTransparency();
         physicsComp.UpdatePhysics(Data.Keypoints);
 
     }
@@ -35,7 +38,7 @@ public class MagicHand : MonoBehaviour
             transformedPoints.Add(transform.TransformPoint(p));
 
         Data.UpdateKeypoints(transformedPoints);
-        rendererComp.UpdateKeypoints(Data.Keypoints);
+        magicHandRenderer.UpdateKeypoints(Data.Keypoints);
     }
 
     public void SetHandPoseEnabled(bool enabled)
@@ -43,7 +46,7 @@ public class MagicHand : MonoBehaviour
         Data.enabled = enabled;
     }
 
-    public void SetVisible(bool visible) => rendererComp.SetVisible(visible);
+    public void SetVisible(bool visible) => magicHandRenderer.SetVisible(visible);
 
     public void SetPinchState(bool state) => Data.SetPinchState(state);
     public bool GetPinchState() => Data.PinchState;
