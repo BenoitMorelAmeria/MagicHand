@@ -2344,7 +2344,9 @@ MonoBehaviour:
   - {x: 9, y: 13}
   - {x: 13, y: 17}
   - {x: 17, y: 0}
-  rendererComp: {fileID: 820707742}
+  rendererComp:
+  - {fileID: 793329062}
+  - {fileID: 820707742}
   physicsComp: {fileID: 1587868242}
 --- !u!1 &654965026
 GameObject:
