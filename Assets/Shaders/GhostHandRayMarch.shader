@@ -3,7 +3,7 @@ Shader "Custom/GhostHandRaymarch_URP"
     Properties
     {
         _Color ("Tint", Color) = (0, 0.8, 1, 0.4)
-        _FresnelPower ("Fresnel Power", Range(0,8)) = 3
+        _FresnelPower ("Fresnel Power", Range(1,8)) = 3
         _StepSize ("Step Size", Range(0.001,0.05)) = 0.01
         _MaxDistance ("Max March Distance", Range(1,10)) = 5
         _CapsuleRadius ("Capsule Radius", Range(0.01,0.1)) = 0.03
@@ -19,10 +19,10 @@ Shader "Custom/GhostHandRaymarch_URP"
 
         Pass
         {
-            CGPROGRAM
+            HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #include "UnityCG.cginc"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
             struct appdata
             {
@@ -98,7 +98,7 @@ Shader "Custom/GhostHandRaymarch_URP"
 
                 return d;
             }
-            /*
+
             v2f vert(appdata IN)
             {
                 v2f OUT;
@@ -116,25 +116,6 @@ Shader "Custom/GhostHandRaymarch_URP"
                 OUT.pos = TransformObjectToHClip(IN.vertex);
                 return OUT;
             }
-            */
-
-            v2f vert(appdata IN) {
-					v2f OUT;
-					UNITY_SETUP_INSTANCE_ID(IN); //Insert
-					UNITY_INITIALIZE_OUTPUT(v2f, OUT); //Insert
-					UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT); //Insert
-                    float3 camWorld = _WorldSpaceCameraPos;
-                    OUT.rayOrigin = mul(unity_WorldToObject, float4(camWorld, 1.0)).xyz;
-                     // vertex position in object space
-                    float3 objVertex = IN.vertex.xyz;
-
-                    // ray direction from camera to vertex
-                    OUT.rayDir = normalize(objVertex - OUT.rayOrigin);
-
-                    OUT.pos = UnityObjectToClipPos(IN.vertex);
-					return OUT;
-				}
-
 
             float4 frag(v2f i) : SV_Target
             {
@@ -167,7 +148,7 @@ Shader "Custom/GhostHandRaymarch_URP"
                 return float4(_Color.rgb, _Color.a * fresnel);
             }
 
-            ENDCG
+            ENDHLSL
         }
     }
 }

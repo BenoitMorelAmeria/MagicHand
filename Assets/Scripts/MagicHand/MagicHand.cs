@@ -6,17 +6,26 @@ public class MagicHand : MonoBehaviour
     public MagicHandData Data { get; private set; }
     [SerializeField] public List<Vector2Int> jointPairs = new List<Vector2Int>();
 
-    [SerializeField] private MonoBehaviour rendererComp;
+    [SerializeField] private List<MonoBehaviour> rendererComp;
     [SerializeField] private MagicHandPhysics physicsComp;
 
+    int rendererIndex = 0;
+    List<IMagicHandRenderer> magicRenderers = new List<IMagicHandRenderer>();
     IMagicHandRenderer magicHandRenderer;
 
     private void Awake()
     {
         Data = new MagicHandData();
-        magicHandRenderer = rendererComp as IMagicHandRenderer;
-        magicHandRenderer.Init(Data.Keypoints, jointPairs);
+        foreach (var comp in rendererComp)
+        {
+            comp.enabled = true;
+            IMagicHandRenderer renderer = comp as IMagicHandRenderer;
+            magicRenderers.Add(renderer);
+            renderer.Init(Data.Keypoints, jointPairs);
+        }
+        SetCurrentRendererIndex(rendererIndex);
         physicsComp.Init(Data.Keypoints, jointPairs);
+
     }
 
     void Start()
@@ -27,6 +36,11 @@ public class MagicHand : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.T))
             magicHandRenderer.ToggleTransparency();
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            rendererIndex = (rendererIndex + 1) % rendererComp.Count;
+            SetCurrentRendererIndex(rendererIndex);
+        }
         physicsComp.UpdatePhysics(Data.Keypoints);
 
     }
@@ -59,4 +73,20 @@ public class MagicHand : MonoBehaviour
 
     public Vector3 GetCenter() => Data.GetCenter();
 
+    private void SetCurrentRendererIndex(int index)
+    {
+        rendererIndex = index;
+        magicHandRenderer = magicRenderers[rendererIndex];
+        for (int i = 0; i < rendererComp.Count; i++)
+        {
+            if (i == rendererIndex)
+            {
+                magicRenderers[i].SetVisible(true);
+            }
+            else
+            {
+                magicRenderers[i].SetVisible(false);
+            }
+        }
+    }
 }
