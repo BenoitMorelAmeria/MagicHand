@@ -7,20 +7,20 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
     [SerializeField] private Material ghostHandMaterial; // assign GhostHandRaymarch.mat in Inspector
     [SerializeField] private GameObject volumeCubePrefab; // assign a Cube prefab
     [SerializeField] private float capsuleRadius = 0.02f;
+    [SerializeField] private float fillerCapsuleRadius = 0.015f;   // thinner filler radius
+
     [SerializeField] private float sphereRadius = 0.02f;
     [SerializeField] private float stepSize = 0.01f;
+    [SerializeField] private int fillerSegments = 5;
 
     private GameObject volumeCube;
-    private List<Vector3> keypoints;
     private List<Vector2Int> jointPairs;
-    private bool isVisible = true;
     private bool isTransparent = true;
 
     private const float padding = 0.1f; // padding around bounding box
 
     public void Init(List<Vector3> initialKeypoints, List<Vector2Int> jointPairs)
     {
-        this.keypoints = initialKeypoints;
         this.jointPairs = jointPairs;
 
         if (volumeCube == null)
@@ -53,14 +53,11 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
         volumeCube.transform.position = center;
         volumeCube.transform.localScale = size;
     }
-
     public void UpdateKeypoints(List<Vector3> positions)
     {
         if (positions == null || jointPairs == null || ghostHandMaterial == null) return;
 
-        keypoints = positions;
-
-        // compute bounding box
+        // --- compute bounding box ---
         Vector3 min = positions[0];
         Vector3 max = positions[0];
         foreach (var p in positions)
@@ -80,14 +77,80 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
             Mathf.Max(size.z, 0.0001f)
         );
 
-        // --- update capsules ---
-        Vector4[] A = new Vector4[jointPairs.Count];
-        Vector4[] B = new Vector4[jointPairs.Count];
+        // Build explicit capsules list (Vector3 endpoints + radius)
+        var allCapsules = new List<(Vector3 a, Vector3 b, float radius)>();
 
+        // (1) Main bone capsules from jointPairs
         for (int i = 0; i < jointPairs.Count; i++)
         {
-            Vector3 pa = positions[jointPairs[i].x];
-            Vector3 pb = positions[jointPairs[i].y];
+            var jp = jointPairs[i];
+            if (jp.x < 0 || jp.x >= positions.Count || jp.y < 0 || jp.y >= positions.Count) continue;
+            allCapsules.Add((positions[jp.x], positions[jp.y], capsuleRadius));
+        }
+
+        // compute finger base indices: baseIndex = 1 + f*4 (same formula you used)
+        int fingerCount = 0;
+        if (positions.Count > 1)
+            fingerCount = Mathf.Max(0, (positions.Count - 1) / 4);
+
+        // (2) Wrist -> finger bases
+        for (int f = 0; f < fingerCount; f++)
+        {
+            int baseIdx = f * 4 + 1;
+            if (baseIdx >= positions.Count) continue;
+            allCapsules.Add((positions[0], positions[baseIdx], capsuleRadius));
+        }
+
+        // (3) Filler capsules between adjacent finger bases (base-to-base)
+        for (int f = 0; f + 1 < fingerCount; f++)
+        {
+            int baseA = f * 4 + 1;
+            int baseB = (f + 1) * 4 + 1;
+            if (baseA < positions.Count && baseB < positions.Count)
+            {
+                allCapsules.Add((positions[baseA], positions[baseB], fillerCapsuleRadius));
+            }
+        }
+
+        // (4) Filler capsules from wrist to subdivision points between adjacent bases
+        for (int f = 0; f + 1 < fingerCount; f++)
+        {
+            int baseA = f * 4 + 1;
+            int baseB = (f + 1) * 4 + 1;
+            if (baseA < positions.Count && baseB < positions.Count)
+            {
+                Vector3 pa = positions[baseA];
+                Vector3 pb = positions[baseB];
+
+                for (int s = 1; s <= fillerSegments; s++)
+                {
+                    float t = s / (float)(fillerSegments + 1);
+                    Vector3 interp = Vector3.Lerp(pa, pb, t); // evenly spaced points
+                    allCapsules.Add((positions[0], interp, fillerCapsuleRadius));
+                }
+            }
+        }
+
+        // safety cap: shader max capsules
+        const int MAX_CAPSULES = 64;
+        if (allCapsules.Count > MAX_CAPSULES)
+        {
+            Debug.LogWarning($"AllCapsules count ({allCapsules.Count}) exceeds shader MAX_CAPSULES ({MAX_CAPSULES}). Trimming extras.");
+            allCapsules.RemoveRange(MAX_CAPSULES, allCapsules.Count - MAX_CAPSULES);
+        }
+
+        // --- upload capsule data (normalized to object-local unit cube) ---
+        int count = allCapsules.Count;
+        Vector4[] A = new Vector4[count];
+        Vector4[] B = new Vector4[count];
+        float[] radii = new float[count];
+
+        for (int i = 0; i < count; i++)
+        {
+            var c = allCapsules[i];
+
+            Vector3 pa = c.a;
+            Vector3 pb = c.b;
 
             Vector3 la = new Vector3(
                 (pa.x - center.x) / safeSize.x,
@@ -102,15 +165,19 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
 
             A[i] = la;
             B[i] = lb;
+            radii[i] = c.radius / Mathf.Max(Mathf.Min(safeSize.x, Mathf.Min(safeSize.y, safeSize.z)), 1e-6f);
+            // note: radii need to be normalized to the same local space as positions (if shader expects radius in object-space unit cube).
+            // If your shader expects radii in *object-space units* already normalized by bounding box, use the line above.
+            // If your shader expects world-space radii (not normalized), change to: radii[i] = c.radius;
         }
 
         ghostHandMaterial.SetVectorArray("_CapsuleA", A);
         ghostHandMaterial.SetVectorArray("_CapsuleB", B);
-        ghostHandMaterial.SetInt("_CapsuleCount", jointPairs.Count);
-        ghostHandMaterial.SetFloat("_CapsuleRadius", capsuleRadius);
+        ghostHandMaterial.SetFloatArray("_CapsuleRadii", radii);
+        ghostHandMaterial.SetInt("_CapsuleCount", count);
         ghostHandMaterial.SetFloat("_StepSize", stepSize);
 
-        // --- update spheres at keypoints ---
+        // --- spheres at keypoints (same as before) ---
         Vector4[] spherePositions = new Vector4[positions.Count];
         for (int i = 0; i < positions.Count; i++)
         {
@@ -124,12 +191,12 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
 
         ghostHandMaterial.SetVectorArray("_SpherePos", spherePositions);
         ghostHandMaterial.SetInt("_SphereCount", positions.Count);
-        ghostHandMaterial.SetFloat("_SphereRadius", sphereRadius);
+        ghostHandMaterial.SetFloat("_SphereRadius", sphereRadius / Mathf.Max(Mathf.Min(safeSize.x, Mathf.Min(safeSize.y, safeSize.z)), 1e-6f));
     }
+
 
     public void SetVisible(bool visible)
     {
-        isVisible = visible;
         if (volumeCube != null) volumeCube.SetActive(visible);
     }
 

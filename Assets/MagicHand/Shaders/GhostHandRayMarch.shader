@@ -6,7 +6,6 @@ Shader "Custom/GhostHandRaymarch_URP"
         _FresnelPower ("Fresnel Power", Range(1,8)) = 3
         _StepSize ("Step Size", Range(0.001,0.05)) = 0.01
         _MaxDistance ("Max March Distance", Range(1,10)) = 5
-        _CapsuleRadius ("Capsule Radius", Range(0.01,0.1)) = 0.03
         _SphereRadius ("Sphere Radius", Range(0.01,0.1)) = 0.03
     }
 
@@ -32,15 +31,14 @@ Shader "Custom/GhostHandRaymarch_URP"
             struct v2f
             {
                 float4 pos : SV_POSITION;
-                float3 rayOrigin : TEXCOORD0;
-                float3 rayDir : TEXCOORD1;
+                float3 rayOrigin : TEXCOORD0; // object space
+                float3 rayDir : TEXCOORD1;    // object space
             };
 
             float4 _Color;
             float _FresnelPower;
             float _StepSize;
             float _MaxDistance;
-            float _CapsuleRadius;
             float _SphereRadius;
 
             #define MAX_CAPSULES 64
@@ -49,6 +47,7 @@ Shader "Custom/GhostHandRaymarch_URP"
             int _CapsuleCount;
             float4 _CapsuleA[MAX_CAPSULES];
             float4 _CapsuleB[MAX_CAPSULES];
+            float _CapsuleRadii[MAX_CAPSULES]; // per-capsule radii
 
             int _SphereCount;
             float4 _SpherePos[MAX_SPHERES];
@@ -58,7 +57,8 @@ Shader "Custom/GhostHandRaymarch_URP"
             {
                 float3 pa = p - a;
                 float3 ba = b - a;
-                float h = saturate(dot(pa, ba) / dot(ba, ba));
+                float denom = max(dot(ba, ba), 1e-6);
+                float h = saturate(dot(pa, ba) / denom);
                 return length(pa - ba * h) - r;
             }
 
@@ -82,14 +82,20 @@ Shader "Custom/GhostHandRaymarch_URP"
 
             float map(float3 p)
             {
-                float d = 9999.0;
+                // start large
+                float d = 1e6;
 
+                // capsules with per-capsule radius
+                [loop]
                 for (int i = 0; i < _CapsuleCount; i++)
                 {
-                    float cd = sdCapsule(p, _CapsuleA[i].xyz, _CapsuleB[i].xyz, _CapsuleRadius);
+                    float r = _CapsuleRadii[i];
+                    float cd = sdCapsule(p, _CapsuleA[i].xyz, _CapsuleB[i].xyz, r);
                     d = smoothUnion(d, cd, 0.01);
                 }
 
+                // spheres
+                [loop]
                 for (int i = 0; i < _SphereCount; i++)
                 {
                     float sd = length(p - _SpherePos[i].xyz) - _SphereRadius;
@@ -103,17 +109,21 @@ Shader "Custom/GhostHandRaymarch_URP"
             {
                 v2f OUT;
 
-                // camera position in object space
-                float3 camWorld = _WorldSpaceCameraPos;
-                OUT.rayOrigin = mul(unity_WorldToObject, float4(camWorld, 1.0)).xyz;
+                // camera position in world space
+                float3 camWorld = GetCameraPositionWS();
+
+                // convert camera to object space
+                float3 camOS = TransformWorldToObject(camWorld);
 
                 // vertex position in object space
                 float3 objVertex = IN.vertex.xyz;
 
-                // ray direction from camera to vertex
-                OUT.rayDir = normalize(objVertex - OUT.rayOrigin);
+                // ray direction from camera to vertex (object space)
+                OUT.rayOrigin = camOS;
+                OUT.rayDir = normalize(objVertex - camOS);
 
-                OUT.pos = TransformObjectToHClip(IN.vertex);
+                // transform object -> HClip (helper from SRP)
+                OUT.pos = TransformObjectToHClip(float4(objVertex, 1.0));
                 return OUT;
             }
 
@@ -127,19 +137,30 @@ Shader "Custom/GhostHandRaymarch_URP"
                 float3 pos = i.rayOrigin + i.rayDir * t;
                 float dist = 0.0;
 
-                for (int j = 0; j < 128; j++)
+                const int MAX_STEPS = 128;
+                for (int j = 0; j < MAX_STEPS; j++)
                 {
                     pos = i.rayOrigin + i.rayDir * t;
                     dist = map(pos);
                     if (dist < 0.001) break;
-                    t += dist;
-                    if (t > tMax) discard;
+
+                    // avoid zero step by clamping to _StepSize
+                    float step = max(dist, _StepSize);
+                    t += step;
+
+                    if (t > tMax)
+                        discard;
                 }
 
+                // If we didn't hit anything, discard
+                if (dist >= 0.001) discard;
+
+                // normal via central differences
+                const float eps = 0.01;
                 float3 n = normalize(float3(
-                    map(pos + float3(0.01,0,0)) - map(pos - float3(0.01,0,0)),
-                    map(pos + float3(0,0.01,0)) - map(pos - float3(0,0.01,0)),
-                    map(pos + float3(0,0,0.01)) - map(pos - float3(0,0,0.01))
+                    map(pos + float3(eps,0,0)) - map(pos - float3(eps,0,0)),
+                    map(pos + float3(0,eps,0)) - map(pos - float3(0,eps,0)),
+                    map(pos + float3(0,0,eps)) - map(pos - float3(0,0,eps))
                 ));
 
                 float3 vDir = normalize(i.rayOrigin - pos);
