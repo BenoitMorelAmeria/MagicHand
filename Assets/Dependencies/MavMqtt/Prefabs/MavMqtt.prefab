@@ -1,0 +1,173 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1623233006145576952
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9171836759910907590}
+  - component: {fileID: 7886391141335356540}
+  m_Layer: 0
+  m_Name: MqttManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9171836759910907590
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1623233006145576952}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3294545119752481322}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7886391141335356540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1623233006145576952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c07d44d354c9cc9449d1885576ab34c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &4177482693406235892
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3294545119752481322}
+  m_Layer: 0
+  m_Name: MavMqtt
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3294545119752481322
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4177482693406235892}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7878804910471684499}
+  - {fileID: 9171836759910907590}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &3720996416242173946
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 3294545119752481322}
+    m_Modifications:
+    - target: {fileID: 5108482734855427872, guid: 02af710b7b67a38438892af531cd7b2a,
+        type: 3}
+      propertyPath: m_Name
+      value: MqttClient
+      objectReference: {fileID: 0}
+    - target: {fileID: 6842236482084234857, guid: 02af710b7b67a38438892af531cd7b2a,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.8561478
+      objectReference: {fileID: 0}
+    - target: {fileID: 6842236482084234857, guid: 02af710b7b67a38438892af531cd7b2a,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 7.7663555
+      objectReference: {fileID: 0}
+    - target: {fileID: 6842236482084234857, guid: 02af710b7b67a38438892af531cd7b2a,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 6842236482084234857, guid: 02af710b7b67a38438892af531cd7b2a,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6842236482084234857, guid: 02af710b7b67a38438892af531cd7b2a,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6842236482084234857, guid: 02af710b7b67a38438892af531cd7b2a,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6842236482084234857, guid: 02af710b7b67a38438892af531cd7b2a,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6842236482084234857, guid: 02af710b7b67a38438892af531cd7b2a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6842236482084234857, guid: 02af710b7b67a38438892af531cd7b2a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6842236482084234857, guid: 02af710b7b67a38438892af531cd7b2a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9013520605585986515, guid: 02af710b7b67a38438892af531cd7b2a,
+        type: 3}
+      propertyPath: ClientId
+      value: MavSnake
+      objectReference: {fileID: 0}
+    - target: {fileID: 9013520605585986515, guid: 02af710b7b67a38438892af531cd7b2a,
+        type: 3}
+      propertyPath: SubscribeTopics.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9013520605585986515, guid: 02af710b7b67a38438892af531cd7b2a,
+        type: 3}
+      propertyPath: OnConnected.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 7886391141335356540}
+    - target: {fileID: 9013520605585986515, guid: 02af710b7b67a38438892af531cd7b2a,
+        type: 3}
+      propertyPath: OnDisconnected.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 7886391141335356540}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 02af710b7b67a38438892af531cd7b2a, type: 3}
+--- !u!4 &7878804910471684499 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6842236482084234857, guid: 02af710b7b67a38438892af531cd7b2a,
+    type: 3}
+  m_PrefabInstance: {fileID: 3720996416242173946}
+  m_PrefabAsset: {fileID: 0}
