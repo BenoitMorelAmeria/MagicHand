@@ -2884,6 +2884,7 @@ MonoBehaviour:
     type: 3}
   capsuleRadius: 0.0065
   fillerCapsuleRadius: 0.0055
+  triangleThickness: 0.0045
   sphereRadius: 0.0065
   stepSize: 0.01
   thumbIndexSubdivisions: 5

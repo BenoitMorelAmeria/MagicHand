@@ -52,6 +52,14 @@ Shader "Custom/GhostHandRaymarch_URP"
             int _SphereCount;
             float4 _SpherePos[MAX_SPHERES];
 
+            #define MAX_TRIANGLES 16
+
+            int _TriangleCount;
+            float4 _TriP0[MAX_TRIANGLES];
+            float4 _TriP1[MAX_TRIANGLES];
+            float4 _TriP2[MAX_TRIANGLES];
+            float _TriRadius[MAX_TRIANGLES]; // thickness
+
             // --- SDF functions ---
             float sdCapsule(float3 p, float3 a, float3 b, float r)
             {
@@ -61,6 +69,58 @@ Shader "Custom/GhostHandRaymarch_URP"
                 float h = saturate(dot(pa, ba) / denom);
                 return length(pa - ba * h) - r;
             }
+
+            // Signed distance to a triangle (filled area) with thickness r
+            float sdTrianglePrism(float3 p, float3 a, float3 b, float3 c, float thickness)
+            {
+                // triangle normal
+                float3 n = normalize(cross(b - a, c - a));
+
+                // distance along normal
+                float distNormal = dot(p - a, n);
+
+                // project point onto triangle plane
+                float3 proj = p - distNormal * n;
+
+                // barycentric coordinates
+                float3 v0 = b - a;
+                float3 v1 = c - a;
+                float3 v2 = proj - a;
+                float d00 = dot(v0, v0);
+                float d01 = dot(v0, v1);
+                float d11 = dot(v1, v1);
+                float d20 = dot(v2, v0);
+                float d21 = dot(v2, v1);
+                float denom = d00 * d11 - d01 * d01;
+                float u = (d11 * d20 - d01 * d21) / denom;
+                float v = (d00 * d21 - d01 * d20) / denom;
+
+                // signed distance in plane
+                float distPlane;
+                if (u >= 0 && v >= 0 && u + v <= 1.0)
+                    distPlane = 0.0; // inside triangle  flat
+                else
+                {
+                    // outside  distance to nearest edge
+                    float3 e0 = b - a;
+                    float3 e1 = c - b;
+                    float3 e2 = a - c;
+
+                    float3 pa = proj - a;
+                    float3 pb = proj - b;
+                    float3 pc = proj - c;
+
+                    float d0 = length(pa - e0 * clamp(dot(pa, e0)/dot(e0,e0),0,1));
+                    float d1 = length(pb - e1 * clamp(dot(pb, e1)/dot(e1,e1),0,1));
+                    float d2 = length(pc - e2 * clamp(dot(pc, e2)/dot(e2,e2),0,1));
+                    distPlane = min(d0, min(d1,d2));
+                }
+
+                // combine plane and normal distances using max/min trick  flat prism
+                return max(distPlane, abs(distNormal)) - thickness;
+            }
+
+
 
             float smoothUnion(float d1, float d2, float k)
             {
@@ -85,6 +145,7 @@ Shader "Custom/GhostHandRaymarch_URP"
                 // start large
                 float d = 1e6;
 
+                
                 // capsules with per-capsule radius
                 [loop]
                 for (int i = 0; i < _CapsuleCount; i++)
@@ -101,6 +162,12 @@ Shader "Custom/GhostHandRaymarch_URP"
                     float sd = length(p - _SpherePos[i].xyz) - _SphereRadius;
                     d = min(d, sd);
                 }
+                
+                    // triangles
+                [loop] 
+                for (int i = 0; i < _TriangleCount; i++)
+                    d = smoothUnion(d, sdTrianglePrism(p, _TriP0[i].xyz, _TriP1[i].xyz, _TriP2[i].xyz, _TriRadius[i]), 0.01);
+
 
                 return d;
             }

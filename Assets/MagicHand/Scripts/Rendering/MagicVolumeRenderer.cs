@@ -8,11 +8,21 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
     [SerializeField] private GameObject volumeCubePrefab; // assign a Cube prefab
     [SerializeField] private float capsuleRadius = 0.02f;
     [SerializeField] private float fillerCapsuleRadius = 0.015f;   // thinner filler radius
+    [SerializeField] private float triangleThickness = 0.015f;   // thinner filler radius
 
     [SerializeField] private float sphereRadius = 0.02f;
     [SerializeField] private float stepSize = 0.01f;
     [SerializeField] int thumbIndexSubdivisions = 4;   // for wrist -> midpoint between thumb & index
     [SerializeField] int otherFingersSubdivisions = 2; // for wrist -> midpoint between other fingers
+
+    [System.Serializable]
+    struct Triangle
+    {
+        public Vector3 p0;
+        public Vector3 p1;
+        public Vector3 p2;
+        public float radius;
+    }
 
     private GameObject volumeCube;
     private List<Vector2Int> jointPairs;
@@ -54,6 +64,16 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
         volumeCube.transform.position = center;
         volumeCube.transform.localScale = size;
     }
+
+    Vector3 NormalizeToLocal(Vector3 worldPos, Vector3 center, Vector3 safeSize)
+    {
+        return new Vector3(
+            (worldPos.x - center.x) / safeSize.x,
+            (worldPos.y - center.y) / safeSize.y,
+            (worldPos.z - center.z) / safeSize.z
+        );
+    }
+
     public void UpdateKeypoints(List<Vector3> positions)
     {
         if (positions == null || jointPairs == null || ghostHandMaterial == null) return;
@@ -134,7 +154,7 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
                 allCapsules.Add((positions[0], interp, fillerCapsuleRadius));
             }
         }
-
+        /*
         // --- fill the “thumb triangle” ---
         if (positions.Count > 2) // ensure thumb base + thumb joint + index base exist
         {
@@ -161,7 +181,7 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
                 allCapsules.Add((pb, interp, fillerCapsuleRadius));
             }
         }
-
+        */
         // safety cap: shader max capsules
         const int MAX_CAPSULES = 64;
         if (allCapsules.Count > MAX_CAPSULES)
@@ -200,7 +220,11 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
             // note: radii need to be normalized to the same local space as positions (if shader expects radius in object-space unit cube).
             // If your shader expects radii in *object-space units* already normalized by bounding box, use the line above.
             // If your shader expects world-space radii (not normalized), change to: radii[i] = c.radius;
+        
+        
+            
         }
+
 
         ghostHandMaterial.SetVectorArray("_CapsuleA", A);
         ghostHandMaterial.SetVectorArray("_CapsuleB", B);
@@ -223,6 +247,41 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
         ghostHandMaterial.SetVectorArray("_SpherePos", spherePositions);
         ghostHandMaterial.SetInt("_SphereCount", positions.Count);
         ghostHandMaterial.SetFloat("_SphereRadius", sphereRadius / Mathf.Max(Mathf.Min(safeSize.x, Mathf.Min(safeSize.y, safeSize.z)), 1e-6f));
+
+
+        List<Triangle> triangles = new List<Triangle>();
+        // Example: thumb triangle
+        triangles.Add(new Triangle
+        {
+            p0 = positions[1],
+            p1 = positions[2],
+            p2 = positions[5],
+            radius = triangleThickness
+        });
+
+        // Upload to shader
+        int tCount = Mathf.Min(triangles.Count, 16); // match MAX_TRIANGLES
+        Vector4[] p0 = new Vector4[tCount];
+        Vector4[] p1 = new Vector4[tCount];
+        Vector4[] p2 = new Vector4[tCount];
+        float[] triRadii = new float[tCount];
+
+        for (int i = 0; i < tCount; i++)
+        {
+            p0[i] = NormalizeToLocal(triangles[i].p0, center, safeSize);
+            p1[i] = NormalizeToLocal(triangles[i].p1, center, safeSize);
+            p2[i] = NormalizeToLocal(triangles[i].p2, center, safeSize);
+            triRadii[i] = triangles[i].radius / Mathf.Max(Mathf.Min(safeSize.x, Mathf.Min(safeSize.y, safeSize.z)), 1e-6f);
+        }
+
+        ghostHandMaterial.SetVectorArray("_TriP0", p0);
+        ghostHandMaterial.SetVectorArray("_TriP1", p1);
+        ghostHandMaterial.SetVectorArray("_TriP2", p2);
+        ghostHandMaterial.SetFloatArray("_TriRadius", triRadii);
+        ghostHandMaterial.SetInt("_TriangleCount", tCount);
+
+
+
     }
 
 
