@@ -2883,10 +2883,11 @@ MonoBehaviour:
   volumeCubePrefab: {fileID: 5455820024760282874, guid: 9f1a27bf20c4c274ea1773909b3a7541,
     type: 3}
   capsuleRadius: 0.0065
-  fillerCapsuleRadius: 0.0045
+  fillerCapsuleRadius: 0.0055
   sphereRadius: 0.0065
   stepSize: 0.01
-  fillerSegments: 5
+  thumbIndexSubdivisions: 5
+  otherFingersSubdivisions: 2
 --- !u!198 &833012206 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 8052797462155213915, guid: 20284e3a7fbfb0f4991db6a774345be9,

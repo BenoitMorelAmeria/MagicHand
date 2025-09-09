@@ -11,7 +11,8 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
 
     [SerializeField] private float sphereRadius = 0.02f;
     [SerializeField] private float stepSize = 0.01f;
-    [SerializeField] private int fillerSegments = 5;
+    [SerializeField] int thumbIndexSubdivisions = 4;   // for wrist -> midpoint between thumb & index
+    [SerializeField] int otherFingersSubdivisions = 2; // for wrist -> midpoint between other fingers
 
     private GameObject volumeCube;
     private List<Vector2Int> jointPairs;
@@ -112,22 +113,52 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
             }
         }
 
+
         // (4) Filler capsules from wrist to subdivision points between adjacent bases
         for (int f = 0; f + 1 < fingerCount; f++)
         {
             int baseA = f * 4 + 1;
             int baseB = (f + 1) * 4 + 1;
-            if (baseA < positions.Count && baseB < positions.Count)
-            {
-                Vector3 pa = positions[baseA];
-                Vector3 pb = positions[baseB];
+            if (baseA >= positions.Count || baseB >= positions.Count) continue;
 
-                for (int s = 1; s <= fillerSegments; s++)
-                {
-                    float t = s / (float)(fillerSegments + 1);
-                    Vector3 interp = Vector3.Lerp(pa, pb, t); // evenly spaced points
-                    allCapsules.Add((positions[0], interp, fillerCapsuleRadius));
-                }
+            // choose subdivision count
+            int segments = (f == 0) ? thumbIndexSubdivisions : otherFingersSubdivisions;
+
+            Vector3 pa = positions[baseA];
+            Vector3 pb = positions[baseB];
+
+            for (int s = 1; s <= segments; s++)
+            {
+                float t = s / (float)(segments + 1);
+                Vector3 interp = Vector3.Lerp(pa, pb, t);
+                allCapsules.Add((positions[0], interp, fillerCapsuleRadius));
+            }
+        }
+
+        // --- fill the “thumb triangle” ---
+        if (positions.Count > 2) // ensure thumb base + thumb joint + index base exist
+        {
+            int thumbBase = 1;    // first thumb base
+            int thumbJoint = 2;   // second thumb point
+            int indexBase = 5;    // first index base (adjust if keypoint layout differs)
+
+            Vector3 pa = positions[thumbBase];
+            Vector3 pb = positions[thumbJoint];
+            Vector3 pc = positions[indexBase];
+
+            // Capsule: thumb joint -> thumb base
+            allCapsules.Add((pb, pa, fillerCapsuleRadius));
+
+            // Capsule: thumb joint -> index base
+            allCapsules.Add((pb, pc, fillerCapsuleRadius));
+
+            // Optional: subdivisions along line thumb base -> index base
+            int segments = thumbIndexSubdivisions;
+            for (int s = 1; s <= segments; s++)
+            {
+                float t = s / (float)(segments + 1);
+                Vector3 interp = Vector3.Lerp(pa, pc, t);
+                allCapsules.Add((pb, interp, fillerCapsuleRadius));
             }
         }
 
