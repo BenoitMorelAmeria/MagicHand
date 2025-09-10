@@ -104,16 +104,21 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
         // (1) Main bone capsules from jointPairs
         for (int i = 0; i < jointPairs.Count; i++)
         {
+            //if (jointPairs[i].x == 0  || jointPairs[i].y == 0)
+            //{
+            //    continue;
+            //}
             var jp = jointPairs[i];
             if (jp.x < 0 || jp.x >= positions.Count || jp.y < 0 || jp.y >= positions.Count) continue;
             allCapsules.Add((positions[jp.x], positions[jp.y], capsuleRadius));
         }
 
+        
         // compute finger base indices: baseIndex = 1 + f*4 (same formula you used)
         int fingerCount = 0;
         if (positions.Count > 1)
             fingerCount = Mathf.Max(0, (positions.Count - 1) / 4);
-
+        /*
         // (2) Wrist -> finger bases
         for (int f = 0; f < fingerCount; f++)
         {
@@ -121,7 +126,8 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
             if (baseIdx >= positions.Count) continue;
             allCapsules.Add((positions[0], positions[baseIdx], capsuleRadius));
         }
-
+        */
+        /*
         // (3) Filler capsules between adjacent finger bases (base-to-base)
         for (int f = 0; f + 1 < fingerCount; f++)
         {
@@ -154,6 +160,7 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
                 allCapsules.Add((positions[0], interp, fillerCapsuleRadius));
             }
         }
+        */
         /*
         // --- fill the “thumb triangle” ---
         if (positions.Count > 2) // ensure thumb base + thumb joint + index base exist
@@ -251,13 +258,11 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
 
         List<Triangle> triangles = new List<Triangle>();
         // Example: thumb triangle
-        triangles.Add(new Triangle
-        {
-            p0 = positions[1],
-            p1 = positions[2],
-            p2 = positions[5],
-            radius = triangleThickness
-        });
+        triangles.Add(new Triangle {p0 = positions[1], p1 = positions[2], p2 = positions[5], radius = triangleThickness});
+        triangles.Add(new Triangle {p0 = positions[0], p1 = positions[1], p2 = positions[5], radius = triangleThickness});
+        triangles.Add(new Triangle {p0 = positions[0], p1 = positions[5], p2 = positions[9], radius = triangleThickness});
+        triangles.Add(new Triangle {p0 = positions[0], p1 = positions[9], p2 = positions[13], radius = triangleThickness});
+        triangles.Add(new Triangle {p0 = positions[0], p1 = positions[13], p2 = positions[17], radius = triangleThickness});
 
         // Upload to shader
         int tCount = Mathf.Min(triangles.Count, 16); // match MAX_TRIANGLES

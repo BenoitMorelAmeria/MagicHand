@@ -1689,7 +1689,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &552225002
 Transform:
   m_ObjectHideFlags: 0
@@ -2882,11 +2882,11 @@ MonoBehaviour:
   ghostHandMaterial: {fileID: 2100000, guid: 02d0e022efeb59544af688981d0a6ef5, type: 2}
   volumeCubePrefab: {fileID: 5455820024760282874, guid: 9f1a27bf20c4c274ea1773909b3a7541,
     type: 3}
-  capsuleRadius: 0.0065
-  fillerCapsuleRadius: 0.0055
-  triangleThickness: 0.0045
-  sphereRadius: 0.0065
-  stepSize: 0.01
+  capsuleRadius: 0.006
+  fillerCapsuleRadius: 0
+  triangleThickness: 0.004
+  sphereRadius: 0
+  stepSize: 0.002
   thumbIndexSubdivisions: 5
   otherFingersSubdivisions: 2
 --- !u!198 &833012206 stripped
