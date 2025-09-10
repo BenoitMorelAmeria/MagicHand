@@ -134,7 +134,7 @@ Shader "Custom/GhostHandRaymarch_URP"
                 }
 
                 // combine plane and normal distances using max/min trick  flat prism
-                return max(distPlane, abs(distNormal)) - thickness;
+                return max(distPlane, abs(distNormal) - thickness);
             }
 
 
@@ -183,7 +183,7 @@ Shader "Custom/GhostHandRaymarch_URP"
                     // triangles
                 [loop] 
                 for (int i = 0; i < _TriangleCount; i++)
-                    d = smoothUnion(d, sdTrianglePrism(p, _TriP0[i].xyz, _TriP1[i].xyz, _TriP2[i].xyz, _TriRadius[i]), 0.01);
+                    d = min(d, sdTrianglePrism(p, _TriP0[i].xyz, _TriP1[i].xyz, _TriP2[i].xyz, _TriRadius[i]));
 
 
                 return d;

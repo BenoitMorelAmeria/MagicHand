@@ -164,8 +164,8 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
             ghostHandMaterial.SetVectorArray("_TriP1", p1);
             ghostHandMaterial.SetVectorArray("_TriP2", p2);
             ghostHandMaterial.SetFloatArray("_TriRadius", triRadii);
-            ghostHandMaterial.SetInt("_TriangleCount", tCount);
         }
+        ghostHandMaterial.SetInt("_TriangleCount", tCount);
 
         // --- lighting params ---
         ghostHandMaterial.SetColor("_AmbientColor", ambientColor);
