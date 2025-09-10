@@ -12,6 +12,8 @@ Shader "Custom/GhostHandRaymarch_URP"
         _DiffuseIntensity ("Diffuse Intensity", Range(0,2)) = 1.0
         _SpecularIntensity ("Specular Intensity", Range(0,2)) = 0.5
         _SpecularPower ("Specular Power", Range(1,64)) = 16 
+        _EmissiveColor ("Emissive color", Color) = (1, 1, 1, 1)
+        _EmissiveIntensity ("Emissive intensity", float) = 0.0
     }
 
     SubShader
@@ -27,6 +29,7 @@ Shader "Custom/GhostHandRaymarch_URP"
             #pragma vertex vert
             #pragma fragment frag
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderVariablesFunctions.hlsl" 
 
             struct appdata
             {
@@ -51,6 +54,9 @@ Shader "Custom/GhostHandRaymarch_URP"
             float _DiffuseIntensity;
             float _SpecularIntensity;
             float _SpecularPower;
+
+            float4 _EmissiveColor;
+            float _EmissiveIntensity;
 
             #define MAX_CAPSULES 64
             #define MAX_SPHERES 64
@@ -186,39 +192,44 @@ Shader "Custom/GhostHandRaymarch_URP"
             v2f vert(appdata IN)
             {
                 v2f OUT;
-
-                // camera position in world space
-                float3 camWorld = GetCameraPositionWS();
-
-                // convert camera to object space
+                OUT.pos = TransformObjectToHClip(IN.vertex.xyz);
+                float3 camWorld = _WorldSpaceCameraPos;
                 float3 camOS = TransformWorldToObject(camWorld);
-
-                // vertex position in object space
                 float3 objVertex = IN.vertex.xyz;
-
-                // ray direction from camera to vertex (object space)
                 OUT.rayOrigin = camOS;
                 OUT.rayDir = normalize(objVertex - camOS);
-
-                // transform object -> HClip (helper from SRP)
-                OUT.pos = TransformObjectToHClip(float4(objVertex, 1.0));
                 return OUT;
             }
 
             float4 frag(v2f i) : SV_Target
             {
+                // Convert clip-space back to world
+                float4 clip = float4(i.pos.xy / i.pos.w, 0, 1); 
+                float4 worldNear = mul(UNITY_MATRIX_I_VP, clip);
+                worldNear /= worldNear.w;
+
+                // Ray origin = eye position (object space, already passed)
+                // Ray direction = worldNear - eyePos
+                float3 worldRayDir = normalize(worldNear.xyz - mul(UNITY_MATRIX_I_V, float4(0,0,0,1)).xyz);
+                float3 objRayDir = normalize(TransformWorldToObjectDir(worldRayDir));
+
+                // Use these
+                float3 rayOrigin = i.rayOrigin;
+                float3 rayDir = i.rayDir; 
+
+
                 float tMin, tMax;
-                if (!RayBoxIntersect(i.rayOrigin, i.rayDir, tMin, tMax))
+                if (!RayBoxIntersect(rayOrigin, rayDir, tMin, tMax))
                     discard;
 
                 float t = max(tMin, 0.0);
-                float3 pos = i.rayOrigin + i.rayDir * t;
+                float3 pos = rayOrigin + rayDir * t;
                 float dist = 0.0;
 
                 const int MAX_STEPS = 128;
                 for (int j = 0; j < MAX_STEPS; j++)
                 {
-                    pos = i.rayOrigin + i.rayDir * t;
+                    pos = rayOrigin + rayDir * t;
                     dist = map(pos);
                     if (dist < 0.001) break;
 
@@ -239,7 +250,7 @@ Shader "Custom/GhostHandRaymarch_URP"
                     map(pos + float3(0,0,eps)) - map(pos - float3(0,0,eps))
                 ));
 
-                float3 vDir = normalize(i.rayOrigin - pos);
+                float3 vDir = normalize(rayOrigin - pos);
 
                 // --- lighting setup ---
                 float3 lightDir = normalize(float3(0.5, 0.7, 0.3)); // simple directional light
@@ -259,9 +270,14 @@ Shader "Custom/GhostHandRaymarch_URP"
                 float3 ambient = _AmbientColor.rgb * _AmbientIntensity;
                 float3 diffuse = lightColor * diff * _DiffuseIntensity;
                 float3 specular = lightColor * spec * _SpecularIntensity;
-
                 float3 color = (_Color.rgb * (ambient + diffuse)) + specular;
 
+                //float glow = exp(-10 * dist);
+                //color += _EmissiveColor * glow * _EmissiveIntensity;
+               
+                float3 emissive = _EmissiveColor.rgb * _EmissiveIntensity * fresnel;
+                color += emissive;
+                
                 // Apply fresnel as alpha mask (same as before)
                 return float4(color, _Color.a * fresnel);
             }

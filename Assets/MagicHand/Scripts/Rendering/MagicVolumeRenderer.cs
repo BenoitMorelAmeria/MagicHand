@@ -7,18 +7,22 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
     [SerializeField] private Material ghostHandMaterial; // assign GhostHandRaymarch.mat
     [SerializeField] private GameObject volumeCubePrefab; // assign a Cube prefab
     [SerializeField] private float capsuleRadius = 0.02f;
+    [SerializeField] private bool fillPalm = false;
     [SerializeField] private float fillerCapsuleRadius = 0.015f;
     [SerializeField] private float triangleThickness = 0.015f;
     [SerializeField] private float sphereRadius = 0.02f;
     [SerializeField] private float stepSize = 0.01f;
-    [SerializeField] int thumbIndexSubdivisions = 4;
-    [SerializeField] int otherFingersSubdivisions = 2;
+
 
     [SerializeField] private Color ambientColor = new Color(0.2f, 0.2f, 0.2f, 1f);
     [SerializeField, Range(0, 1)] private float ambientIntensity = 0.2f;
     [SerializeField, Range(0, 2)] private float diffuseIntensity = 1.0f;
     [SerializeField, Range(0, 2)] private float specularIntensity = 0.5f;
     [SerializeField, Range(1, 64)] private float specularPower = 16.0f;
+
+    [SerializeField] private Color emissiveColor = new Color(1f, 1f, 1f, 1f);
+    [SerializeField] private float emissiveIntensity = 3;
+
 
     [System.Serializable]
     struct Triangle
@@ -132,31 +136,36 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
 
         // --- triangles ---
         List<Triangle> triangles = new List<Triangle>();
-        triangles.Add(new Triangle { p0 = positions[1], p1 = positions[2], p2 = positions[5], radius = triangleThickness });
-        triangles.Add(new Triangle { p0 = positions[0], p1 = positions[1], p2 = positions[5], radius = triangleThickness });
-        triangles.Add(new Triangle { p0 = positions[0], p1 = positions[5], p2 = positions[9], radius = triangleThickness });
-        triangles.Add(new Triangle { p0 = positions[0], p1 = positions[9], p2 = positions[13], radius = triangleThickness });
-        triangles.Add(new Triangle { p0 = positions[0], p1 = positions[13], p2 = positions[17], radius = triangleThickness });
-
-        int tCount = Mathf.Min(triangles.Count, 16);
-        Vector4[] p0 = new Vector4[tCount];
-        Vector4[] p1 = new Vector4[tCount];
-        Vector4[] p2 = new Vector4[tCount];
-        float[] triRadii = new float[tCount];
-
-        for (int i = 0; i < tCount; i++)
-        {
-            p0[i] = NormalizeToLocal(triangles[i].p0, center, safeSize);
-            p1[i] = NormalizeToLocal(triangles[i].p1, center, safeSize);
-            p2[i] = NormalizeToLocal(triangles[i].p2, center, safeSize);
-            triRadii[i] = triangles[i].radius / normScale;
+        if (fillPalm) {
+            triangles.Add(new Triangle { p0 = positions[1], p1 = positions[2], p2 = positions[5], radius = triangleThickness });
+            triangles.Add(new Triangle { p0 = positions[0], p1 = positions[1], p2 = positions[5], radius = triangleThickness });
+            triangles.Add(new Triangle { p0 = positions[0], p1 = positions[5], p2 = positions[9], radius = triangleThickness });
+            triangles.Add(new Triangle { p0 = positions[0], p1 = positions[9], p2 = positions[13], radius = triangleThickness });
+            triangles.Add(new Triangle { p0 = positions[0], p1 = positions[13], p2 = positions[17], radius = triangleThickness });
         }
+        
+        int tCount = Mathf.Min(triangles.Count, 16);
+        if (tCount > 0)
+        {
+            Vector4[] p0 = new Vector4[tCount];
+            Vector4[] p1 = new Vector4[tCount];
+            Vector4[] p2 = new Vector4[tCount];
+            float[] triRadii = new float[tCount];
 
-        ghostHandMaterial.SetVectorArray("_TriP0", p0);
-        ghostHandMaterial.SetVectorArray("_TriP1", p1);
-        ghostHandMaterial.SetVectorArray("_TriP2", p2);
-        ghostHandMaterial.SetFloatArray("_TriRadius", triRadii);
-        ghostHandMaterial.SetInt("_TriangleCount", tCount);
+            for (int i = 0; i < tCount; i++)
+            {
+                p0[i] = NormalizeToLocal(triangles[i].p0, center, safeSize);
+                p1[i] = NormalizeToLocal(triangles[i].p1, center, safeSize);
+                p2[i] = NormalizeToLocal(triangles[i].p2, center, safeSize);
+                triRadii[i] = triangles[i].radius / normScale;
+            }
+
+            ghostHandMaterial.SetVectorArray("_TriP0", p0);
+            ghostHandMaterial.SetVectorArray("_TriP1", p1);
+            ghostHandMaterial.SetVectorArray("_TriP2", p2);
+            ghostHandMaterial.SetFloatArray("_TriRadius", triRadii);
+            ghostHandMaterial.SetInt("_TriangleCount", tCount);
+        }
 
         // --- lighting params ---
         ghostHandMaterial.SetColor("_AmbientColor", ambientColor);
@@ -164,6 +173,8 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
         ghostHandMaterial.SetFloat("_DiffuseIntensity", diffuseIntensity);
         ghostHandMaterial.SetFloat("_SpecularIntensity", specularIntensity);
         ghostHandMaterial.SetFloat("_SpecularPower", specularPower);
+        ghostHandMaterial.SetColor("_EmissiveColor", emissiveColor);
+        ghostHandMaterial.SetFloat("_EmissiveIntensity", emissiveIntensity);
     }
 
 

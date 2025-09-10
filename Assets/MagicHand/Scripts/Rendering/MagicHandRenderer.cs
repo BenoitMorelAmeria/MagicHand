@@ -16,6 +16,7 @@ public class MagicHandRenderer : MonoBehaviour, IMagicHandRenderer
     private List<Renderer> sphereRenderers = new List<Renderer>();
     private List<Renderer> cylinderRenderers = new List<Renderer>();
     private bool transparent = true;
+    
 
     public void Init(List<Vector3> initialKeypoints, List<Vector2Int> jointPairs)
     {
