@@ -7,7 +7,7 @@ public class FingerIntersectionFeedback : MonoBehaviour
     [SerializeField] MagicHandGestures magicHandGestures;
     [SerializeField] GameObject feedbackPrefab;
     [SerializeField] int fingerIndex = 0; // 0 = thumb, 1 = index, 2 = middle, 3 = ring, 4 = pinky, <0 = all fingers
-    [SerializeField] float zIntersection = 0;
+    [SerializeField] float zIntersection = 0; // in world space
     [SerializeField] bool onlyIfFingerOpen = false;
 
     List<Vector2Int> joinsToCheck = new List<Vector2Int>();
@@ -68,8 +68,8 @@ public class FingerIntersectionFeedback : MonoBehaviour
         {
             bool doesIntersect = false;
             Vector3 intersection = Vector3.zero;
-            Vector3 p1 = data.GetKeypoint(join.x);
-            Vector3 p2 = data.GetKeypoint(join.y);
+            Vector3 p1 = data.GetKeypointScreenSpace(join.x);
+            Vector3 p2 = data.GetKeypointScreenSpace(join.y);
             doesIntersect |= IntersectZPlane(p1, p2, zIntersection, out intersection);
             GameObject feedback = feedbacks[joinsToCheck.IndexOf(join)];
             feedback.SetActive(doesIntersect);

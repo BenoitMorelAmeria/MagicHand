@@ -43,7 +43,7 @@ public class MagicHandRecorder : MonoBehaviour
 
         if (frame.available)
         {
-            frame.keypoints = new List<Vector3>(magicHand.GetCurrentKeyPoints());
+            frame.keypoints = new List<Vector3>(magicHand.Data.KeypointsScreenSpace);
         }
         else
         {

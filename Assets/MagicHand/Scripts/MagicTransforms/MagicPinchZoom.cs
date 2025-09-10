@@ -10,7 +10,7 @@ public class MagicpINCHZoom : MonoBehaviour
     [SerializeField] MagicHandGestures magicHandGestures;
 
     [Header("Zoom parameters")]
-    [SerializeField] float maxDistanceToScreen = 0.15f; // Max distance from hand to screen to start scrolling
+    [SerializeField] float maxDistanceToScreen = 0.15f; // Max distance from fingers to screen to start scrolling
     [SerializeField] float fingerDistanceEpsilon = 0.01f;
     [SerializeField] float minFingerAlignmentToZ = 0.5f; // Min alignment of thumb and index finger to Z axis to start zooming
 
@@ -55,9 +55,6 @@ public class MagicpINCHZoom : MonoBehaviour
             && thumbAlignment > minFingerAlignmentToZ
             && indexAlignment > minFingerAlignmentToZ
             && GetDistanceToScreen() < maxDistanceToScreen
-            //&& magicHandGestures.fingerFrontness[2] < 0.0f
-            //&& magicHandGestures.fingerFrontness[3] < 0.0f
-            //&& magicHandGestures.fingerFrontness[4] < 0.0f
             ;
     }
 
@@ -125,7 +122,7 @@ public class MagicpINCHZoom : MonoBehaviour
 
     private float GetFingerDistanceToScreen(int fingerIndex)
     {
-        return Mathf.Abs(magicHandGestures.magicHand.GetKeyPoint(4 + 4 * fingerIndex).z);
+        return Mathf.Abs(magicHandGestures.magicHand.Data.GetKeypointScreenSpace(4 + 4 * fingerIndex).z);
     }
 
     private float GetDistanceToScreen()

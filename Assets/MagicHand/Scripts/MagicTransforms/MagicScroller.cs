@@ -58,7 +58,7 @@ public class MagicScroller : MonoBehaviour
             for (int i = 0; i < 5; ++i)
             {
                 if (magicHandGestures.fingerFrontness[i] > 0.0f // finger is opened
-                    && Mathf.Abs(magicHandGestures.magicHand.GetKeyPoint(4 * i + 4).z) < maxFingerDistanceToScreen) // fingertip is close enough to the screen
+                    && Mathf.Abs(magicHandGestures.magicHand.Data.GetKeypointScreenSpace(4 * i + 4).z) < maxFingerDistanceToScreen) // fingertip is close enough to the screen
                 {
                     count++;
                 }

@@ -52,6 +52,7 @@ public class MagicPlayer : MonoBehaviour
             {
                 magicHand.SetVisible(true);
                 magicHand.UpdateHand(frame.keypoints);
+                magicHand.SetHandPoseEnabled(true);
             }
             else
             {
