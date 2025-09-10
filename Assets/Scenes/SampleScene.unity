@@ -2882,8 +2882,8 @@ MonoBehaviour:
   ghostHandMaterial: {fileID: 2100000, guid: 02d0e022efeb59544af688981d0a6ef5, type: 2}
   volumeCubePrefab: {fileID: 5455820024760282874, guid: 9f1a27bf20c4c274ea1773909b3a7541,
     type: 3}
-  capsuleRadius: 0.006
-  fillPalm: 0
+  capsuleRadius: 0.008
+  fillPalm: 1
   fillerCapsuleRadius: 0
   triangleThickness: 0.006
   sphereRadius: 0
@@ -2894,7 +2894,7 @@ MonoBehaviour:
   specularIntensity: 0.5
   specularPower: 16
   emissiveColor: {r: 0, g: 0.16170669, b: 1, a: 1}
-  emissiveIntensity: 30
+  emissiveIntensity: 60
 --- !u!198 &833012206 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 8052797462155213915, guid: 20284e3a7fbfb0f4991db6a774345be9,

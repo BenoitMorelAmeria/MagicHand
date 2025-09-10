@@ -26,6 +26,8 @@ Shader "Custom/GhostHandRaymarch_URP"
         Pass
         {
             HLSLPROGRAM
+            #pragma multi_compile_instancing
+            #pragma multi_compile _ UNITY_SINGLE_PASS_STEREO STEREO_INSTANCING_ON STEREO_MULTIVIEW_ON
             #pragma vertex vert
             #pragma fragment frag
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -34,13 +36,17 @@ Shader "Custom/GhostHandRaymarch_URP"
             struct appdata
             {
                 float4 vertex : POSITION;
+                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct v2f
             {
+
                 float4 pos : SV_POSITION;
                 float3 rayOrigin : TEXCOORD0; // object space
                 float3 rayDir : TEXCOORD1;    // object space
+                
+                UNITY_VERTEX_OUTPUT_STEREO
             };
 
             float4 _Color;
@@ -188,26 +194,45 @@ Shader "Custom/GhostHandRaymarch_URP"
 
                 return d;
             }
-
             v2f vert(appdata IN)
             {
+                
                 v2f OUT;
+                
+                UNITY_SETUP_INSTANCE_ID(IN);
+                UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
+
+                // standard clip-space position (URP helper)
                 OUT.pos = TransformObjectToHClip(IN.vertex.xyz);
-                float3 camWorld = _WorldSpaceCameraPos;
-                float3 camOS = TransformWorldToObject(camWorld);
+
+                // Get per-eye eye position in world-space using the inverse view matrix
+                float3 eyeWS = mul(UNITY_MATRIX_I_V, float4(0,0,0,1)).xyz;
+
+                // Convert eye to object space (your SDFs expect object space)
+                float3 eyeOS = TransformWorldToObject(eyeWS);
+
+                // vertex in object space
                 float3 objVertex = IN.vertex.xyz;
-                OUT.rayOrigin = camOS;
-                OUT.rayDir = normalize(objVertex - camOS);
+
+                // Ray origin & direction in object space (same semantics as before)
+                OUT.rayOrigin = eyeOS;
+                OUT.rayDir = normalize(objVertex - eyeOS);
+
+
+
                 return OUT;
             }
 
             float4 frag(v2f i) : SV_Target
-            {
+            {  
+                 // Per-eye test color
+                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
+
                 // Convert clip-space back to world
                 float4 clip = float4(i.pos.xy / i.pos.w, 0, 1); 
                 float4 worldNear = mul(UNITY_MATRIX_I_VP, clip);
                 worldNear /= worldNear.w;
-
+                 
                 // Ray origin = eye position (object space, already passed)
                 // Ray direction = worldNear - eyePos
                 float3 worldRayDir = normalize(worldNear.xyz - mul(UNITY_MATRIX_I_V, float4(0,0,0,1)).xyz);
@@ -279,7 +304,7 @@ Shader "Custom/GhostHandRaymarch_URP"
                 color += emissive;
                 
                 // Apply fresnel as alpha mask (same as before)
-                return float4(color, _Color.a * fresnel);
+                return float4(color, _Color.a * fresnel);   
             }
 
             ENDHLSL
