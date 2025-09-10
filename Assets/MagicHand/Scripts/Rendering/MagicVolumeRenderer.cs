@@ -15,6 +15,13 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
     [SerializeField] int thumbIndexSubdivisions = 4;   // for wrist -> midpoint between thumb & index
     [SerializeField] int otherFingersSubdivisions = 2; // for wrist -> midpoint between other fingers
 
+    [SerializeField] private Color ambientColor = new Color(0.2f, 0.2f, 0.2f, 1f);
+    [SerializeField, Range(0, 1)] private float ambientIntensity = 0.2f;
+    [SerializeField, Range(0, 2)] private float diffuseIntensity = 1.0f;
+    [SerializeField, Range(0, 2)] private float specularIntensity = 0.5f;
+    [SerializeField, Range(1, 64)] private float specularPower = 16.0f;
+
+
     [System.Serializable]
     struct Triangle
     {
@@ -286,7 +293,11 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
         ghostHandMaterial.SetInt("_TriangleCount", tCount);
 
 
-
+        ghostHandMaterial.SetColor("_AmbientColor", ambientColor);
+        ghostHandMaterial.SetFloat("_AmbientIntensity", ambientIntensity);
+        ghostHandMaterial.SetFloat("_DiffuseIntensity", diffuseIntensity);
+        ghostHandMaterial.SetFloat("_SpecularIntensity", specularIntensity);
+        ghostHandMaterial.SetFloat("_SpecularPower", specularPower);
     }
 
 

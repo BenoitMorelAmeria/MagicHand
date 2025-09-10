@@ -7,6 +7,11 @@ Shader "Custom/GhostHandRaymarch_URP"
         _StepSize ("Step Size", Range(0.001,0.05)) = 0.01
         _MaxDistance ("Max March Distance", Range(1,10)) = 5
         _SphereRadius ("Sphere Radius", Range(0.01,0.1)) = 0.03
+        _AmbientColor ("Ambient Color", Color) = (0.2,0.2,0.2,1)
+        _AmbientIntensity ("Ambient Intensity", Range(0,1)) = 0.2
+        _DiffuseIntensity ("Diffuse Intensity", Range(0,2)) = 1.0
+        _SpecularIntensity ("Specular Intensity", Range(0,2)) = 0.5
+        _SpecularPower ("Specular Power", Range(1,64)) = 16 
     }
 
     SubShader
@@ -40,6 +45,12 @@ Shader "Custom/GhostHandRaymarch_URP"
             float _StepSize;
             float _MaxDistance;
             float _SphereRadius;
+
+            float4 _AmbientColor;
+            float _AmbientIntensity;
+            float _DiffuseIntensity;
+            float _SpecularIntensity;
+            float _SpecularPower;
 
             #define MAX_CAPSULES 64
             #define MAX_SPHERES 64
@@ -211,7 +222,6 @@ Shader "Custom/GhostHandRaymarch_URP"
                     dist = map(pos);
                     if (dist < 0.001) break;
 
-                    // avoid zero step by clamping to _StepSize
                     float step = max(dist, _StepSize);
                     t += step;
 
@@ -219,10 +229,9 @@ Shader "Custom/GhostHandRaymarch_URP"
                         discard;
                 }
 
-                // If we didn't hit anything, discard
                 if (dist >= 0.001) discard;
 
-                // normal via central differences
+                // --- compute normal ---
                 const float eps = 0.01;
                 float3 n = normalize(float3(
                     map(pos + float3(eps,0,0)) - map(pos - float3(eps,0,0)),
@@ -231,9 +240,30 @@ Shader "Custom/GhostHandRaymarch_URP"
                 ));
 
                 float3 vDir = normalize(i.rayOrigin - pos);
+
+                // --- lighting setup ---
+                float3 lightDir = normalize(float3(0.5, 0.7, 0.3)); // simple directional light
+                float3 lightColor = float3(1.0, 1.0, 1.0);
+
+                // Fresnel
                 float fresnel = pow(1.0 - saturate(dot(n, vDir)), _FresnelPower);
 
-                return float4(_Color.rgb, _Color.a * fresnel);
+                // Diffuse
+                float diff = saturate(dot(n, lightDir));
+
+                // Specular (Blinn-Phong)
+                float3 h = normalize(lightDir + vDir);
+                float spec = pow(saturate(dot(n, h)), _SpecularPower);
+
+                // Combine
+                float3 ambient = _AmbientColor.rgb * _AmbientIntensity;
+                float3 diffuse = lightColor * diff * _DiffuseIntensity;
+                float3 specular = lightColor * spec * _SpecularIntensity;
+
+                float3 color = (_Color.rgb * (ambient + diffuse)) + specular;
+
+                // Apply fresnel as alpha mask (same as before)
+                return float4(color, _Color.a * fresnel);
             }
 
             ENDHLSL
