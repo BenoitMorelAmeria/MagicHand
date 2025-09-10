@@ -51,7 +51,7 @@ public class MagicHand : MonoBehaviour
         foreach (var p in keypoints)
             transformedPoints.Add(transform.TransformPoint(p));
 
-        Data.UpdateKeypoints(transformedPoints);
+        Data.UpdateKeypoints(transformedPoints, keypoints);
         magicHandRenderer.UpdateKeypoints(Data.Keypoints);
     }
 
