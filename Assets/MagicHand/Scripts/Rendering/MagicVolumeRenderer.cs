@@ -6,11 +6,10 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
     [Header("Rendering")]
     [SerializeField] private Material ghostHandMaterial; // assign GhostHandRaymarch.mat
     [SerializeField] private GameObject volumeCubePrefab; // assign a Cube prefab
-    [SerializeField] private float capsuleRadius = 0.02f;
     [SerializeField] private bool fillPalm = false;
-    [SerializeField] private float fillerCapsuleRadius = 0.015f;
-    [SerializeField] private float triangleThickness = 0.015f;
-    [SerializeField] private float sphereRadius = 0.02f;
+    [SerializeField] private float capsuleBaseRadius = 0.008f;
+    [SerializeField] private float triangleBaseThickness = 0.008f;
+    [SerializeField] private float sphereBaseRadius = 0.0f;
     [SerializeField] private float stepSize = 0.01f;
 
 
@@ -23,6 +22,10 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
     [SerializeField] private Color emissiveColor = new Color(1f, 1f, 1f, 1f);
     [SerializeField] private float emissiveIntensity = 3;
 
+
+    private float capsuleRadius = 0.008f;
+    private float triangleThickness = 0.008f;
+    private float sphereRadius = 0.0f;
 
     [System.Serializable]
     struct Triangle
@@ -63,6 +66,12 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
     }
     public void UpdateKeypoints(List<Vector3> positions)
     {
+        
+        float sceneFactor = transform.lossyScale.magnitude;
+        triangleThickness = triangleBaseThickness * sceneFactor;
+        capsuleRadius = capsuleBaseRadius * sceneFactor;
+        sphereRadius = sphereBaseRadius * sceneFactor;  
+
         if (positions == null || jointPairs == null || ghostHandMaterial == null) return;
 
         // --- compute bounding box ---

@@ -2882,11 +2882,10 @@ MonoBehaviour:
   ghostHandMaterial: {fileID: 2100000, guid: 02d0e022efeb59544af688981d0a6ef5, type: 2}
   volumeCubePrefab: {fileID: 5455820024760282874, guid: 9f1a27bf20c4c274ea1773909b3a7541,
     type: 3}
-  capsuleRadius: 0.008
   fillPalm: 1
-  fillerCapsuleRadius: 0
-  triangleThickness: 0.006
-  sphereRadius: 0
+  capsuleBaseRadius: 0.008
+  triangleBaseThickness: 0.006
+  sphereBaseRadius: 0
   stepSize: 0.001
   ambientColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   ambientIntensity: 0
