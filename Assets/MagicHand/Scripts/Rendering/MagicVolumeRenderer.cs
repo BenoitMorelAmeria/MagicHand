@@ -66,8 +66,10 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
     }
     public void UpdateKeypoints(List<Vector3> positions)
     {
-        
-        float sceneFactor = transform.lossyScale.magnitude;
+
+        // the input thicknesses are "absolute", we need to resize them wrt to the scene scale
+        // we assume the scale components (x,y,z) are equal
+        float sceneFactor = transform.lossyScale.x;
         triangleThickness = triangleBaseThickness * sceneFactor;
         capsuleRadius = capsuleBaseRadius * sceneFactor;
         sphereRadius = sphereBaseRadius * sceneFactor;  
