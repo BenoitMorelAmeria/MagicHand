@@ -170,7 +170,7 @@ MonoBehaviour:
   objectToTranslate: {fileID: 1396882210}
   objectToZoom: {fileID: 750775627}
   magicHandGestures: {fileID: 311480421}
-  maxDistanceToScreen: 0.05
+  maxDistanceToScreen: 0.1
   fingerDistanceEpsilon: 0.025
   minFingerAlignmentToZ: 0.5
 --- !u!1001 &35340229
@@ -1689,7 +1689,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &552225002
 Transform:
   m_ObjectHideFlags: 0
@@ -2733,7 +2733,7 @@ MonoBehaviour:
   feedbackPrefab: {fileID: 3667557707792725676, guid: 82da95765717e6849883b9fc85b824d7,
     type: 3}
   fingerIndex: 0
-  zIntersection: -0.05
+  zIntersection: -0.1
   onlyIfFingerOpen: 1
 --- !u!1 &793329060
 GameObject:
@@ -2999,8 +2999,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8340df51fef25f14aa16de28dd427856, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scale: {x: 0.85, y: 0.85, z: 0.85}
-  position: {x: 0, y: 0, z: 0.05}
+  scale: {x: 0.9, y: 0.9, z: 0.9}
+  position: {x: 0, y: 0, z: 0.2}
 --- !u!1 &877022473
 GameObject:
   m_ObjectHideFlags: 0
@@ -4569,7 +4569,7 @@ MonoBehaviour:
   feedbackPrefab: {fileID: 3667557707792725676, guid: 82da95765717e6849883b9fc85b824d7,
     type: 3}
   fingerIndex: 2
-  zIntersection: -0.05
+  zIntersection: -0.1
   onlyIfFingerOpen: 1
 --- !u!1 &1396882209
 GameObject:
@@ -4938,7 +4938,7 @@ MonoBehaviour:
   feedbackPrefab: {fileID: 3667557707792725676, guid: 82da95765717e6849883b9fc85b824d7,
     type: 3}
   fingerIndex: 3
-  zIntersection: -0.05
+  zIntersection: -0.1
   onlyIfFingerOpen: 1
 --- !u!1 &1587868240
 GameObject:
@@ -5131,7 +5131,7 @@ MonoBehaviour:
   feedbackPrefab: {fileID: 3667557707792725676, guid: 82da95765717e6849883b9fc85b824d7,
     type: 3}
   fingerIndex: 1
-  zIntersection: -0.05
+  zIntersection: -0.1
   onlyIfFingerOpen: 1
 --- !u!1 &1637025338
 GameObject:
@@ -5189,7 +5189,6 @@ MonoBehaviour:
   - {fileID: 278101281}
   - {fileID: 607913961}
   - {fileID: 2017667087}
-  - {fileID: 877022473}
   sceneTransform: {fileID: 365506005}
 --- !u!4 &1706468341 stripped
 Transform:
@@ -5334,7 +5333,7 @@ MonoBehaviour:
   magicHandGestures: {fileID: 311480421}
   requireHandFlat: 0
   maxDistanceToScreen: 0.25
-  maxFingerDistanceToScreen: 0.05
+  maxFingerDistanceToScreen: 0.1
   numberOfFingersToIntersect: 3
   inertiaDuration: 1
   deceleration: 5
@@ -6099,7 +6098,7 @@ MonoBehaviour:
   feedbackPrefab: {fileID: 3667557707792725676, guid: 82da95765717e6849883b9fc85b824d7,
     type: 3}
   fingerIndex: 4
-  zIntersection: -0.05
+  zIntersection: -0.1
   onlyIfFingerOpen: 1
 --- !u!1 &2001871035
 GameObject:

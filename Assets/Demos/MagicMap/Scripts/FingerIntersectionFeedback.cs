@@ -75,7 +75,7 @@ public class FingerIntersectionFeedback : MonoBehaviour
             feedback.SetActive(doesIntersect);
             if (doesIntersect)
             {
-                feedback.transform.position = intersection;
+                feedback.transform.position = transform.parent.TransformPoint(intersection);
             }
         }
     }
