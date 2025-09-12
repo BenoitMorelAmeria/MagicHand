@@ -16,7 +16,10 @@ public class FreeFlyController : MonoBehaviour
     [SerializeField] private float handZCenter = 0.2f;
     [SerializeField] private float handPoseForwardSpeed = 10f;
     [SerializeField] private float handZDeadZone = 0.01f;
-    [SerializeField] private float handRotationSpeed = 5f; // blend speed (higher = snappier)
+
+    [SerializeField] private float rotSpeedFromPosX = 200f;
+    [SerializeField] private float rotSpeedFromPosY = 200f;
+    [SerializeField] private float pinchTransSpeed = 10f;
 
     private bool mouseVisible = false;
 
@@ -93,37 +96,46 @@ public class FreeFlyController : MonoBehaviour
         }
     }
 
+    private bool IsPinching()
+    {
+        float dist = Vector3.Distance(
+            magicHandGestures.magicHand.Data.GetKeypointScreenSpace(8),
+            magicHandGestures.magicHand.Data.GetKeypointScreenSpace(4)
+        );
+        return dist < 0.03f;
+    }
+
     public void HandleHandPos()
     {
         if (!magicHandGestures.magicHand.IsAvailable())
             return;
 
-        // --- Forward/Backward movement ---
-        Vector3 handPosePos = magicHandGestures.magicHand.GetCenter();
-        float zOffset = handPosePos.z - handZCenter;
+        Vector3 handPosePos = magicHandGestures.magicHand.Data.GetKeypointScreenSpace(9);
 
-        if (Mathf.Abs(zOffset) > handZDeadZone)
+        if (IsPinching()) // pinch, we translate the scene
         {
-            Vector3 move = (currentRotation * new Vector3(0, 0, zOffset))
-                           * handPoseForwardSpeed * Time.deltaTime;
-            transform.position += move;
+            Debug.Log("pinch");
+            Vector3 deltaPos = handPosePos * pinchTransSpeed * Time.deltaTime;
+            deltaPos.z = 0;
+            transform.position += currentRotation * deltaPos;
+        } else {  // no pinch, classic FPS movement
+            // Forward - backward movement with hand depth
+            float zOffset = handPosePos.z - handZCenter;
+            if (Mathf.Abs(zOffset) > handZDeadZone)
+            {
+                Vector3 move = (currentRotation * new Vector3(0, 0, zOffset))
+                               * handPoseForwardSpeed * Time.deltaTime;
+                transform.position += move;
+            }
+
+            // Rotate left-right with hand x position
+            float deltaRotationX = handPosePos.x * rotSpeedFromPosX * Time.deltaTime;
+            currentRotation = currentRotation * Quaternion.AngleAxis(deltaRotationX, Vector3.up);
+
+            // Rotate up-down with hand y position
+            float deltaRotationY = handPosePos.y * rotSpeedFromPosY * Time.deltaTime;
+            currentRotation = currentRotation * Quaternion.AngleAxis(deltaRotationY, Vector3.right);
         }
-
-        // --- Orientation-based rotation ---
-        Vector3 palmNormal = magicHandGestures.palmNormal.normalized; // acts as local "up"
-        Vector3 palmRight = -magicHandGestures.palmRight.normalized;   // acts as local "right"
-
-        // Derive palm forward using right × up
-        Vector3 palmForward = Vector3.Cross(palmRight, palmNormal).normalized;
-
-        // Construct orientation from basis vectors
-        Quaternion handRot = Quaternion.LookRotation(palmForward, palmNormal);
-
-        // Relative to neutral (palm down)
-        Quaternion targetRotation = handRot * Quaternion.Inverse(handNeutral);
-
-        // Apply instantly (no smoothing)
-        currentRotation = targetRotation;
     }
 
 }

@@ -99,7 +99,7 @@ Material:
     - _DstBlendAlpha: 0
     - _EmissiveIntensity: 60
     - _EnvironmentReflections: 1
-    - _FresnelPower: 3
+    - _FresnelPower: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
@@ -117,7 +117,7 @@ Material:
     - _SphereRadius: 0
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
-    - _StepSize: 0.008219822
+    - _StepSize: 0.0058147837
     - _Surface: 0
     - _WorkflowMode: 1
     - _ZWrite: 1

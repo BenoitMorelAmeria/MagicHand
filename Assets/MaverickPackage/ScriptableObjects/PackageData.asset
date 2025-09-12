@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: Hand-PoseDemo
   Title: Hand PoseDemo
-  Version: 1.1.1
+  Version: 1.1.2
   IconPath: Assets/MaverickPackage/icon.png
   Scenes:
   - Assets/Scenes/SampleScene.unity

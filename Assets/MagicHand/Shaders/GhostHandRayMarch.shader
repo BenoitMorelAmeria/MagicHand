@@ -82,6 +82,47 @@ Shader "Custom/GhostHandRaymarch_URP"
             float4 _TriP1[MAX_TRIANGLES];
             float4 _TriP2[MAX_TRIANGLES];
             float _TriRadius[MAX_TRIANGLES]; // thickness
+            // ----- palm constants/uniforms (only one MAX_PALM_POINTS) -----
+            #define MAX_PALM_POINTS 8
+
+            int _PalmPointCount;
+            float4 _PalmPoints[MAX_PALM_POINTS]; // palm extremity points (in same local/normalized space as other inputs)
+            float4 _PalmOrigin;                  // origin (wrist) in same local space
+            float3 _PalmXAxis;                   // X axis in same local space
+            float3 _PalmYAxis;                   // Y axis in same local space
+            float _PalmThickness;                // palm depth
+            float _PalmRoundness;                // outline roundness
+
+            // 2D point-in-polygon signed distance (rounded polygon)
+            // NOTE: uses the same MAX_PALM_POINTS
+            float sdPolygon2D(float2 p, float2 pts[MAX_PALM_POINTS], int n)
+            {
+                float dist = 1e6;
+                bool inside = false;
+
+                // distance to edges
+                for (int i = 0; i < n; i++) {
+                    float2 a = pts[i];
+                    float2 b = pts[(i + 1) % n];
+                    float2 e = b - a;
+                    float2 w = p - a;
+                    float denom = dot(e, e);
+                    float t = denom > 0.0 ? clamp(dot(w, e) / denom, 0.0, 1.0) : 0.0;
+                    float2 proj = a + e * t;
+                    dist = min(dist, length(p - proj));
+                }
+
+                // winding test
+                for (int i = 0, j = n - 1; i < n; j = i++)
+                {
+                    if (((pts[i].y > p.y) != (pts[j].y > p.y)) &&
+                        (p.x < (pts[j].x - pts[i].x) * (p.y - pts[i].y) / (pts[j].y - pts[i].y) + pts[i].x))
+                        inside = !inside;
+                }
+
+                return inside ? -dist : dist;
+            }
+
 
             // --- SDF functions ---
             float sdCapsule(float3 p, float3 a, float3 b, float r)
@@ -143,6 +184,50 @@ Shader "Custom/GhostHandRaymarch_URP"
                 return max(distPlane, abs(distNormal) - thickness);
             }
 
+            // 2D point-in-polygon signed distance (rounded polygon)
+            // Helper: safe normalize (avoid NaNs)
+            float3 safe_normalize(float3 v)
+            {
+                float l = length(v);
+                return l > 1e-6 ? v / l : float3(1,0,0);
+            }
+
+            // Palm SDF (robust projection using dot products)
+            float sdPalm(float3 p)
+            {
+                // axis vectors passed from C# are expected to be normalized and in the same local space
+                float3 ox = _PalmXAxis;
+                float3 oy = _PalmYAxis;
+                float3 oz = normalize(cross(ox, oy)); // third axis (recomputed in shader)
+
+                // vector from origin to point (in same space as _PalmOrigin and _PalmPoints)
+                float3 rel = p - _PalmOrigin.xyz;
+
+                // local coords via dot products (guaranteed consistent with C# axes)
+                float localX = dot(rel, ox);
+                float localY = dot(rel, oy);
+                float localZ = dot(rel, oz);
+                float3 localP = float3(localX, localY, localZ);
+
+                // Build 2D polygon points by projecting each palm input into the same frame
+                float2 pts[MAX_PALM_POINTS];
+                for (int i = 0; i < _PalmPointCount; i++)
+                {
+                    float3 relPt = _PalmPoints[i].xyz - _PalmOrigin.xyz;
+                    pts[i] = float2(dot(relPt, ox), dot(relPt, oy));
+                }
+
+                // polygon distance (in-plane)
+                float d2d = sdPolygon2D(localP.xy, pts, _PalmPointCount);
+
+                // round corners (Minkowski)
+                d2d -= _PalmRoundness;
+
+                // extrude by thickness along plane normal
+                float dz = abs(localP.z) - _PalmThickness * 0.5;
+
+                return max(d2d, dz);
+            }
 
 
             float smoothUnion(float d1, float d2, float k)
@@ -190,7 +275,13 @@ Shader "Custom/GhostHandRaymarch_URP"
                 [loop] 
                 for (int i = 0; i < _TriangleCount; i++)
                     d = min(d, sdTrianglePrism(p, _TriP0[i].xyz, _TriP1[i].xyz, _TriP2[i].xyz, _TriRadius[i]));
-
+                
+                    // Palm base
+                if (_PalmPointCount > 0)
+                {
+                    float dpalm = sdPalm(p);
+                    d = smoothUnion(d, dpalm, 0.02); // adjust smoothness
+                }
 
                 return d;
             }
@@ -302,6 +393,8 @@ Shader "Custom/GhostHandRaymarch_URP"
                
                 float3 emissive = _EmissiveColor.rgb * _EmissiveIntensity * fresnel;
                 color += emissive;
+
+              
                 
                 // Apply fresnel as alpha mask (same as before)
                 return float4(color, _Color.a * fresnel);   

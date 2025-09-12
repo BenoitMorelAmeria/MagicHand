@@ -66,17 +66,15 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
     }
     public void UpdateKeypoints(List<Vector3> positions)
     {
+        if (positions == null || jointPairs == null || ghostHandMaterial == null) return;
 
-        // the input thicknesses are "absolute", we need to resize them wrt to the scene scale
-        // we assume the scale components (x,y,z) are equal
+        // --- scaling ---
         float sceneFactor = transform.lossyScale.x;
         triangleThickness = triangleBaseThickness * sceneFactor;
         capsuleRadius = capsuleBaseRadius * sceneFactor;
-        sphereRadius = sphereBaseRadius * sceneFactor;  
+        sphereRadius = sphereBaseRadius * sceneFactor;
 
-        if (positions == null || jointPairs == null || ghostHandMaterial == null) return;
-
-        // --- compute bounding box ---
+        // --- bounding box for volume cube ---
         Vector3 min = positions[0];
         Vector3 max = positions[0];
         foreach (var p in positions)
@@ -84,23 +82,21 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
             min = Vector3.Min(min, p);
             max = Vector3.Max(max, p);
         }
-
         Vector3 center = (min + max) * 0.5f;
         Vector3 size = (max - min) + Vector3.one * padding;
-
-        // scale/position cube in world space
         volumeCube.transform.position = center;
         SetGlobalScale(volumeCube.transform, size);
-        //volumeCube.transform.localScale = size;
 
-        // safe size for normalization (avoid div by zero)
         Vector3 safeSize = new Vector3(
             Mathf.Max(size.x, 1e-6f),
             Mathf.Max(size.y, 1e-6f),
             Mathf.Max(size.z, 1e-6f)
         );
 
+        float normScale = Mathf.Min(safeSize.x, Mathf.Min(safeSize.y, safeSize.z));
+
         // --- capsules ---
+        const int MAX_CAPSULES = 64;
         var allCapsules = new List<(Vector3 a, Vector3 b, float r)>();
         for (int i = 0; i < jointPairs.Count; i++)
         {
@@ -108,9 +104,6 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
             if (jp.x < 0 || jp.x >= positions.Count || jp.y < 0 || jp.y >= positions.Count) continue;
             allCapsules.Add((positions[jp.x], positions[jp.y], capsuleRadius));
         }
-
-        // cap number for shader
-        const int MAX_CAPSULES = 64;
         if (allCapsules.Count > MAX_CAPSULES)
             allCapsules.RemoveRange(MAX_CAPSULES, allCapsules.Count - MAX_CAPSULES);
 
@@ -118,43 +111,41 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
         Vector4[] A = new Vector4[cCount];
         Vector4[] B = new Vector4[cCount];
         float[] radii = new float[cCount];
-
-        float normScale = Mathf.Min(safeSize.x, Mathf.Min(safeSize.y, safeSize.z));
-
         for (int i = 0; i < cCount; i++)
         {
             var c = allCapsules[i];
             A[i] = NormalizeToLocal(c.a, center, safeSize);
             B[i] = NormalizeToLocal(c.b, center, safeSize);
-            radii[i] = c.r / normScale; // normalized radius
+            radii[i] = c.r / normScale;
         }
-
         ghostHandMaterial.SetVectorArray("_CapsuleA", A);
         ghostHandMaterial.SetVectorArray("_CapsuleB", B);
         ghostHandMaterial.SetFloatArray("_CapsuleRadii", radii);
         ghostHandMaterial.SetInt("_CapsuleCount", cCount);
-
         ghostHandMaterial.SetFloat("_StepSize", stepSize / normScale);
 
         // --- spheres ---
-        Vector4[] spherePositions = new Vector4[positions.Count];
-        for (int i = 0; i < positions.Count; i++)
+        const int MAX_SPHERES = 64;
+        int sCount = Mathf.Min(positions.Count, MAX_SPHERES);
+        Vector4[] spherePositions = new Vector4[sCount];
+        for (int i = 0; i < sCount; i++)
             spherePositions[i] = NormalizeToLocal(positions[i], center, safeSize);
 
         ghostHandMaterial.SetVectorArray("_SpherePos", spherePositions);
-        ghostHandMaterial.SetInt("_SphereCount", positions.Count);
+        ghostHandMaterial.SetInt("_SphereCount", sCount);
         ghostHandMaterial.SetFloat("_SphereRadius", sphereRadius / normScale);
 
-        // --- triangles ---
+        // --- triangles (optional fallback) ---
         List<Triangle> triangles = new List<Triangle>();
-        if (fillPalm) {
+        if (fillPalm)
+        {
             triangles.Add(new Triangle { p0 = positions[1], p1 = positions[2], p2 = positions[5], radius = triangleThickness });
             triangles.Add(new Triangle { p0 = positions[0], p1 = positions[1], p2 = positions[5], radius = triangleThickness });
             triangles.Add(new Triangle { p0 = positions[0], p1 = positions[5], p2 = positions[9], radius = triangleThickness });
             triangles.Add(new Triangle { p0 = positions[0], p1 = positions[9], p2 = positions[13], radius = triangleThickness });
             triangles.Add(new Triangle { p0 = positions[0], p1 = positions[13], p2 = positions[17], radius = triangleThickness });
         }
-        
+
         int tCount = Mathf.Min(triangles.Count, 16);
         if (tCount > 0)
         {
@@ -178,7 +169,77 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
         }
         ghostHandMaterial.SetInt("_TriangleCount", tCount);
 
-        // --- lighting params ---
+        // --- PALM (robust, consistent local space) ---
+        int[] palmIndices = { 0, 1, 5, 9, 13, 17 };
+        int palmCount = Mathf.Min(palmIndices.Length, 8);
+
+        if (positions.Count > Mathf.Max(palmIndices))
+        {
+            // gather normalized local positions (same space used for capsules/spheres)
+            Vector3[] localPoints = new Vector3[palmCount];
+            for (int i = 0; i < palmCount; i++)
+            {
+                Vector4 v4 = NormalizeToLocal(positions[palmIndices[i]], center, safeSize);
+                localPoints[i] = new Vector3(v4.x, v4.y, v4.z);
+            }
+
+            // wrist, thumb, pinky in local space
+            Vector3 wristLocal = localPoints[0];
+            Vector3 thumbLocal = localPoints[1];
+            Vector3 pinkyLocal = localPoints[5];
+
+            // build plane and axes in LOCAL space
+            Vector3 v1 = thumbLocal - wristLocal;
+            Vector3 v2 = pinkyLocal - wristLocal;
+            if (v1.sqrMagnitude < 1e-8f) v1 = Vector3.right * 1e-3f;
+            if (v2.sqrMagnitude < 1e-8f) v2 = Vector3.up * 1e-3f;
+
+            Vector3 normalLocal = Vector3.Cross(v1, v2).normalized;
+            Vector3 xAxisLocal = v1.normalized;
+            Vector3 yAxisLocal = Vector3.Cross(normalLocal, xAxisLocal).normalized;
+
+            // project all palm points onto the plane (make strictly coplanar)
+            Vector3[] proj = new Vector3[palmCount];
+            for (int i = 0; i < palmCount; i++)
+            {
+                Vector3 toP = localPoints[i] - wristLocal;
+                float d = Vector3.Dot(toP, normalLocal);
+                proj[i] = localPoints[i] - d * normalLocal;
+            }
+
+            var angleList = new List<(float angle, Vector3 pt)>(palmCount);
+            for (int i = 0; i < palmCount; i++)
+            {
+                Vector3 toP = proj[i] - wristLocal;
+                float ax = Vector3.Dot(toP, xAxisLocal);
+                float ay = Vector3.Dot(toP, yAxisLocal);
+                float ang = Mathf.Atan2(ay, ax);
+                angleList.Add((ang, proj[i]));
+            }
+            
+            // prepare array for shader
+            Vector4[] palmPointsArr = new Vector4[palmCount];
+            for (int i = 0; i < palmCount; i++)
+            {
+                Vector3 p = angleList[i].pt;
+                palmPointsArr[i] = new Vector4(p.x, p.y, p.z, 0.0f);
+            }
+
+            // pass origin and axes in the SAME local space
+            ghostHandMaterial.SetVector("_PalmOrigin", new Vector4(wristLocal.x, wristLocal.y, wristLocal.z, 0.0f));
+            ghostHandMaterial.SetVector("_PalmXAxis", new Vector4(xAxisLocal.x, xAxisLocal.y, xAxisLocal.z, 0.0f));
+            ghostHandMaterial.SetVector("_PalmYAxis", new Vector4(yAxisLocal.x, yAxisLocal.y, yAxisLocal.z, 0.0f));
+            ghostHandMaterial.SetFloat("_PalmThickness", triangleThickness / normScale);
+            ghostHandMaterial.SetFloat("_PalmRoundness", 0.02f); // try bumping to 0.03 if needed
+            ghostHandMaterial.SetInt("_PalmPointCount", palmCount);
+            ghostHandMaterial.SetVectorArray("_PalmPoints", palmPointsArr);
+        }
+        else
+        {
+            ghostHandMaterial.SetInt("_PalmPointCount", 0);
+        }
+
+        // --- lighting ---
         ghostHandMaterial.SetColor("_AmbientColor", ambientColor);
         ghostHandMaterial.SetFloat("_AmbientIntensity", ambientIntensity);
         ghostHandMaterial.SetFloat("_DiffuseIntensity", diffuseIntensity);
@@ -187,6 +248,7 @@ public class MagicVoumeRenderer : MonoBehaviour, IMagicHandRenderer
         ghostHandMaterial.SetColor("_EmissiveColor", emissiveColor);
         ghostHandMaterial.SetFloat("_EmissiveIntensity", emissiveIntensity);
     }
+
 
 
     public void SetVisible(bool visible)
