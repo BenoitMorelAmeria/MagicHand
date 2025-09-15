@@ -1007,6 +1007,53 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 246427789}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &254261537
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 254261538}
+  - component: {fileID: 254261539}
+  m_Layer: 0
+  m_Name: Player
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &254261538
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 254261537}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 278101282}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &254261539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 254261537}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c1074ce9e3a64e4e8ce15dbfd20d131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  magicHand: {fileID: 640960583}
+  fileName: Assets/3Dmaprecording.json
+  autoPlayOnStart: 1
 --- !u!1 &261218146
 GameObject:
   m_ObjectHideFlags: 0
@@ -1075,7 +1122,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &278101282
 Transform:
   m_ObjectHideFlags: 0
@@ -1091,6 +1138,7 @@ Transform:
   m_Children:
   - {fileID: 66712287}
   - {fileID: 674612902}
+  - {fileID: 254261538}
   m_Father: {fileID: 1637025339}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &278101283
@@ -2336,17 +2384,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 100
   moveCamera: 0
-  enableMouseAndKeyboard: 1
+  enableMouseAndKeyboard: 0
   mouseSensitivity: 2
   magicHandGestures: {fileID: 311480421}
   sceneRoot: {fileID: 2021289052}
   cameraManager: {fileID: 4216428590830783620}
-  handZCenter: -0.1
-  handPoseForwardSpeed: 0
-  handZDeadZone: 0
-  rotSpeedFromPosX: 200
-  rotSpeedFromPosY: 200
-  pinchTransSpeed: 10
+  handZCenter: -0.2
+  handPoseForwardSpeed: 1000
+  handZDeadZone: 0.03
+  rotSpeedFromPosX: 400
+  rotSpeedFromPosY: -200
+  pinchTransSpeed: 500
 --- !u!1001 &675396956
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2969,7 +3017,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &876446094
 Transform:
   m_ObjectHideFlags: 0

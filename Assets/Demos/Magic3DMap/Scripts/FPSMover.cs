@@ -105,35 +105,52 @@ public class FreeFlyController : MonoBehaviour
         return dist < 0.03f;
     }
 
+
+    static float ApplyDeadZone(float pos, float deadZone)
+    {
+        if (Mathf.Abs(pos) < deadZone)
+        {
+            return 0;
+        }
+        else if (pos > 0)
+        {
+            return pos - deadZone;
+        }
+        else
+        {
+            return pos + deadZone;
+        }
+    }
+
     public void HandleHandPos()
     {
         if (!magicHandGestures.magicHand.IsAvailable())
             return;
 
         Vector3 handPosePos = magicHandGestures.magicHand.Data.GetKeypointScreenSpace(9);
+        Vector3 relativePos = handPosePos - new Vector3(0, 0, handZCenter);
+        relativePos.z = ApplyDeadZone(relativePos.z, handZDeadZone);
+
 
         if (IsPinching()) // pinch, we translate the scene
         {
             Debug.Log("pinch");
-            Vector3 deltaPos = handPosePos * pinchTransSpeed * Time.deltaTime;
+            Vector3 deltaPos = relativePos * pinchTransSpeed * Time.deltaTime;
             deltaPos.z = 0;
             transform.position += currentRotation * deltaPos;
         } else {  // no pinch, classic FPS movement
             // Forward - backward movement with hand depth
-            float zOffset = handPosePos.z - handZCenter;
-            if (Mathf.Abs(zOffset) > handZDeadZone)
-            {
-                Vector3 move = (currentRotation * new Vector3(0, 0, zOffset))
-                               * handPoseForwardSpeed * Time.deltaTime;
-                transform.position += move;
-            }
+            Vector3 move = (currentRotation * new Vector3(0, 0, relativePos.z))
+                            * handPoseForwardSpeed * Time.deltaTime;
+            transform.position += move;
+            
 
             // Rotate left-right with hand x position
-            float deltaRotationX = handPosePos.x * rotSpeedFromPosX * Time.deltaTime;
+            float deltaRotationX = relativePos.x * rotSpeedFromPosX * Time.deltaTime;
             currentRotation = currentRotation * Quaternion.AngleAxis(deltaRotationX, Vector3.up);
 
             // Rotate up-down with hand y position
-            float deltaRotationY = handPosePos.y * rotSpeedFromPosY * Time.deltaTime;
+            float deltaRotationY = relativePos.y * rotSpeedFromPosY * Time.deltaTime;
             currentRotation = currentRotation * Quaternion.AngleAxis(deltaRotationY, Vector3.right);
         }
     }
