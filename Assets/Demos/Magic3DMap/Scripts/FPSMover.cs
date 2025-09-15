@@ -15,10 +15,14 @@ public class FreeFlyController : MonoBehaviour
     [Header("Hand pose")]
     [SerializeField] private float handZCenter = 0.2f;
     [SerializeField] private float handPoseForwardSpeed = 10f;
-    [SerializeField] private float handZDeadZone = 0.01f;
+    [SerializeField] private Vector3 handDeadZone = Vector3.zero;
+
+    [SerializeField] private Vector3 interactionAreaMin = new Vector3(-1, -1, -1);
+    [SerializeField] private Vector3 interactionAreaMax = new Vector3(1, 1, 1);
 
     [SerializeField] private float rotSpeedFromPosX = 200f;
     [SerializeField] private float rotSpeedFromPosY = 200f;
+
     [SerializeField] private float pinchTransSpeed = 10f;
 
     private bool mouseVisible = false;
@@ -122,19 +126,30 @@ public class FreeFlyController : MonoBehaviour
         }
     }
 
+    private bool IsHandInInteractionArea()
+    {
+        Vector3 pos = magicHandGestures.magicHand.Data.GetKeypointScreenSpace(9);
+        return (pos.x >= interactionAreaMin.x && pos.x <= interactionAreaMax.x) &&
+               (pos.y >= interactionAreaMin.y && pos.y <= interactionAreaMax.y) &&
+               (pos.z >= interactionAreaMin.z && pos.z <= interactionAreaMax.z);
+    }
+
     public void HandleHandPos()
     {
-        if (!magicHandGestures.magicHand.IsAvailable())
+        if (!magicHandGestures.magicHand.IsAvailable() || !IsHandInInteractionArea())
             return;
+
+
 
         Vector3 handPosePos = magicHandGestures.magicHand.Data.GetKeypointScreenSpace(9);
         Vector3 relativePos = handPosePos - new Vector3(0, 0, handZCenter);
-        relativePos.z = ApplyDeadZone(relativePos.z, handZDeadZone);
+        relativePos.x = ApplyDeadZone(relativePos.x, handDeadZone.x);
+        relativePos.y = ApplyDeadZone(relativePos.y, handDeadZone.y);
+        relativePos.z = ApplyDeadZone(relativePos.z, handDeadZone.z);
 
 
         if (IsPinching()) // pinch, we translate the scene
         {
-            Debug.Log("pinch");
             Vector3 deltaPos = relativePos * pinchTransSpeed * Time.deltaTime;
             deltaPos.z = 0;
             transform.position += currentRotation * deltaPos;

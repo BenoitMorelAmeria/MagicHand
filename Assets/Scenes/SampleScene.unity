@@ -2391,7 +2391,9 @@ MonoBehaviour:
   cameraManager: {fileID: 4216428590830783620}
   handZCenter: -0.2
   handPoseForwardSpeed: 1000
-  handZDeadZone: 0.03
+  handDeadZone: {x: 0, y: 0, z: 0}
+  interactionAreaMin: {x: -1, y: -1, z: -1}
+  interactionAreaMax: {x: 1, y: 1, z: 0.4}
   rotSpeedFromPosX: 400
   rotSpeedFromPosY: -200
   pinchTransSpeed: 500
