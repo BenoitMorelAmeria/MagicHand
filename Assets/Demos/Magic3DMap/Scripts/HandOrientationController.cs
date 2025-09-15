@@ -7,12 +7,14 @@ public class HandOrientationController : MonoBehaviour
     [SerializeField] public MagicHandGestures magicHandGestures;
 
     [Header("Hand pose")]
-    [SerializeField] private float handZCenter = 0.2f;
+    [SerializeField] private Vector3 neutralPosition = new Vector3(-0.2f, 0.1f, 0.0f);
     [SerializeField] private Vector3 handPoseTranslationSpeed = Vector3.zero;
     [SerializeField] private Vector3 handDeadZone = Vector3.zero;
 
     [SerializeField] private Vector3 interactionAreaMin = new Vector3(-1, -1, -1);
     [SerializeField] private Vector3 interactionAreaMax = new Vector3(1, 1, 1);
+
+    [SerializeField] private Vector3 handNeutralEuler = new Vector3(0f, 180f, 180f);
     [SerializeField] private float rotationSpeed  = 1;
 
 
@@ -22,7 +24,15 @@ public class HandOrientationController : MonoBehaviour
     private Quaternion handNeutral = Quaternion.LookRotation(-Vector3.forward, Vector3.down);
 
 
+    private void Awake()
+    {
+        handNeutral = Quaternion.Euler(handNeutralEuler);
+    }
 
+    private void OnValidate()
+    {
+        handNeutral = Quaternion.Euler(handNeutralEuler);
+    }
 
     void Update()
     {
@@ -74,7 +84,7 @@ public class HandOrientationController : MonoBehaviour
 
         // translation using the relative position
         Vector3 handPosePos = magicHandGestures.magicHand.Data.GetKeypointScreenSpace(9);
-        Vector3 relativePos = handPosePos - new Vector3(0, 0, handZCenter);
+        Vector3 relativePos = handPosePos - neutralPosition;
         relativePos.x = ApplyDeadZone(relativePos.x, handDeadZone.x);
         relativePos.y = ApplyDeadZone(relativePos.y, handDeadZone.y);
         relativePos.z = ApplyDeadZone(relativePos.z, handDeadZone.z);
