@@ -81,65 +81,6 @@ public class HandOrientationController : MonoBehaviour
         transform.position += transform.rotation * Vector3.Scale(relativePos, handPoseTranslationSpeed) * Time.deltaTime;
 
 
-        /*
-        // rotate left-right using palm orientation around Y axis and up-down around X axis
-        Vector3 handForward = magicHandGestures.palmForward;
-        Vector3 handRight = magicHandGestures.palmRight;
-        Vector3 handUp = Vector3.Cross(handForward, handRight);
-        Quaternion handRot = Quaternion.LookRotation(handForward, handUp);
-
-        // Get the rotated forward vector of the hand
-        Vector3 handDir = (handRot * Vector3.forward);
-        handDir.y = 0f;
-        handDir.Normalize();
-
-        // Do the same for the neutral orientation
-        Vector3 neutralDir = (handNeutral * Vector3.forward);
-        neutralDir.y = 0f;
-        neutralDir.Normalize();
-
-        // Signed angle around Y axis
-        float yAngle = Vector3.SignedAngle(neutralDir, handDir, Vector3.up);
-        float deltaRotationX = yAngle * leftRightRotationSpeed * Time.deltaTime;
-        transform.rotation = transform.rotation * Quaternion.AngleAxis(deltaRotationX, Vector3.up);
-
-        // Now the same for the up-down rotation around the right axis of the hand
-        handDir = (handRot * Vector3.forward);
-        handDir = Vector3.ProjectOnPlane(handDir, handRight);
-        handDir.Normalize();
-        neutralDir = (handNeutral * Vector3.forward);
-        neutralDir = Vector3.ProjectOnPlane(neutralDir, handRight);
-        neutralDir.Normalize();
-        float xAngle = Vector3.SignedAngle(neutralDir, handDir, handRight);
-        float deltaRotationY = xAngle * upDownRotationSpeed * Time.deltaTime;
-        transform.rotation = transform.rotation * Quaternion.AngleAxis(deltaRotationY, Vector3.right);
-
-        */
-
-        /*
-
-        // Construct current hand rotation
-        Vector3 handForward = magicHandGestures.palmForward;
-        Vector3 handRight = magicHandGestures.palmRight;
-        Vector3 handUp = Vector3.Cross(handForward, handRight);
-        Quaternion handRot = Quaternion.LookRotation(handForward, handUp);
-
-        // Compute relative rotation between neutral and current hand
-        Quaternion relativeRot = handRot * Quaternion.Inverse(handNeutral);
-        // Extract the "delta" from relativeRot
-        float angle;
-        Vector3 axis;
-        relativeRot.ToAngleAxis(out angle, out axis);
-
-        // Clamp to avoid big jumps (e.g. >180° wrap-around)
-        if (angle > 180f) angle -= 360f;
-
-        // Apply scaled delta
-        transform.rotation = transform.rotation * Quaternion.AngleAxis(
-            angle * rotationSpeed * Time.deltaTime,
-            axis
-        );
-        */
 
         // Build current hand rotation
         Vector3 handForward = magicHandGestures.palmForward;
@@ -169,6 +110,10 @@ public class HandOrientationController : MonoBehaviour
             transform.rotation *
             Quaternion.AngleAxis(deltaY, Vector3.up) *
             Quaternion.AngleAxis(deltaX, Vector3.right);
+
+        // Now remove roll by zeroing the Z component
+        Vector3 currentEuler = transform.rotation.eulerAngles;
+        transform.rotation = Quaternion.Euler(currentEuler.x, currentEuler.y, 0f);
     }
 
 }
