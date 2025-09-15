@@ -23,7 +23,6 @@ public class HandAndPinchController : MonoBehaviour
 
     // Rotation state
     private Quaternion currentRotation = Quaternion.identity;
-    private Quaternion handNeutral = Quaternion.LookRotation(Vector3.forward, Vector3.down);
 
 
 

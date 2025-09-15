@@ -16,6 +16,7 @@ public class MapControllers : MonoBehaviour
     {
         SetControllerIndex(_currentIndex);
     }
+
     public void Update()
     {
         if (Input.GetKeyDown(KeyCode.C))
