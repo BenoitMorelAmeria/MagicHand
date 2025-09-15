@@ -42,7 +42,8 @@ public class HandOrientationController : MonoBehaviour
 
     void Update()
     {
-        if (magicHandGestures.magicHand.IsAvailable() != _isInteracting)
+        bool interactionReady = magicHandGestures.magicHand.IsAvailable() && IsHandInInteractionArea();
+        if (interactionReady != _isInteracting)
         {
             _interactionTimer += Time.deltaTime;
             if (_interactionTimer >= timeBeforeStartInteraction && magicHandGestures.magicHand.IsAvailable())
