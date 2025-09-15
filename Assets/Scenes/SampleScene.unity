@@ -3034,7 +3034,7 @@ MonoBehaviour:
   capsuleBaseRadius: 0.008
   triangleBaseThickness: 0.006
   sphereBaseRadius: 0
-  stepSize: 0.01
+  stepSize: 0.001
   ambientColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   ambientIntensity: 0
   diffuseIntensity: 0
@@ -4884,11 +4884,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   magicHandGestures: {fileID: 311480421}
-  handZCenter: -0.25
-  handPoseTranslationSpeed: {x: 200, y: 200, z: 500}
-  handDeadZone: {x: 0.03, y: 0.03, z: 0.03}
+  neutralPosition: {x: 0, y: -0.035, z: -0.2}
+  handPoseTranslationSpeed: {x: 400, y: 400, z: 400}
+  handDeadZone: {x: 0.02, y: 0.02, z: 0.02}
   interactionAreaMin: {x: -1, y: -1, z: -0.4}
   interactionAreaMax: {x: 1, y: 1, z: 1}
+  handNeutralEuler: {x: 15, y: 180, z: 180}
   rotationSpeed: 1
 --- !u!1 &1445235408
 GameObject:
