@@ -21,6 +21,8 @@ public class MagicHandGestures : MonoBehaviour
 
     public Vector3 palmNormal = Vector3.zero;
     public Vector3 palmRight = Vector3.zero;
+    public Vector3 palmForward = Vector3.zero;
+    public Quaternion palmRotation = Quaternion.identity;
 
     public enum Handedness { Left, Right }
     Handedness HandednessDetected = Handedness.Right;
@@ -77,6 +79,8 @@ public class MagicHandGestures : MonoBehaviour
         handSignednessDebug = HandednessDetected.ToString();
         palmNormal = GetPalmNormal(keypoints, HandednessDetected);
         palmRight = GetPalmRight(keypoints, HandednessDetected);
+        palmForward = Vector3.Cross(palmRight, palmNormal).normalized;
+        palmRotation = Quaternion.LookRotation(palmForward, palmNormal);
         UpdateFingersColinearity();
         UpdateFingersFrontness();
         IndexPointing = ComputeIsIndexFingerPointing();

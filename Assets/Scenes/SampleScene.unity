@@ -1249,6 +1249,8 @@ MonoBehaviour:
   flatHandDuration: 0
   palmNormal: {x: 0, y: 0, z: 0}
   palmRight: {x: 0, y: 0, z: 0}
+  palmForward: {x: 0, y: 0, z: 0}
+  palmRotation: {x: 0, y: 0, z: 0, w: 1}
   fingerColinearities:
   - 0
   - 0
@@ -2342,7 +2344,9 @@ MonoBehaviour:
   handZCenter: -0.1
   handPoseForwardSpeed: 0
   handZDeadZone: 0
-  handRotationSpeed: 1
+  rotSpeedFromPosX: 200
+  rotSpeedFromPosY: 200
+  pinchTransSpeed: 10
 --- !u!1001 &675396956
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5184,8 +5188,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levels:
-  - {fileID: 876446093}
   - {fileID: 278101281}
+  - {fileID: 876446093}
   - {fileID: 607913961}
   - {fileID: 2017667087}
   sceneTransform: {fileID: 365506005}
