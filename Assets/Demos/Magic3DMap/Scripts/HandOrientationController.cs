@@ -116,6 +116,8 @@ public class HandOrientationController : MonoBehaviour
 
         */
 
+        /*
+
         // Construct current hand rotation
         Vector3 handForward = magicHandGestures.palmForward;
         Vector3 handRight = magicHandGestures.palmRight;
@@ -137,6 +139,36 @@ public class HandOrientationController : MonoBehaviour
             angle * rotationSpeed * Time.deltaTime,
             axis
         );
+        */
+
+        // Build current hand rotation
+        Vector3 handForward = magicHandGestures.palmForward;
+        Vector3 handRight = magicHandGestures.palmRight;
+        Vector3 handUp = Vector3.Cross(handForward, handRight);
+        Quaternion handRot = Quaternion.LookRotation(handForward, handUp);
+
+        // Relative rotation: from neutral to current
+        Quaternion relativeRot = handRot * Quaternion.Inverse(handNeutral);
+
+        // Extract Euler angles
+        Vector3 euler = relativeRot.eulerAngles;
+
+        // Convert Unity’s [0..360] range into signed angles [-180..180]
+        if (euler.x > 180f) euler.x -= 360f;
+        if (euler.y > 180f) euler.y -= 360f;
+
+        // Constrain: keep only X (pitch) and Y (yaw), drop Z (roll)
+        Vector3 constrainedEuler = new Vector3(euler.x, euler.y, 0f);
+
+        // Scale by your own speeds if you want sensitivity control
+        float deltaX = constrainedEuler.x * rotationSpeed * Time.deltaTime;
+        float deltaY = constrainedEuler.y * rotationSpeed * Time.deltaTime;
+
+        // Apply the deltas gradually
+        transform.rotation =
+            transform.rotation *
+            Quaternion.AngleAxis(deltaY, Vector3.up) *
+            Quaternion.AngleAxis(deltaX, Vector3.right);
     }
 
 }

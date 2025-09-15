@@ -4885,12 +4885,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   magicHandGestures: {fileID: 311480421}
   handZCenter: -0.25
-  handPoseTranslationSpeed: {x: 100, y: 100, z: 200}
-  handDeadZone: {x: 0, y: 0, z: 0}
-  interactionAreaMin: {x: -1, y: -1, z: -1}
+  handPoseTranslationSpeed: {x: 200, y: 200, z: 500}
+  handDeadZone: {x: 0.03, y: 0.03, z: 0.03}
+  interactionAreaMin: {x: -1, y: -1, z: -0.4}
   interactionAreaMax: {x: 1, y: 1, z: 1}
-  leftRightRotationSpeed: 1
-  upDownRotationSpeed: 1
+  rotationSpeed: 1
 --- !u!1 &1445235408
 GameObject:
   m_ObjectHideFlags: 0
