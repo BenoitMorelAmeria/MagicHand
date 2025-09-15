@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MapControllers : MonoBehaviour
@@ -10,6 +11,9 @@ public class MapControllers : MonoBehaviour
     [SerializeField] public CameraManager cameraManager;
     [SerializeField] public List<GameObject> controllers;
     [SerializeField] private bool moveCamera = false;
+    [SerializeField] private Vector3 minPosition = new Vector3(-10, -0, -10);
+    [SerializeField] private Vector3 maxPosition = new Vector3(10, 10, 10);
+
     private int _currentIndex = 0;
 
     public void Start()
@@ -45,6 +49,17 @@ public class MapControllers : MonoBehaviour
     void LateUpdate()
     {
         Transform t = GetController().transform;
+        Vector3 pos = t.position;
+        // clamp position
+        pos.x = Mathf.Clamp(pos.x, minPosition.x, maxPosition.x);
+        pos.y = Mathf.Clamp(pos.y, minPosition.y, maxPosition.y);
+        pos.z = Mathf.Clamp(pos.z, minPosition.z, maxPosition.z);
+
+        t.SetPositionAndRotation(
+            pos,
+            t.rotation
+        );
+        
         if (moveCamera)
         {
             // Move the camera normally

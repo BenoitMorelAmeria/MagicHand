@@ -1001,7 +1001,9 @@ MonoBehaviour:
   cameraManager: {fileID: 4216428590830783620}
   controllers:
   - {fileID: 1422174295}
-  moveCamera: 0
+  moveCamera: 1
+  minPosition: {x: -100, y: 0, z: -100}
+  maxPosition: {x: 100, y: 200, z: 100}
 --- !u!1 &246427789
 GameObject:
   m_ObjectHideFlags: 0
@@ -4891,6 +4893,8 @@ MonoBehaviour:
   interactionAreaMax: {x: 1, y: 1, z: 1}
   handNeutralEuler: {x: 15, y: 180, z: 180}
   rotationSpeed: 1
+  timeBeforeStartInteraction: 0.5
+  timeBeforeStopInteraction: 0.5
 --- !u!1 &1445235408
 GameObject:
   m_ObjectHideFlags: 0
