@@ -78,7 +78,7 @@ public class HandOrientationController : MonoBehaviour
         relativePos.x = ApplyDeadZone(relativePos.x, handDeadZone.x);
         relativePos.y = ApplyDeadZone(relativePos.y, handDeadZone.y);
         relativePos.z = ApplyDeadZone(relativePos.z, handDeadZone.z);
-        transform.position += Vector3.Scale(relativePos, handPoseTranslationSpeed) * Time.deltaTime;
+        transform.position += transform.rotation * Vector3.Scale(relativePos, handPoseTranslationSpeed) * Time.deltaTime;
 
 
         /*
