@@ -17,6 +17,12 @@ public class HandOrientationController : MonoBehaviour
     [SerializeField] private Vector3 handNeutralEuler = new Vector3(0f, 180f, 180f);
     [SerializeField] private float rotationSpeed  = 1;
 
+    [SerializeField] private float timeBeforeStartInteraction = 0.5f;
+    [SerializeField] private float timeBeforeStopInteraction = 0.5f;
+
+    private bool _isInteracting = false;
+    private float _interactionTimer = 0f;
+
 
     private bool mouseVisible = false;
 
@@ -36,17 +42,27 @@ public class HandOrientationController : MonoBehaviour
 
     void Update()
     {
-        HandleHandPos();
-    }
-
-
-    private bool IsPinching()
-    {
-        float dist = Vector3.Distance(
-            magicHandGestures.magicHand.Data.GetKeypointScreenSpace(8),
-            magicHandGestures.magicHand.Data.GetKeypointScreenSpace(4)
-        );
-        return dist < 0.03f;
+        if (magicHandGestures.magicHand.IsAvailable() != _isInteracting)
+        {
+            _interactionTimer += Time.deltaTime;
+            if (_interactionTimer >= timeBeforeStartInteraction && magicHandGestures.magicHand.IsAvailable())
+            {
+                _isInteracting = true;
+                _interactionTimer = 0f;
+            }
+            else if (_interactionTimer >= timeBeforeStopInteraction && !magicHandGestures.magicHand.IsAvailable())
+            {
+                _isInteracting = false;
+                _interactionTimer = 0f;
+            }
+        }
+        else
+        {
+            _interactionTimer = 0f;
+        }
+        if (_isInteracting) { 
+            HandleHandPos();
+        }
     }
 
 
