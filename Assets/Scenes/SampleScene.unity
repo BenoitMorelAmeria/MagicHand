@@ -416,6 +416,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: {x: 1, y: 1, z: 1}
   position: {x: 0, y: 0, z: 0}
+  onLevelLoaded:
+    m_PersistentCalls:
+      m_Calls: []
+  onLevelExited:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &49395557
 GameObject:
   m_ObjectHideFlags: 0
@@ -1225,7 +1231,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &278101282
 Transform:
   m_ObjectHideFlags: 0
@@ -1259,6 +1265,36 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: {x: 0.85, y: 0.85, z: 0.85}
   position: {x: 0, y: 0, z: 0.1}
+  onLevelLoaded:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 640960583}
+        m_TargetAssemblyTypeName: MagicHand, Assembly-CSharp
+        m_MethodName: SetInvisible
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onLevelExited:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 640960583}
+        m_TargetAssemblyTypeName: MagicHand, Assembly-CSharp
+        m_MethodName: SetVisible
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &278705972
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2156,6 +2192,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: {x: 1, y: 1, z: 1}
   position: {x: 0, y: 0, z: 0.3}
+  onLevelLoaded:
+    m_PersistentCalls:
+      m_Calls: []
+  onLevelExited:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &608693180
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2685,6 +2727,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: {x: 0.6, y: 0.6, z: 0.6}
   position: {x: 0, y: 0, z: 0}
+  onLevelLoaded:
+    m_PersistentCalls:
+      m_Calls: []
+  onLevelExited:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &750775626
 GameObject:
   m_ObjectHideFlags: 0
@@ -3203,6 +3251,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: {x: 0.9, y: 0.9, z: 0.9}
   position: {x: 0, y: 0, z: 0.2}
+  onLevelLoaded:
+    m_PersistentCalls:
+      m_Calls: []
+  onLevelExited:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &877022473
 GameObject:
   m_ObjectHideFlags: 0
@@ -3250,6 +3304,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: {x: 0.5, y: 0.5, z: 0.5}
   position: {x: 0, y: -0.05, z: 0.1}
+  onLevelLoaded:
+    m_PersistentCalls:
+      m_Calls: []
+  onLevelExited:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &894510406
 GameObject:
   m_ObjectHideFlags: 0
@@ -4949,6 +5009,10 @@ MonoBehaviour:
   rotationSpeed: 1.5
   timeBeforeStartInteraction: 0.5
   timeBeforeStopInteraction: 0.5
+  visualFeedbackPrefab: {fileID: 6338794731074750864, guid: 2d1e4c5088113a84588365c52c9bbe50,
+    type: 3}
+  visualFeedbackNeutralPrefab: {fileID: 6338794731074750864, guid: 4afeb90b5f8e11a42ba14dfbf9c56f76,
+    type: 3}
 --- !u!1 &1445235408
 GameObject:
   m_ObjectHideFlags: 0
@@ -6457,6 +6521,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: {x: 0.7, y: 0.7, z: 0.7}
   position: {x: 0, y: 0, z: 0.15}
+  onLevelLoaded:
+    m_PersistentCalls:
+      m_Calls: []
+  onLevelExited:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &2021289051
 GameObject:
   m_ObjectHideFlags: 0

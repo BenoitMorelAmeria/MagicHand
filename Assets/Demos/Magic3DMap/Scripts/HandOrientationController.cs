@@ -21,12 +21,16 @@ public class HandOrientationController : MonoBehaviour
     [SerializeField] private float timeBeforeStartInteraction = 0.5f;
     [SerializeField] private float timeBeforeStopInteraction = 0.5f;
 
+    [SerializeField] private GameObject visualFeedbackPrefab;
+    [SerializeField] private GameObject visualFeedbackNeutralPrefab;
+
+    private GameObject visualFeedback;
+    private GameObject visualFeedbackNeutral;
+
     private bool _isInteracting = false;
     private float _interactionTimer = 0f;
     private float yaw;
     private float pitch;
-
-    private bool mouseVisible = false;
 
     // Rotation state
     private Quaternion handNeutral = Quaternion.LookRotation(-Vector3.forward, Vector3.down);
@@ -34,7 +38,13 @@ public class HandOrientationController : MonoBehaviour
 
     private void Awake()
     {
+    }
+
+    private void Start()
+    {
         handNeutral = Quaternion.Euler(handNeutralEuler);
+        visualFeedback = Instantiate(visualFeedbackPrefab, transform.parent);
+        visualFeedbackNeutral = Instantiate(visualFeedbackNeutralPrefab, transform.parent);
     }
 
     private void OnValidate()
@@ -63,8 +73,10 @@ public class HandOrientationController : MonoBehaviour
         {
             _interactionTimer = 0f;
         }
+        UpdateVisualFeedback();
         if (_isInteracting) { 
             HandleHandPos();
+           
         }
     }
 
@@ -92,65 +104,20 @@ public class HandOrientationController : MonoBehaviour
                (pos.y >= interactionAreaMin.y && pos.y <= interactionAreaMax.y) &&
                (pos.z >= interactionAreaMin.z && pos.z <= interactionAreaMax.z);
     }
-    /*
-    public void HandleHandPos()
+
+    private Quaternion ComputeRotation()
     {
-        if (!magicHandGestures.magicHand.IsAvailable() || !IsHandInInteractionArea())
-            return;
-
-
-
-
-        // translation using the relative position
-        Vector3 handPosePos = magicHandGestures.magicHand.Data.GetKeypointScreenSpace(9);
-        Vector3 relativePos = handPosePos - neutralPosition;
-        relativePos.x = ApplyDeadZone(relativePos.x, handDeadZone.x);
-        relativePos.y = ApplyDeadZone(relativePos.y, handDeadZone.y);
-        relativePos.z = ApplyDeadZone(relativePos.z, handDeadZone.z);
-        transform.position += transform.rotation * Vector3.Scale(relativePos, handPoseTranslationSpeed) * Time.deltaTime;
-
-
 
         Vector3 handForward = magicHandGestures.palmForward;
         Vector3 handRight = magicHandGestures.palmRight;
         Vector3 handUp = Vector3.Cross(handForward, handRight);
-        Quaternion handRot = Quaternion.LookRotation(handForward, handUp);
-        // Relative rotation: from neutral to current
-        Quaternion relativeRot = handRot * Quaternion.Inverse(handNeutral);
-
-        // Convert to axis-angle representation
-        relativeRot.ToAngleAxis(out float angle, out Vector3 axis);
-
-        // Convert axis into camera's local space
-        axis = transform.TransformDirection(axis);
-
-        // Keep angle signed in [-180, 180]
-        if (angle > 180f) angle -= 360f;
-
-        // Apply dead zone
-        if (Mathf.Abs(angle) < angleDeadZoneDegrees)
-        {
-            angle = 0f;
-        }
-        else
-        {
-            angle = Mathf.Sign(angle) * (Mathf.Abs(angle) - angleDeadZoneDegrees);
-        }
-
-        // Scale into a rotation delta
-        float delta = angle * rotationSpeed * Time.deltaTime;
-
-        // Apply incremental rotation around the axis (in world space)
-        transform.rotation = transform.rotation * Quaternion.AngleAxis(delta, axis);
-
-
+        return Quaternion.LookRotation(handForward, handUp);
     }
-    */
+
     public void HandleHandPos()
     {
         if (!magicHandGestures.magicHand.IsAvailable() || !IsHandInInteractionArea())
             return;
-
 
         if (!magicHandGestures.IndexPointing) { 
 
@@ -164,15 +131,11 @@ public class HandOrientationController : MonoBehaviour
             transform.position += transform.rotation * Vector3.Scale(withRotationComponent, handPoseTranslationSpeed) * Time.deltaTime;
             Vector3 withoutRotationComponent = new Vector3(0, relativePos.y, 0);
             transform.position += Vector3.Scale(withoutRotationComponent, handPoseTranslationSpeed) * Time.deltaTime;
-
         }
 
 
         // Build current hand rotation
-        Vector3 handForward = magicHandGestures.palmForward;
-        Vector3 handRight = magicHandGestures.palmRight;
-        Vector3 handUp = Vector3.Cross(handForward, handRight);
-        Quaternion handRot = Quaternion.LookRotation(handForward, handUp);
+        Quaternion handRot = ComputeRotation();
 
         // Relative rotation: from neutral to current
         // Relative rotation: from neutral to current
@@ -204,6 +167,17 @@ public class HandOrientationController : MonoBehaviour
         transform.rotation = Quaternion.Euler(pitch, yaw, 0f);
 
 
+    }
+
+    private void UpdateVisualFeedback()
+    {
+        visualFeedback.SetActive(_isInteracting);
+        visualFeedback.transform.position = magicHandGestures.magicHand.Data.GetKeypoint(9);
+        visualFeedback.transform.rotation = ComputeRotation();
+
+        visualFeedbackNeutral.SetActive(_isInteracting);
+        visualFeedbackNeutral.transform.position = neutralPosition;
+        visualFeedbackNeutral.transform.rotation = handNeutral;
     }
 
 }

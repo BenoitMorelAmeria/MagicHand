@@ -62,6 +62,9 @@ public class MagicHand : MonoBehaviour
 
     public void SetVisible(bool visible) => magicHandRenderer.SetVisible(visible);
 
+    public void SetVisible() => magicHandRenderer.SetVisible(true);
+    public void SetInvisible() => magicHandRenderer.SetVisible(false);
+
     public void SetPinchState(bool state) => Data.SetPinchState(state);
     public bool GetPinchState() => Data.PinchState;
 

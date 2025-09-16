@@ -49,6 +49,7 @@ public class LevelManager : MonoBehaviour
     {
         if (currentLevel != null)
         {
+            currentLevel.GetComponent<Level>().OnExitLevel();
             Destroy(currentLevel);
         }
         if (level < 0 && level >= levels.Count)
