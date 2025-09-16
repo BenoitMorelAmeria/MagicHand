@@ -1,3 +1,4 @@
+using System.Data;
 using UnityEngine;
 
 public class HandOrientationController : MonoBehaviour
@@ -17,6 +18,7 @@ public class HandOrientationController : MonoBehaviour
 
     [SerializeField] private Vector3 handNeutralEuler = new Vector3(0f, 180f, 180f);
     [SerializeField] private float rotationSpeed  = 1;
+    [SerializeField] private float pointingRotationSpeed  = 100;
 
     [SerializeField] private float timeBeforeStartInteraction = 0.5f;
     [SerializeField] private float timeBeforeStopInteraction = 0.5f;
@@ -119,19 +121,30 @@ public class HandOrientationController : MonoBehaviour
         if (!magicHandGestures.magicHand.IsAvailable() || !IsHandInInteractionArea())
             return;
 
-        if (!magicHandGestures.IndexPointing) { 
-
-            // translation using the relative position
-            Vector3 handPosePos = magicHandGestures.magicHand.Data.GetKeypointScreenSpace(9);
-            Vector3 relativePos = handPosePos - neutralPosition;
-            relativePos.x = ApplyDeadZone(relativePos.x, handDeadZone.x);
-            relativePos.y = ApplyDeadZone(relativePos.y, handDeadZone.y);
-            relativePos.z = ApplyDeadZone(relativePos.z, handDeadZone.z);
-            Vector3 withRotationComponent = new Vector3(relativePos.x, 0, relativePos.z);
-            transform.position += transform.rotation * Vector3.Scale(withRotationComponent, handPoseTranslationSpeed) * Time.deltaTime;
-            Vector3 withoutRotationComponent = new Vector3(0, relativePos.y, 0);
-            transform.position += Vector3.Scale(withoutRotationComponent, handPoseTranslationSpeed) * Time.deltaTime;
+        if (magicHandGestures.IndexPointing || magicHandGestures.magicHand.GetPinchState()) {
+            HandleHandPosePointing();
+        } else
+        {
+            HandleHandPoseFreeFlying();
         }
+
+
+
+
+    }
+
+    private void HandleHandPoseFreeFlying()
+    {
+        // translation using the relative position
+        Vector3 handPosePos = magicHandGestures.magicHand.Data.GetKeypointScreenSpace(9);
+        Vector3 relativePos = handPosePos - neutralPosition;
+        relativePos.x = ApplyDeadZone(relativePos.x, handDeadZone.x);
+        relativePos.y = ApplyDeadZone(relativePos.y, handDeadZone.y);
+        relativePos.z = ApplyDeadZone(relativePos.z, handDeadZone.z);
+        Vector3 withRotationComponent = new Vector3(relativePos.x, 0, relativePos.z);
+        transform.position += transform.rotation * Vector3.Scale(withRotationComponent, handPoseTranslationSpeed) * Time.deltaTime;
+        Vector3 withoutRotationComponent = new Vector3(0, relativePos.y, 0);
+        transform.position += Vector3.Scale(withoutRotationComponent, handPoseTranslationSpeed) * Time.deltaTime;
 
 
         // Build current hand rotation
@@ -165,17 +178,39 @@ public class HandOrientationController : MonoBehaviour
 
         // Rebuild the rotation every frame (no roll!)
         transform.rotation = Quaternion.Euler(pitch, yaw, 0f);
+    }
 
+    private void HandleHandPosePointing()
+    {
 
+        // rotation using the relative position
+        Vector3 handPosePos = magicHandGestures.magicHand.Data.GetKeypointScreenSpace(9);
+        Vector3 relativePos = handPosePos - neutralPosition;
+        relativePos.x = ApplyDeadZone(relativePos.x, handDeadZone.x);
+        relativePos.y = ApplyDeadZone(relativePos.y, handDeadZone.y);
+        relativePos.z = 0;
+        float deltaX = relativePos.x * pointingRotationSpeed * Time.deltaTime;
+        float deltaY = relativePos.y * pointingRotationSpeed * Time.deltaTime;
+        // Accumulate pitch and yaw
+        pitch += deltaX;
+        yaw += deltaY;
+
+        // Optionally clamp pitch so you don’t flip upside down
+       // pitch = Mathf.Clamp(pitch, -80f, 80f);
+
+        // Rebuild the rotation every frame (no roll!)
+        transform.rotation = Quaternion.Euler(pitch, yaw, 0f);
     }
 
     private void UpdateVisualFeedback()
     {
-        visualFeedback.SetActive(_isInteracting);
+        bool active = _isInteracting && !(magicHandGestures.IndexPointing || magicHandGestures.magicHand.GetPinchState());
+
+        visualFeedback.SetActive(active);
         visualFeedback.transform.position = magicHandGestures.magicHand.Data.GetKeypoint(9);
         visualFeedback.transform.rotation = ComputeRotation();
 
-        visualFeedbackNeutral.SetActive(_isInteracting);
+        visualFeedbackNeutral.SetActive(active);
         visualFeedbackNeutral.transform.position = neutralPosition;
         visualFeedbackNeutral.transform.rotation = handNeutral;
     }
