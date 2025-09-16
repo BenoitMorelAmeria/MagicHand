@@ -1002,7 +1002,7 @@ MonoBehaviour:
   controllers:
   - {fileID: 1422174295}
   - {fileID: 207281234}
-  moveCamera: 1
+  moveCamera: 0
   minPosition: {x: -100, y: 0, z: -100}
   maxPosition: {x: 100, y: 200, z: 100}
 --- !u!1 &246427789
@@ -4890,7 +4890,7 @@ MonoBehaviour:
   neutralPosition: {x: 0, y: -0.035, z: -0.2}
   handPoseTranslationSpeed: {x: 400, y: 400, z: 400}
   handDeadZone: {x: 0.02, y: 0.02, z: 0.02}
-  angleDeadZoneDegrees: 15
+  angleDeadZoneDegrees: 0
   interactionAreaMin: {x: -1, y: -1, z: -0.4}
   interactionAreaMax: {x: 1, y: 1, z: 1}
   handNeutralEuler: {x: 15, y: 180, z: 180}

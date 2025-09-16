@@ -126,6 +126,10 @@ public class HandOrientationController : MonoBehaviour
         if (euler.x > 180f) euler.x -= 360f;
         if (euler.y > 180f) euler.y -= 360f;
 
+        // Apply deadzone
+        euler.x = ApplyDeadZone(euler.x, angleDeadZoneDegrees);
+        euler.y = ApplyDeadZone(euler.y, angleDeadZoneDegrees);
+
         // Constrain: keep only X (pitch) and Y (yaw), drop Z (roll)
         Vector3 constrainedEuler = new Vector3(euler.x, euler.y, 0f);
 
@@ -133,18 +137,12 @@ public class HandOrientationController : MonoBehaviour
         float deltaX = constrainedEuler.x * rotationSpeed * Time.deltaTime;
         float deltaY = constrainedEuler.y * rotationSpeed * Time.deltaTime;
 
-        deltaX = ApplyDeadZone(deltaX, angleDeadZoneDegrees);
-        deltaY = ApplyDeadZone(deltaY, angleDeadZoneDegrees);
-
-        // Apply the deltas gradually
+        // Apply the deltas gradually in *local space*
         transform.rotation =
-            transform.rotation *
-            Quaternion.AngleAxis(deltaY, Vector3.up) *
-            Quaternion.AngleAxis(deltaX, Vector3.right);
+            Quaternion.AngleAxis(deltaY, transform.up) *      // yaw around local up
+            Quaternion.AngleAxis(deltaX, transform.right) *   // pitch around local right
+            transform.rotation;
 
-        // Now remove roll by zeroing the Z component
-        Vector3 currentEuler = transform.rotation.eulerAngles;
-        transform.rotation = Quaternion.Euler(currentEuler.x, currentEuler.y, 0f);
     }
 
 }
