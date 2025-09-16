@@ -152,16 +152,20 @@ public class HandOrientationController : MonoBehaviour
             return;
 
 
+        if (!magicHandGestures.IndexPointing) { 
 
+            // translation using the relative position
+            Vector3 handPosePos = magicHandGestures.magicHand.Data.GetKeypointScreenSpace(9);
+            Vector3 relativePos = handPosePos - neutralPosition;
+            relativePos.x = ApplyDeadZone(relativePos.x, handDeadZone.x);
+            relativePos.y = ApplyDeadZone(relativePos.y, handDeadZone.y);
+            relativePos.z = ApplyDeadZone(relativePos.z, handDeadZone.z);
+            Vector3 withRotationComponent = new Vector3(relativePos.x, 0, relativePos.z);
+            transform.position += transform.rotation * Vector3.Scale(withRotationComponent, handPoseTranslationSpeed) * Time.deltaTime;
+            Vector3 withoutRotationComponent = new Vector3(0, relativePos.y, 0);
+            transform.position += Vector3.Scale(withoutRotationComponent, handPoseTranslationSpeed) * Time.deltaTime;
 
-        // translation using the relative position
-        Vector3 handPosePos = magicHandGestures.magicHand.Data.GetKeypointScreenSpace(9);
-        Vector3 relativePos = handPosePos - neutralPosition;
-        relativePos.x = ApplyDeadZone(relativePos.x, handDeadZone.x);
-        relativePos.y = ApplyDeadZone(relativePos.y, handDeadZone.y);
-        relativePos.z = ApplyDeadZone(relativePos.z, handDeadZone.z);
-        transform.position += transform.rotation * Vector3.Scale(relativePos, handPoseTranslationSpeed) * Time.deltaTime;
-
+        }
 
 
         // Build current hand rotation

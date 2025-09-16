@@ -8,8 +8,8 @@ public class MagicHandGestures : MonoBehaviour
 {
     [SerializeField] public MagicHand magicHand;
     [SerializeField] private float flatnessThreshold = 0.001f;
-    [SerializeField] private float indexFingerColinearityThreshold = 0.001f;
-    [SerializeField] private float otherFingersNonColinearityThreshold = 0.002f;
+    [SerializeField] private float pointingFrontnessThreshold = 0.7f;
+    [SerializeField] private float pointingOthersNonFrontnessThreshold = 0.0f;
 
     public string handSignednessDebug = "Unknown";
 
@@ -295,11 +295,11 @@ public class MagicHandGestures : MonoBehaviour
         if (!magicHand.IsAvailable())
             return false;
         bool pointing = true;
-        if (fingerColinearities[1] > indexFingerColinearityThreshold)
+        if (fingerFrontness[1] < pointingFrontnessThreshold)
             pointing = false;
         for (int i = 2; i < 5; i++)
         {
-            if (fingerColinearities[i] < otherFingersNonColinearityThreshold)
+            if (fingerFrontness[i] > pointingOthersNonFrontnessThreshold)
                 pointing = false;
         }
         return pointing;
