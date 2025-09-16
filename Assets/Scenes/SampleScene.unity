@@ -1126,6 +1126,7 @@ GameObject:
   m_Component:
   - component: {fileID: 254261538}
   - component: {fileID: 254261539}
+  - component: {fileID: 254261540}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1155,7 +1156,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 254261537}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c1074ce9e3a64e4e8ce15dbfd20d131, type: 3}
   m_Name: 
@@ -1163,6 +1164,20 @@ MonoBehaviour:
   magicHand: {fileID: 640960583}
   fileName: Assets/3Dmaprecording.json
   autoPlayOnStart: 1
+--- !u!114 &254261540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 254261537}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05a1ba54fa9d5ac49b5f137b96108d27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  magicHand: {fileID: 640960583}
+  filePath: Assets/recordedHandData.json
 --- !u!1 &261218146
 GameObject:
   m_ObjectHideFlags: 0
@@ -5000,6 +5015,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   magicHandGestures: {fileID: 311480421}
   neutralPosition: {x: 0, y: -0.015, z: -0.22}
+  neutralPointingPosition: {x: 0, y: 0, z: 0}
   handPoseTranslationSpeed: {x: 150, y: 200, z: 500}
   handDeadZone: {x: 0.01, y: 0.01, z: 0.01}
   angleDeadZoneDegrees: 10
@@ -5007,6 +5023,7 @@ MonoBehaviour:
   interactionAreaMax: {x: 1, y: 1, z: 1}
   handNeutralEuler: {x: 0, y: 180, z: 180}
   rotationSpeed: 1.5
+  pointingRotationSpeed: 600
   timeBeforeStartInteraction: 0.5
   timeBeforeStopInteraction: 0.5
   visualFeedbackPrefab: {fileID: 6338794731074750864, guid: 2d1e4c5088113a84588365c52c9bbe50,

@@ -9,6 +9,7 @@ public class HandOrientationController : MonoBehaviour
 
     [Header("Hand pose")]
     [SerializeField] private Vector3 neutralPosition = new Vector3(-0.2f, 0.1f, 0.0f);
+    [SerializeField] private Vector3 neutralPointingPosition = new Vector3(-0.2f, 0.0f, 0.0f);
     [SerializeField] private Vector3 handPoseTranslationSpeed = Vector3.zero;
     [SerializeField] private Vector3 handDeadZone = Vector3.zero;
     [SerializeField] private float angleDeadZoneDegrees = 0;
@@ -184,16 +185,18 @@ public class HandOrientationController : MonoBehaviour
     {
 
         // rotation using the relative position
-        Vector3 handPosePos = magicHandGestures.magicHand.Data.GetKeypointScreenSpace(9);
-        Vector3 relativePos = handPosePos - neutralPosition;
+        Vector3 handPosePos = magicHandGestures.magicHand.Data.GetKeypointScreenSpace(8);
+        Vector3 relativePos = handPosePos - neutralPointingPosition;
+        Debug.Log("relative pos: " + relativePos);
+        
         relativePos.x = ApplyDeadZone(relativePos.x, handDeadZone.x);
         relativePos.y = ApplyDeadZone(relativePos.y, handDeadZone.y);
         relativePos.z = 0;
         float deltaX = relativePos.x * pointingRotationSpeed * Time.deltaTime;
-        float deltaY = relativePos.y * pointingRotationSpeed * Time.deltaTime;
+        float deltaY = -relativePos.y * pointingRotationSpeed * Time.deltaTime;
         // Accumulate pitch and yaw
-        pitch += deltaX;
-        yaw += deltaY;
+        pitch += deltaY;
+        yaw += deltaX;
 
         // Optionally clamp pitch so you don’t flip upside down
        // pitch = Mathf.Clamp(pitch, -80f, 80f);
