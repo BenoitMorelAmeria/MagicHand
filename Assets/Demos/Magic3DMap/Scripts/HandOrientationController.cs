@@ -92,7 +92,7 @@ public class HandOrientationController : MonoBehaviour
                (pos.y >= interactionAreaMin.y && pos.y <= interactionAreaMax.y) &&
                (pos.z >= interactionAreaMin.z && pos.z <= interactionAreaMax.z);
     }
-
+    /*
     public void HandleHandPos()
     {
         if (!magicHandGestures.magicHand.IsAvailable() || !IsHandInInteractionArea())
@@ -145,8 +145,8 @@ public class HandOrientationController : MonoBehaviour
 
 
     }
-
-    /*    public void HandleHandPos()
+    */
+    public void HandleHandPos()
     {
         if (!magicHandGestures.magicHand.IsAvailable() || !IsHandInInteractionArea())
             return;
@@ -200,6 +200,6 @@ public class HandOrientationController : MonoBehaviour
         transform.rotation = Quaternion.Euler(pitch, yaw, 0f);
 
 
-    }*/
+    }
 
 }
