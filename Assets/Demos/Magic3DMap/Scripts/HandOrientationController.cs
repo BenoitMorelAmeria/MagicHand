@@ -10,6 +10,7 @@ public class HandOrientationController : MonoBehaviour
     [SerializeField] private Vector3 neutralPosition = new Vector3(-0.2f, 0.1f, 0.0f);
     [SerializeField] private Vector3 handPoseTranslationSpeed = Vector3.zero;
     [SerializeField] private Vector3 handDeadZone = Vector3.zero;
+    [SerializeField] private float angleDeadZoneDegrees = 0;
 
     [SerializeField] private Vector3 interactionAreaMin = new Vector3(-1, -1, -1);
     [SerializeField] private Vector3 interactionAreaMax = new Vector3(1, 1, 1);
@@ -131,6 +132,9 @@ public class HandOrientationController : MonoBehaviour
         // Scale by your own speeds if you want sensitivity control
         float deltaX = constrainedEuler.x * rotationSpeed * Time.deltaTime;
         float deltaY = constrainedEuler.y * rotationSpeed * Time.deltaTime;
+
+        deltaX = ApplyDeadZone(deltaX, angleDeadZoneDegrees);
+        deltaY = ApplyDeadZone(deltaY, angleDeadZoneDegrees);
 
         // Apply the deltas gradually
         transform.rotation =

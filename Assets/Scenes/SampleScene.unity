@@ -918,7 +918,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &207281235
 Transform:
   m_ObjectHideFlags: 0
@@ -1001,6 +1001,7 @@ MonoBehaviour:
   cameraManager: {fileID: 4216428590830783620}
   controllers:
   - {fileID: 1422174295}
+  - {fileID: 207281234}
   moveCamera: 1
   minPosition: {x: -100, y: 0, z: -100}
   maxPosition: {x: 100, y: 200, z: 100}
@@ -4889,6 +4890,7 @@ MonoBehaviour:
   neutralPosition: {x: 0, y: -0.035, z: -0.2}
   handPoseTranslationSpeed: {x: 400, y: 400, z: 400}
   handDeadZone: {x: 0.02, y: 0.02, z: 0.02}
+  angleDeadZoneDegrees: 15
   interactionAreaMin: {x: -1, y: -1, z: -0.4}
   interactionAreaMax: {x: 1, y: 1, z: 1}
   handNeutralEuler: {x: 15, y: 180, z: 180}
