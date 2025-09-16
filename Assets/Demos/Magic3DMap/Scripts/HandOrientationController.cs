@@ -23,7 +23,8 @@ public class HandOrientationController : MonoBehaviour
 
     private bool _isInteracting = false;
     private float _interactionTimer = 0f;
-
+    private float yaw;
+    private float pitch;
 
     private bool mouseVisible = false;
 
@@ -110,12 +111,66 @@ public class HandOrientationController : MonoBehaviour
 
 
 
+        Vector3 handForward = magicHandGestures.palmForward;
+        Vector3 handRight = magicHandGestures.palmRight;
+        Vector3 handUp = Vector3.Cross(handForward, handRight);
+        Quaternion handRot = Quaternion.LookRotation(handForward, handUp);
+        // Relative rotation: from neutral to current
+        Quaternion relativeRot = handRot * Quaternion.Inverse(handNeutral);
+
+        // Convert to axis-angle representation
+        relativeRot.ToAngleAxis(out float angle, out Vector3 axis);
+
+        // Convert axis into camera's local space
+        axis = transform.TransformDirection(axis);
+
+        // Keep angle signed in [-180, 180]
+        if (angle > 180f) angle -= 360f;
+
+        // Apply dead zone
+        if (Mathf.Abs(angle) < angleDeadZoneDegrees)
+        {
+            angle = 0f;
+        }
+        else
+        {
+            angle = Mathf.Sign(angle) * (Mathf.Abs(angle) - angleDeadZoneDegrees);
+        }
+
+        // Scale into a rotation delta
+        float delta = angle * rotationSpeed * Time.deltaTime;
+
+        // Apply incremental rotation around the axis (in world space)
+        transform.rotation = transform.rotation * Quaternion.AngleAxis(delta, axis);
+
+
+    }
+
+    /*    public void HandleHandPos()
+    {
+        if (!magicHandGestures.magicHand.IsAvailable() || !IsHandInInteractionArea())
+            return;
+
+
+
+
+        // translation using the relative position
+        Vector3 handPosePos = magicHandGestures.magicHand.Data.GetKeypointScreenSpace(9);
+        Vector3 relativePos = handPosePos - neutralPosition;
+        relativePos.x = ApplyDeadZone(relativePos.x, handDeadZone.x);
+        relativePos.y = ApplyDeadZone(relativePos.y, handDeadZone.y);
+        relativePos.z = ApplyDeadZone(relativePos.z, handDeadZone.z);
+        transform.position += transform.rotation * Vector3.Scale(relativePos, handPoseTranslationSpeed) * Time.deltaTime;
+
+
+
         // Build current hand rotation
         Vector3 handForward = magicHandGestures.palmForward;
         Vector3 handRight = magicHandGestures.palmRight;
         Vector3 handUp = Vector3.Cross(handForward, handRight);
         Quaternion handRot = Quaternion.LookRotation(handForward, handUp);
 
+        // Relative rotation: from neutral to current
         // Relative rotation: from neutral to current
         Quaternion relativeRot = handRot * Quaternion.Inverse(handNeutral);
 
@@ -130,19 +185,21 @@ public class HandOrientationController : MonoBehaviour
         euler.x = ApplyDeadZone(euler.x, angleDeadZoneDegrees);
         euler.y = ApplyDeadZone(euler.y, angleDeadZoneDegrees);
 
-        // Constrain: keep only X (pitch) and Y (yaw), drop Z (roll)
-        Vector3 constrainedEuler = new Vector3(euler.x, euler.y, 0f);
+        // Scale
+        float deltaX = euler.x * rotationSpeed * Time.deltaTime;
+        float deltaY = euler.y * rotationSpeed * Time.deltaTime;
 
-        // Scale by your own speeds if you want sensitivity control
-        float deltaX = constrainedEuler.x * rotationSpeed * Time.deltaTime;
-        float deltaY = constrainedEuler.y * rotationSpeed * Time.deltaTime;
+        // Accumulate pitch and yaw
+        pitch += deltaX;
+        yaw += deltaY;
 
-        // Apply the deltas gradually in *local space*
-        transform.rotation =
-            Quaternion.AngleAxis(deltaY, transform.up) *      // yaw around local up
-            Quaternion.AngleAxis(deltaX, transform.right) *   // pitch around local right
-            transform.rotation;
+        // Optionally clamp pitch so you don’t flip upside down
+        pitch = Mathf.Clamp(pitch, -80f, 80f);
 
-    }
+        // Rebuild the rotation every frame (no roll!)
+        transform.rotation = Quaternion.Euler(pitch, yaw, 0f);
+
+
+    }*/
 
 }
