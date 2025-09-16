@@ -4887,14 +4887,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   magicHandGestures: {fileID: 311480421}
-  neutralPosition: {x: 0, y: -0.035, z: -0.2}
-  handPoseTranslationSpeed: {x: 400, y: 400, z: 400}
-  handDeadZone: {x: 0.02, y: 0.02, z: 0.02}
-  angleDeadZoneDegrees: 0
+  neutralPosition: {x: 0, y: -0.025, z: -0.23}
+  handPoseTranslationSpeed: {x: 250, y: 250, z: 600}
+  handDeadZone: {x: 0.03, y: 0.02, z: 0.02}
+  angleDeadZoneDegrees: 10
   interactionAreaMin: {x: -1, y: -1, z: -0.4}
   interactionAreaMax: {x: 1, y: 1, z: 1}
-  handNeutralEuler: {x: 15, y: 180, z: 180}
-  rotationSpeed: 1
+  handNeutralEuler: {x: 0, y: 180, z: 180}
+  rotationSpeed: 1.5
   timeBeforeStartInteraction: 0.5
   timeBeforeStopInteraction: 0.5
 --- !u!1 &1445235408
