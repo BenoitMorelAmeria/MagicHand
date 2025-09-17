@@ -220,8 +220,8 @@ public class HandOrientationController : MonoBehaviour
         visualFeedback.SetActive(active);
         visualFeedback.transform.position = magicHandGestures.magicHand.Data.GetKeypoint(9);
         visualFeedback.transform.rotation = ComputeRotation() * Quaternion.Inverse(handNeutral);
-        //Vector3 euler = visualFeedback.transform.rotation.eulerAngles;
-        //visualFeedback.transform.rotation = Quaternion.Euler(new Vector3(euler.x, euler.y, 0));
+        Vector3 euler = visualFeedback.transform.rotation.eulerAngles;
+        visualFeedback.transform.rotation = Quaternion.Euler(new Vector3(euler.x, euler.y, 0));
 
         visualInsideFeedback.SetActive(active);
         visualInsideFeedback.transform.localScale = new Vector3(0.99f, 0.99f, 0.99f);

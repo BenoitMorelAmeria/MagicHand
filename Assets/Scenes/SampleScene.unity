@@ -5023,7 +5023,7 @@ MonoBehaviour:
   interactionAreaMax: {x: 1, y: 1, z: 1}
   handNeutralEuler: {x: 0, y: 180, z: 180}
   rotationSpeed: 1.5
-  pointingRotationSpeed: 600
+  pointingRotationSpeed: 300
   timeBeforeStartInteraction: 0.5
   timeBeforeStopInteraction: 0.5
   visualFeedbackPrefab: {fileID: 6338794731074750864, guid: 2d1e4c5088113a84588365c52c9bbe50,
