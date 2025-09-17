@@ -96,7 +96,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2f520f3a6d9dd8c4e82ea1c1458ab2ac, type: 2}
+  - {fileID: 2100000, guid: a319bc72f5873294f96e6067505bd9bc, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -288,7 +288,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2020728446810930628}
   m_Layer: 0
-  m_Name: VisualFeedbackPrefab
+  m_Name: VisualFeedbackInsidePrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
