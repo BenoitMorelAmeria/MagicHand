@@ -19,9 +19,9 @@ public class MagicHandGestures : MonoBehaviour
     // how long has the hand been flat (in seconds)
     public float flatHandDuration = 0f;
 
-    public Vector3 palmNormal = Vector3.zero;
-    public Vector3 palmRight = Vector3.zero;
-    public Vector3 palmForward = Vector3.zero;
+    public Vector3 palmNormal = Vector3.up;
+    public Vector3 palmRight = Vector3.right;
+    public Vector3 palmForward = Vector3.forward;
     public Quaternion palmRotation = Quaternion.identity;
 
     public enum Handedness { Left, Right }

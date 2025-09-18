@@ -7,6 +7,7 @@ using UnityEngine;
 public class MagicHands : MonoBehaviour
 {
     [SerializeField] List<MagicHand> hands;
+    [SerializeField] HandPoseManager handPoseManager;
 
     Dictionary<int, int> labelToHandIndex = new Dictionary<int, int>();
     HashSet<int> assignedHandIndices = new HashSet<int>();
@@ -31,6 +32,22 @@ public class MagicHands : MonoBehaviour
         if (debugMouse)
         {
             hands[0].gameObject.SetActive(true);
+        }
+        if (handPoseManager != null)
+        {
+            Debug.Log("hands: " + handPoseManager.GetHandsCount());
+            hands[0].SetHandPoseEnabled(handPoseManager.GetHandsCount() > 0);
+            if (handPoseManager.GetHandsCount() > 0)
+            {
+                List<Vector3> keypoints = new List<Vector3>();
+                for (int i = 0; i < 21; ++i)
+                {
+                    Vector3 v = handPoseManager.GetKeypointPosition(0, i);
+                    v.z = -v.z; // Invert Z axis
+                    keypoints.Add(v);
+                }
+                hands[0].UpdateHand(keypoints);
+            }
         }
     }
 
@@ -65,7 +82,6 @@ public class MagicHands : MonoBehaviour
         MqttHandPose.OnHandPoseDetected -= UpdateHandPoseDetected;
         MqttHandPose.OnPinchStateReceived -= UpdatePinchState;
     }
-
     public void UpdatePinchState(bool pinchState)
     {
         foreach (MagicHand hand in hands)
@@ -81,77 +97,6 @@ public class MagicHands : MonoBehaviour
             hands[0].UpdateHand(inputHands[0].Keypoints);
         }
     }
-    /*
-    public void UpdateHand(List<HandKeypoints> inputHands)
-    { 
-        // detect which assigned indices are NOT in the input hands
-        HashSet<int> labelsToRemove = new HashSet<int>();
-        foreach (var kvp in labelToHandIndex)
-        {
-            int label = kvp.Key;
-            bool found = false;
-            foreach (HandKeypoints inputHand in inputHands)
-            {
-                if (inputHand.Label == label)
-                {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found)
-            {
-                labelsToRemove.Add(label);
-            }
-        }
-        foreach (int label in labelsToRemove)
-        {
+  
 
-            int index = labelToHandIndex[label];;
-            labelToHandIndex.Remove(label);
-            assignedHandIndices.Remove(index);
-            hands[index].gameObject.SetActive(false); // deactivate the hand
-        }
-        
-
-        // update labelToHandIndex with new input hands
-        foreach (HandKeypoints inputHand in inputHands)
-        {
-            int label = inputHand.Label;
-            if (assignedHandIndices.Contains(label))
-            {
-                // this label is already assigned, skip it
-                continue;
-            }
-            else
-            {
-                // we need to find a free index to assign to this new label
-                int freeIndex = 0;
-                while (freeIndex < hands.Count && assignedHandIndices.Contains(freeIndex))
-                {
-                    freeIndex++;
-                }
-                if (freeIndex >= hands.Count)
-                {
-                    Debug.LogWarning($"No free hand index available for label {label}");
-                    continue;
-                }
-                labelToHandIndex[label] = freeIndex;
-                assignedHandIndices.Add(freeIndex);
-                Debug.Log("set active");
-                hands[freeIndex].gameObject.SetActive(true); // activate the hand
-            }
-        }
-
-        // now the labelToHandIndex should have all the labels mapped to their assigned indices
-        // we can update the hands based on this mapping
-        foreach (HandKeypoints inputHand in inputHands)
-        {
-            int label = inputHand.Label;
-            //Debug.Log("Label: " + label + ", Index: " + labelToHandIndex[label]);
-           
-            MagicHand magicHand = hands[labelToHandIndex[label]];
-            List<Vector3> keyPoints = inputHand.Keypoints;
-            magicHand.UpdateHand(keyPoints);
-        }
-    }*/
 }
