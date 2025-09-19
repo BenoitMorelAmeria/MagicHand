@@ -118,6 +118,8 @@ public class HandOrientationController : MonoBehaviour
         Vector3 handForward = magicHandGestures.palmForward;
         Vector3 handRight = magicHandGestures.palmRight;
         Vector3 handUp = Vector3.Cross(handForward, handRight);
+        if (handForward == Vector3.zero || handUp == Vector3.zero)
+            return Quaternion.identity;
         return Quaternion.LookRotation(handForward, handUp);
     }
 

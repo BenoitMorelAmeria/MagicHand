@@ -57,6 +57,7 @@ public class MagicHand : MonoBehaviour
 
     public void SetHandPoseEnabled(bool enabled)
     {
+        gameObject.SetActive(enabled);
         Data.enabled = enabled;
     }
 
